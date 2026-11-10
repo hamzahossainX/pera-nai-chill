@@ -58,6 +58,10 @@ export class Villain {
     this.rig.triggerHitStun(knockback);
   }
 
+  public trip(durationMs: number = 1600) {
+    this.rig.triggerTrip(durationMs);
+  }
+
   public update(time: number, delta: number) {
     this.rig.update(time, delta);
 

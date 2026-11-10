@@ -48,7 +48,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   private frontFoot!: Phaser.GameObjects.Sprite;
 
   // State
-  public stateName: "RUN" | "HIT_STUN" | "DEAD" | "ATTACK" = "RUN";
+  public stateName: "RUN" | "HIT_STUN" | "DEAD" | "ATTACK" | "TRIPPED" = "RUN";
   public runSpeedFactor = 1.0;
   private isHitStunned = false;
   private attackTimer = 0;
@@ -250,6 +250,36 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       this.expressionSprite.setVisible(false);
       this.isHitStunned = false;
       this.stateName = "RUN";
+    });
+  }
+
+  public triggerTrip(durationMs: number = 1600) {
+    if (this.stateName === "DEAD" || this.stateName === "TRIPPED") return;
+    this.stateName = "TRIPPED";
+
+    this.scene.tweens.add({
+      targets: this,
+      rotation: 1.3,
+      y: this.y + 20,
+      duration: 150,
+      ease: "Quad.Out",
+    });
+
+    this.expressionSprite.setVisible(true);
+
+    this.scene.time.delayedCall(durationMs, () => {
+      if (this.stateName === "DEAD") return;
+      this.scene.tweens.add({
+        targets: this,
+        rotation: 0,
+        y: this.y - 20,
+        duration: 200,
+        ease: "Back.Out",
+        onComplete: () => {
+          this.expressionSprite.setVisible(false);
+          this.stateName = "RUN";
+        },
+      });
     });
   }
 

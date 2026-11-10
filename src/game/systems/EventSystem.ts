@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { ParallaxSystem } from "@/game/systems/ParallaxSystem";
 import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
+import { SpawnSystem } from "@/game/systems/SpawnSystem";
 import { BlackoutEffect, SmogEffect } from "@/game/fx";
 import { eventService, WorldEvent } from "@/services/eventService";
 import { useGameStore } from "@/store/useGameStore";
@@ -11,6 +12,7 @@ import { audioService } from "@/services/audio";
 export class EventSystem {
   private scene: Phaser.Scene;
   private parallaxSystem: ParallaxSystem;
+  private spawnSystem: SpawnSystem;
 
   public activeEvent: WorldEvent | null = null;
   private eventTimeLeft = 0;
@@ -25,10 +27,12 @@ export class EventSystem {
     scene: Phaser.Scene,
     parallaxSystem: ParallaxSystem,
     villain: Villain,
-    chaser: Chaser
+    chaser: Chaser,
+    spawnSystem: SpawnSystem
   ) {
     this.scene = scene;
     this.parallaxSystem = parallaxSystem;
+    this.spawnSystem = spawnSystem;
     this.blackoutEffect = new BlackoutEffect(scene, villain, chaser);
     this.smogEffect = new SmogEffect(scene, villain);
 
@@ -80,6 +84,10 @@ export class EventSystem {
         this.smogEffect.activate(effect.params?.alpha ?? 0.45);
       }
 
+      if (effect.kind === "spawner" && effect.name === "crowd") {
+        this.spawnSystem.setStrikeActive(true);
+      }
+
       if (effect.kind === "sfx" && effect.name) {
         audioService.play(effect.name);
       }
@@ -106,6 +114,7 @@ export class EventSystem {
     // Deactivate marquee effects with 400ms smooth fade
     this.blackoutEffect.deactivate();
     this.smogEffect.deactivate();
+    this.spawnSystem.setStrikeActive(false);
 
     // Record Cooldown
     this.cooldowns[eventId] = this.activeEvent.cooldownSec * 1000;
