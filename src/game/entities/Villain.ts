@@ -54,8 +54,8 @@ export class Villain {
     });
   }
 
-  public hit(damage: number, knockback: number = 35) {
-    this.rig.triggerHitStun(knockback);
+  public hit(damage: number, knockback: number = 35, isCrit: boolean = false) {
+    this.rig.triggerHitStun(knockback, isCrit);
   }
 
   public trip(durationMs: number = 1600) {

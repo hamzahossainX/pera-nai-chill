@@ -6,7 +6,8 @@ export type ObstacleType =
   | "tire-fire"
   | "brick"
   | "crowd"
-  | "rickshaw";
+  | "rickshaw"
+  | "pothole";
 
 export interface ObstacleOptions {
   scene: Phaser.Scene;
@@ -42,6 +43,8 @@ export class Obstacle extends Phaser.GameObjects.Sprite {
         ? "obstacle-crowd"
         : type === "rickshaw"
         ? "obstacle-rickshaw"
+        : type === "pothole"
+        ? "obstacle-pothole"
         : "projectile-brick";
 
     this.setTexture(textureKey);

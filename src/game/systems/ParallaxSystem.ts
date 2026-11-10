@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { BALANCE } from "@/config/balance";
+import { useGameStore } from "@/store/useGameStore";
 
 export class ParallaxSystem {
   private scene: Phaser.Scene;
@@ -18,10 +19,25 @@ export class ParallaxSystem {
 
   private initLayers() {
     const W = BALANCE.LOGICAL_WIDTH;
+    const mapId = useGameStore.getState().currentMapId || "mirpur";
+
+    const skyKey =
+      mapId === "farmgate"
+        ? "bg-sky-farmgate"
+        : mapId === "newmarket"
+        ? "bg-sky-newmarket"
+        : "bg-sky-mirpur";
+
+    const nearKey =
+      mapId === "farmgate"
+        ? "bg-near-farmgate"
+        : mapId === "newmarket"
+        ? "bg-near-newmarket"
+        : "bg-near-buildings";
 
     // Layer 1: Sky
     this.skyTile = this.scene.add
-      .tileSprite(0, 0, W, 500, "bg-sky")
+      .tileSprite(0, 0, W, 500, this.scene.textures.exists(skyKey) ? skyKey : "bg-sky")
       .setOrigin(0, 0)
       .setDepth(0);
 
@@ -33,7 +49,7 @@ export class ParallaxSystem {
 
     // Layer 3: Near Buildings with colorful Dhaka signage
     this.nearBuildingsTile = this.scene.add
-      .tileSprite(0, 150, W, 360, "bg-near-buildings")
+      .tileSprite(0, 150, W, 360, this.scene.textures.exists(nearKey) ? nearKey : "bg-near-buildings")
       .setOrigin(0, 0)
       .setDepth(2);
 

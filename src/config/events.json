@@ -61,6 +61,26 @@
         { "kind": "bonus", "name": "villainTripped", "comboBonus": 1.5 },
         { "kind": "sfx", "name": "siren" }
       ]
+    },
+    {
+      "id": "evt_waterlogging",
+      "type": "WATERLOGGING",
+      "title": { "bn": "বর্ষার জলাবদ্ধতা ও সাঁতার!", "en": "Monsoon Street Flooding!" },
+      "ticker": { "bn": "ব্রেকিং: রাস্তায় হাঁটু পানি! নৌকা নামান!", "en": "BREAKING: Knee-deep water on roads! Bring boats!" },
+      "description": { "bn": "রাস্তায় পানি জমে গেছে! স্পিড স্লো, হুডতোলা রিকশা নিলে সহজে পার হবেন!", "en": "Streets are flooded! Take a hooded rickshaw to bypass!" },
+      "durationSec": 22,
+      "weight": 3,
+      "cooldownSec": 40,
+      "bypass": {
+        "enabled": true,
+        "costTaka": 60,
+        "label": { "en": "Hire a Hooded Rickshaw (60 Taka)", "bn": "হুডতোলা রিকশা নিন (৬০ টাকা)" }
+      },
+      "effects": [
+        { "kind": "overlay", "name": "waterlogging", "params": { "alpha": 0.6, "water": true } },
+        { "kind": "modifier", "target": "speed", "multiplier": 0.65 },
+        { "kind": "sfx", "name": "splash" }
+      ]
     }
   ]
 }

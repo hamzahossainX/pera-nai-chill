@@ -20,6 +20,9 @@ import {
 } from "lucide-react";
 import { EventBanner } from "@/components/game/EventBanner";
 import { BribeButton } from "@/components/game/BribeButton";
+import { CRIMES } from "@/config/crimes";
+import { MAP_SCENARIOS } from "@/config/maps";
+import { Droplets, ShieldCheck, MapPin } from "lucide-react";
 
 export function HudOverlay() {
   const {
@@ -31,6 +34,9 @@ export function HudOverlay() {
     combo,
     taka,
     stamina,
+    crimeId,
+    currentMapId,
+    activeCounterBuff,
     activeEvent,
     setStamina,
     setScreen,
@@ -39,6 +45,11 @@ export function HudOverlay() {
     updateSettings,
     setDebugOpen,
   } = useGameStore();
+
+  const currentCrime =
+    CRIMES.find((c) => c.id === crimeId) || CRIMES[0];
+  const currentMap =
+    MAP_SCENARIOS.find((m) => m.id === currentMapId) || MAP_SCENARIOS[0];
 
   const [isPaused, setIsPaused] = useState(false);
   const [lagHp, setLagHp] = useState(villainHp);
@@ -132,47 +143,74 @@ export function HudOverlay() {
       {/* Top Header Bar */}
       <div className="flex items-start justify-between w-full">
         {/* Top-Left: Target Avatar & HP Bar */}
-        <div
-          onClick={handleAvatarTap}
-          className="pointer-events-auto flex items-center gap-3 rounded-2xl border-2 border-black/80 bg-slate-900/80 p-2.5 shadow-xl backdrop-blur-md cursor-pointer active:scale-95 transition-transform"
-          title="Tap 5 times to open debug god mode"
-        >
-          {/* Face Thumbnail */}
-          <div className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-full border-2 border-yellow-400 bg-slate-800 shadow-md">
-            {targetFaceUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={targetFaceUrl}
-                alt="Target"
-                className="h-full w-full object-cover"
-              />
-            ) : null}
+        <div className="flex flex-col gap-1.5 items-start">
+          <div
+            onClick={handleAvatarTap}
+            className="pointer-events-auto flex items-center gap-3 rounded-2xl border-2 border-black/80 bg-slate-900/80 p-2.5 shadow-xl backdrop-blur-md cursor-pointer active:scale-95 transition-transform"
+            title="Tap 5 times to open debug god mode"
+          >
+            {/* Face Thumbnail */}
+            <div className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-full border-2 border-yellow-400 bg-slate-800 shadow-md">
+              {targetFaceUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={targetFaceUrl}
+                  alt="Target"
+                  className="h-full w-full object-cover"
+                />
+              ) : null}
+            </div>
+
+            {/* Name & Dual Health Bar */}
+            <div className="flex flex-col gap-1 w-36 sm:w-52">
+              <div className="flex items-center justify-between">
+                <span className="font-bangla text-xs sm:text-sm font-bold text-yellow-300 truncate">
+                  {targetName}
+                </span>
+                <span className="font-mono text-[10px] text-slate-300">
+                  {villainHp}/{villainMaxHp}
+                </span>
+              </div>
+
+              {/* Health Bar Container */}
+              <div className="relative h-3.5 w-full overflow-hidden rounded-full border border-black bg-slate-950">
+                {/* White Lagging Bar */}
+                <div
+                  className="absolute inset-y-0 left-0 bg-white/70 transition-all duration-300 ease-out"
+                  style={{ width: `${lagPercent}%` }}
+                />
+                {/* Foreground Red HP Bar */}
+                <div
+                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-red-600 to-rose-500 transition-all duration-100 ease-out"
+                  style={{ width: `${hpPercent}%` }}
+                />
+              </div>
+
+              {/* Wanted Crime Tag Banner */}
+              <div className="flex items-center gap-1 mt-0.5 truncate">
+                <span className="rounded bg-rose-600 px-1 py-0.2 font-comic text-[9px] font-bold text-white uppercase shrink-0">
+                  WANTED
+                </span>
+                <span className="font-bangla text-[10px] font-bold text-yellow-200 truncate">
+                  {currentCrime.icon} {currentCrime.title.bn}
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Name & Dual Health Bar */}
-          <div className="flex flex-col gap-1 w-36 sm:w-48">
-            <div className="flex items-center justify-between">
-              <span className="font-bangla text-xs sm:text-sm font-bold text-yellow-300 truncate">
-                {targetName}
-              </span>
-              <span className="font-mono text-[10px] text-slate-300">
-                {villainHp}/{villainMaxHp}
-              </span>
+          {/* Route Badge & Active Counter-Buff Pills */}
+          <div className="flex items-center gap-1.5">
+            <div className="pointer-events-auto flex items-center gap-1 rounded-lg border border-black/80 bg-slate-900/90 px-2 py-0.5 text-[11px] font-bold text-yellow-300 shadow backdrop-blur-sm">
+              <MapPin className="h-3 w-3 text-amber-400 shrink-0" />
+              <span className="font-bangla">{currentMap.name.bn}</span>
             </div>
 
-            {/* Health Bar Container */}
-            <div className="relative h-3.5 w-full overflow-hidden rounded-full border border-black bg-slate-950">
-              {/* White Lagging Bar */}
-              <div
-                className="absolute inset-y-0 left-0 bg-white/70 transition-all duration-300 ease-out"
-                style={{ width: `${lagPercent}%` }}
-              />
-              {/* Foreground Red HP Bar */}
-              <div
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-red-600 to-rose-500 transition-all duration-100 ease-out"
-                style={{ width: `${hpPercent}%` }}
-              />
-            </div>
+            {activeCounterBuff && (
+              <div className="pointer-events-auto flex items-center gap-1 rounded-lg border border-emerald-500/80 bg-emerald-950/90 px-2 py-0.5 text-[11px] font-bold text-emerald-300 shadow backdrop-blur-sm animate-pulse">
+                <ShieldCheck className="h-3 w-3 text-emerald-400 shrink-0" />
+                <span className="font-bangla">{activeCounterBuff.name}</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -242,6 +280,34 @@ export function HudOverlay() {
               label={{
                 bn: `জেনারেটর চালু করুন (${activeEvent.bypass?.costTaka ?? 50} ৳)`,
                 en: `Start Generator (${activeEvent.bypass?.costTaka ?? 50} ৳)`,
+              }}
+            />
+          </motion.div>
+        )}
+
+        {activeEvent?.type === "WATERLOGGING" && (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: [1, 1.03, 1], opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ scale: { repeat: Infinity, duration: 1.2 } }}
+            className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3 rounded-3xl border-4 border-sky-400 bg-slate-950/95 p-5 sm:p-6 text-center shadow-[0_0_60px_rgba(14,165,233,0.6)] backdrop-blur-md z-40 max-w-sm"
+          >
+            <div className="flex items-center gap-2 text-sky-300">
+              <Droplets className="h-7 w-7 fill-sky-300 animate-bounce" />
+              <span className="font-comic text-xl sm:text-2xl tracking-wider text-sky-300 uppercase">
+                রাস্তায় হাঁটু পানি!
+              </span>
+            </div>
+            <p className="font-bangla text-xs sm:text-sm font-bold text-slate-300">
+              জলাবদ্ধতায় স্পিড স্লো! ৬০ ৳ দিয়ে হুডতোলা রিকশা নিয়ে সহজে পার হন!
+            </p>
+            <BribeButton
+              eventId={activeEvent.id}
+              costTaka={activeEvent.bypass?.costTaka ?? 60}
+              label={{
+                bn: `হুডতোলা রিকশা নিন (${activeEvent.bypass?.costTaka ?? 60} ৳)`,
+                en: `Hire Rickshaw (${activeEvent.bypass?.costTaka ?? 60} ৳)`,
               }}
             />
           </motion.div>

@@ -100,12 +100,16 @@ export class CombatSystem {
 
       // Impact timing
       const delay = attackType === "kick" ? 140 : 90;
+      const slapWords = ["ঠাস!", "চড়াত!", "ফটাস!"];
+      const punchWords = ["ধুম!", "ধপাস!", "ঘ্যাচাং!"];
+      const kickWords = ["দড়াম!", "বোম!", "প্যাঁক!"];
+
       const comicWord =
         attackType === "slap"
-          ? "ঠাস!"
+          ? slapWords[Math.floor(Math.random() * slapWords.length)]
           : attackType === "punch"
-          ? "ধুম!"
-          : "দড়াম!";
+          ? punchWords[Math.floor(Math.random() * punchWords.length)]
+          : kickWords[Math.floor(Math.random() * kickWords.length)];
 
       this.scene.time.delayedCall(delay, () => {
         const hitX = this.villain.rig.x - 20;
@@ -180,7 +184,7 @@ export class CombatSystem {
     knockback: number;
   }) {
     // 1. Villain reactions
-    this.villain.hit(params.damage, params.knockback);
+    this.villain.hit(params.damage, params.knockback, params.isCrit);
 
     // 2. Visual & Sound FX
     this.fxSystem.triggerHitFx(

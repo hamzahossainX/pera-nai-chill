@@ -39,7 +39,12 @@ export class RunScene extends Phaser.Scene {
     // 3. Initialize FX, Combat, Spawn, Event & Difficulty Systems
     this.fxSystem = new FxSystem(this);
     this.difficultySystem = new DifficultySystem();
-    this.spawnSystem = new SpawnSystem(this, this.villain, this.fxSystem);
+    this.spawnSystem = new SpawnSystem(
+      this,
+      this.villain,
+      this.fxSystem,
+      this.chaser
+    );
     this.combatSystem = new CombatSystem(
       this,
       this.villain,
@@ -79,11 +84,21 @@ export class RunScene extends Phaser.Scene {
   }
 
   private handleVillainDead = () => {
+    // Comic Dramatic Slow-Mo Finisher!
+    this.time.timeScale = 0.25;
+    this.cameras.main.shake(350, 0.015);
+    this.cameras.main.zoomTo(1.08, 250);
+
+    this.time.delayedCall(700, () => {
+      this.time.timeScale = 1.0;
+      this.cameras.main.zoomTo(1.0, 250);
+    });
+
     this.villain.die();
     this.fxSystem.triggerHitFx(
       this.villain.rig.x,
       this.villain.rig.y - 40,
-      "ধরা খাইসে!",
+      "ফিনিশ! ধরা খাইসে!",
       0,
       true
     );

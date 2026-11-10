@@ -22,6 +22,12 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   private faceSprite!: Phaser.GameObjects.Sprite;
   private expressionSprite!: Phaser.GameObjects.Sprite;
 
+  // Comic Reactive Face Props
+  private propDizzyStars!: Phaser.GameObjects.Sprite;
+  private propBandAid!: Phaser.GameObjects.Sprite;
+  private propTears!: Phaser.GameObjects.Sprite;
+  private propShockedEyes!: Phaser.GameObjects.Sprite;
+
   // Limbs
   private backArmGroup!: Phaser.GameObjects.Container;
   private backArmUpper!: Phaser.GameObjects.Sprite;
@@ -163,7 +169,36 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       .setOrigin(0.5, 0.5)
       .setVisible(false);
 
-    this.headGroup.add([this.faceSprite, this.expressionSprite]);
+    // Comic Reaction Face Props
+    this.propDizzyStars = this.scene.add
+      .sprite(0, -42, "prop-dizzy-stars")
+      .setOrigin(0.5, 0.5)
+      .setVisible(false);
+
+    this.propBandAid = this.scene.add
+      .sprite(12, 10, "prop-band-aid")
+      .setOrigin(0.5, 0.5)
+      .setScale(0.8)
+      .setVisible(false);
+
+    this.propTears = this.scene.add
+      .sprite(0, 8, "prop-crying-tears")
+      .setOrigin(0.5, 0.5)
+      .setVisible(false);
+
+    this.propShockedEyes = this.scene.add
+      .sprite(0, -4, "prop-shocked-eyes")
+      .setOrigin(0.5, 0.5)
+      .setVisible(false);
+
+    this.headGroup.add([
+      this.faceSprite,
+      this.expressionSprite,
+      this.propShockedEyes,
+      this.propBandAid,
+      this.propTears,
+      this.propDizzyStars,
+    ]);
     this.add(this.headGroup);
 
     // Apply color styling
@@ -209,7 +244,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     }
   }
 
-  public triggerHitStun(knockbackX: number = 40) {
+  public triggerHitStun(knockbackX: number = 40, isCrit: boolean = false) {
     if (this.stateName === "DEAD") return;
 
     this.isHitStunned = true;
@@ -220,6 +255,23 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.torsoSprite.setTint(flashColor);
     this.faceSprite.setTint(flashColor);
     this.expressionSprite.setVisible(true);
+
+    // Show comic popped eyes or band-aid on big hit
+    if (isCrit || knockbackX >= 30) {
+      this.propShockedEyes.setVisible(true);
+      this.propBandAid.setVisible(true);
+      this.scene.time.delayedCall(450, () => {
+        if (this.stateName !== "DEAD") {
+          this.propShockedEyes.setVisible(false);
+          // Keep band-aid on for a bit longer as a funny battle scar
+          this.scene.time.delayedCall(1200, () => {
+            if (this.stateName !== "DEAD") {
+              this.propBandAid.setVisible(false);
+            }
+          });
+        }
+      });
+    }
 
     // Shock scale on Face
     this.scene.tweens.add({
@@ -257,6 +309,17 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     if (this.stateName === "DEAD") return;
     this.stateName = "DEAD";
     this.expressionSprite.setVisible(true);
+    this.propShockedEyes.setVisible(true);
+    this.propBandAid.setVisible(true);
+    this.propDizzyStars.setVisible(true);
+
+    // Spin dizzy stars around dead head
+    this.scene.tweens.add({
+      targets: this.propDizzyStars,
+      rotation: Math.PI * 6,
+      duration: 1200,
+      repeat: -1,
+    });
 
     this.scene.tweens.add({
       targets: this,
@@ -285,6 +348,22 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     });
 
     this.expressionSprite.setVisible(true);
+
+    // Comic Spinning Dizzy Stars orbiting above head during trip
+    this.propDizzyStars.setVisible(true);
+    this.propDizzyStars.rotation = 0;
+    this.scene.tweens.add({
+      targets: this.propDizzyStars,
+      rotation: Math.PI * 4,
+      duration: durationMs,
+      ease: "Linear",
+      onComplete: () => {
+        if (this.stateName !== "DEAD") {
+          this.propDizzyStars.setVisible(false);
+          this.propDizzyStars.rotation = 0;
+        }
+      },
+    });
 
     this.scene.time.delayedCall(durationMs, () => {
       if (this.stateName === "DEAD") return;

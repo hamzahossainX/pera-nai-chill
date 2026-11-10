@@ -225,3 +225,144 @@ export class SmogEffect {
     this.particles = [];
   }
 }
+
+export class WaterloggingEffect {
+  private scene: Phaser.Scene;
+  private villain: Villain;
+  private chaser: Chaser;
+
+  private waterTile!: Phaser.GameObjects.TileSprite;
+  private boats: Phaser.GameObjects.Sprite[] = [];
+  private splashTimer = 0;
+  public isActive = false;
+
+  constructor(scene: Phaser.Scene, villain: Villain, chaser: Chaser) {
+    this.scene = scene;
+    this.villain = villain;
+    this.chaser = chaser;
+  }
+
+  public activate(alpha: number = 0.6) {
+    if (this.isActive) return;
+    this.isActive = true;
+
+    const W = BALANCE.LOGICAL_WIDTH;
+
+    // Translucent flooded water layer on road
+    this.waterTile = this.scene.add
+      .tileSprite(0, 480, W, 240, "fx-water-layer")
+      .setOrigin(0, 0)
+      .setDepth(15)
+      .setAlpha(0);
+
+    this.scene.tweens.add({
+      targets: this.waterTile,
+      alpha,
+      duration: 400,
+      ease: "Quad.Out",
+    });
+
+    // Spawn 3 floating paper boats drifting in floodwater
+    for (let i = 0; i < 3; i++) {
+      const boat = this.scene.add
+        .sprite(
+          W * 0.4 + i * 360,
+          530 + (i % 3) * 45,
+          "prop-paper-boat"
+        )
+        .setDepth(16)
+        .setScale(0.9);
+
+      // Bobbing rocking motion on water
+      this.scene.tweens.add({
+        targets: boat,
+        y: boat.y - 6,
+        rotation: 0.1,
+        duration: 450 + i * 100,
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut",
+      });
+
+      this.boats.push(boat);
+    }
+
+    audioService.play("splash");
+  }
+
+  public update(_time: number, delta: number) {
+    if (!this.isActive) return;
+
+    const dt = delta * 0.001;
+    const W = BALANCE.LOGICAL_WIDTH;
+
+    // Scroll water surface ripples
+    if (this.waterTile) {
+      this.waterTile.tilePositionX += 280 * dt;
+    }
+
+    // Drift paper boats with water current
+    for (const boat of this.boats) {
+      boat.x -= 240 * dt;
+      if (boat.x < -60) {
+        boat.x = W + 60;
+        boat.y = 520 + Math.random() * 90;
+      }
+    }
+
+    // Splashes around runners' feet
+    this.splashTimer += delta;
+    if (this.splashTimer >= 1000) {
+      this.splashTimer = 0;
+      audioService.play("splash", { volume: 0.4 });
+
+      // Visual splash comic text
+      const splashText = this.scene.add
+        .text(
+          this.villain.rig.x - 10,
+          this.villain.rig.y + 10,
+          "ছলাৎ ছলাৎ!",
+          {
+            fontFamily: "var(--font-bangla), sans-serif",
+            fontSize: "16px",
+            color: "#38bdf8",
+            stroke: "#000000",
+            strokeThickness: 3,
+          }
+        )
+        .setOrigin(0.5, 0.5)
+        .setDepth(20);
+
+      this.scene.tweens.add({
+        targets: splashText,
+        y: splashText.y - 30,
+        alpha: 0,
+        duration: 500,
+        onComplete: () => splashText.destroy(),
+      });
+    }
+  }
+
+  public deactivate() {
+    if (!this.isActive) return;
+    this.isActive = false;
+
+    if (this.waterTile) {
+      this.scene.tweens.add({
+        targets: this.waterTile,
+        alpha: 0,
+        duration: 400,
+        ease: "Quad.Out",
+        onComplete: () => {
+          this.waterTile.destroy();
+        },
+      });
+    }
+
+    this.boats.forEach((b) => {
+      this.scene.tweens.killTweensOf(b);
+      b.destroy();
+    });
+    this.boats = [];
+  }
+}

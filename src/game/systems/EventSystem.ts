@@ -3,7 +3,7 @@ import { ParallaxSystem } from "@/game/systems/ParallaxSystem";
 import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { SpawnSystem } from "@/game/systems/SpawnSystem";
-import { BlackoutEffect, SmogEffect } from "@/game/fx";
+import { BlackoutEffect, SmogEffect, WaterloggingEffect } from "@/game/fx";
 import { eventService, WorldEvent } from "@/services/eventService";
 import { useGameStore } from "@/store/useGameStore";
 import { gameBus } from "@/game/bus";
@@ -22,6 +22,7 @@ export class EventSystem {
   // High-fidelity marquee visual effects
   private blackoutEffect: BlackoutEffect;
   private smogEffect: SmogEffect;
+  private waterloggingEffect: WaterloggingEffect;
 
   constructor(
     scene: Phaser.Scene,
@@ -35,6 +36,7 @@ export class EventSystem {
     this.spawnSystem = spawnSystem;
     this.blackoutEffect = new BlackoutEffect(scene, villain, chaser);
     this.smogEffect = new SmogEffect(scene, villain);
+    this.waterloggingEffect = new WaterloggingEffect(scene, villain, chaser);
 
     // Listen to external bus commands
     gameBus.on("event:trigger", this.handleForceEvent);
@@ -91,6 +93,10 @@ export class EventSystem {
         this.smogEffect.activate(effect.params?.alpha ?? 0.45);
       }
 
+      if (effect.kind === "overlay" && effect.name === "waterlogging") {
+        this.waterloggingEffect.activate(effect.params?.alpha ?? 0.6);
+      }
+
       if (effect.kind === "spawner" && effect.name === "crowd") {
         this.spawnSystem.setStrikeActive(true);
       }
@@ -121,6 +127,7 @@ export class EventSystem {
     // Deactivate marquee effects with 400ms smooth fade
     this.blackoutEffect.deactivate();
     this.smogEffect.deactivate();
+    this.waterloggingEffect.deactivate();
     this.spawnSystem.setStrikeActive(false);
 
     // Record Cooldown
@@ -141,6 +148,7 @@ export class EventSystem {
   public update(_time: number, delta: number) {
     // Update active visual effects
     this.smogEffect.update(_time, delta);
+    this.waterloggingEffect.update(_time, delta);
 
     // Tick active event duration
     if (this.activeEvent) {

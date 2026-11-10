@@ -273,6 +273,36 @@ class AudioService {
         break;
       }
 
+      case "splash":
+      case "sfx-splash": {
+        // Water splash noise synth
+        const bufferSize = ctx.sampleRate * 0.18;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = "bandpass";
+        filter.frequency.setValueAtTime(1200, now);
+        filter.frequency.exponentialRampToValueAtTime(250, now + 0.18);
+        filter.Q.value = 2.5;
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(baseVolume * 0.85, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start(now);
+        noise.onended = onEnd;
+        break;
+      }
+
       case "win": {
         // Major chord fanfare: C5 -> E5 -> G5 -> C6
         const notes = [523.25, 659.25, 783.99, 1046.5];

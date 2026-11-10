@@ -5,6 +5,7 @@ import { useGameStore } from "@/store/useGameStore";
 import { LoadingScreen } from "@/components/loading/LoadingScreen";
 import { FaceUploader } from "@/components/lobby/FaceUploader";
 import { VillainPreview } from "@/components/lobby/VillainPreview";
+import { MapSelector } from "@/components/lobby/MapSelector";
 import { WeaponSelector } from "@/components/lobby/WeaponSelector";
 import { SettingsSheet } from "@/components/lobby/SettingsSheet";
 import { GameHost } from "@/components/game/GameHost";
@@ -122,6 +123,8 @@ export function AppShell() {
               <FaceUploader />
               <VillainPreview />
             </div>
+
+            <MapSelector />
 
             <WeaponSelector />
           </main>

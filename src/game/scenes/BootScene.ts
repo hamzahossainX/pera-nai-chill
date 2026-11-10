@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { BALANCE } from "@/config/balance";
+import { MAP_SCENARIOS } from "@/config/maps";
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -564,5 +565,429 @@ export class BootScene extends Phaser.Scene {
 
       this.textures.addCanvas("obstacle-rickshaw", canvas);
     }
+
+    // 26. Scenario Maps: Sky & Near Buildings for Farmgate & New Market
+    if (!this.textures.exists("bg-sky-mirpur")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillGradientStyle(0x1e1b4b, 0x311042, 0xd97706, 0xf59e0b, 1);
+      g.fillRect(0, 0, BALANCE.LOGICAL_WIDTH, 500);
+      g.generateTexture("bg-sky-mirpur", BALANCE.LOGICAL_WIDTH, 500);
+      g.destroy();
+    }
+
+    if (!this.textures.exists("bg-sky-farmgate")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillGradientStyle(0x451a03, 0x78350f, 0xd97706, 0xfde047, 1);
+      g.fillRect(0, 0, BALANCE.LOGICAL_WIDTH, 500);
+      g.generateTexture("bg-sky-farmgate", BALANCE.LOGICAL_WIDTH, 500);
+      g.destroy();
+    }
+
+    if (!this.textures.exists("bg-sky-newmarket")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillGradientStyle(0x3b0764, 0x581c87, 0xc026d3, 0xf43f5e, 1);
+      g.fillRect(0, 0, BALANCE.LOGICAL_WIDTH, 500);
+      g.generateTexture("bg-sky-newmarket", BALANCE.LOGICAL_WIDTH, 500);
+      g.destroy();
+    }
+
+    // Near buildings for Farmgate
+    if (!this.textures.exists("bg-near-farmgate")) {
+      const farmgateMap = MAP_SCENARIOS.find((m) => m.id === "farmgate")!;
+      this.generateNearBuildingsTexture("bg-near-farmgate", farmgateMap.billboards, [
+        "#1c1917", "#292524", "#44403c", "#1e1b4b", "#312e81"
+      ]);
+    }
+
+    // Near buildings for New Market
+    if (!this.textures.exists("bg-near-newmarket")) {
+      const newmarketMap = MAP_SCENARIOS.find((m) => m.id === "newmarket")!;
+      this.generateNearBuildingsTexture("bg-near-newmarket", newmarketMap.billboards, [
+        "#3f1d38", "#1e1b4b", "#4a044e", "#172554", "#2e1065"
+      ]);
+    }
+
+    // 27. Comic Face Reaction Props (Dizzy Stars, Band-Aid, Anime Tears, Shocked Eyes)
+    if (!this.textures.exists("prop-dizzy-stars")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 80;
+      canvas.height = 40;
+      const ctx = canvas.getContext("2d")!;
+
+      // 3 golden cartoon stars on an elliptical path
+      const starPositions = [
+        { x: 16, y: 22, r: 8, col: "#facc15" },
+        { x: 40, y: 12, r: 11, col: "#fef08a" },
+        { x: 64, y: 22, r: 8, col: "#facc15" },
+      ];
+
+      starPositions.forEach((s) => {
+        ctx.fillStyle = s.col;
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+          const px = s.x + Math.cos(angle) * s.r;
+          const py = s.y + Math.sin(angle) * s.r;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+
+      // Sparkle dots
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(28, 28, 3, 0, Math.PI * 2);
+      ctx.arc(52, 28, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      this.textures.addCanvas("prop-dizzy-stars", canvas);
+    }
+
+    if (!this.textures.exists("prop-band-aid")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 48;
+      canvas.height = 48;
+      const ctx = canvas.getContext("2d")!;
+
+      // Cross band-aid (medical plaster)
+      ctx.fillStyle = "#fed7aa";
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+
+      // Diagonal strip 1
+      ctx.save();
+      ctx.translate(24, 24);
+      ctx.rotate(Math.PI / 4);
+      ctx.fillRect(-18, -6, 36, 12);
+      ctx.strokeRect(-18, -6, 36, 12);
+
+      // Diagonal strip 2
+      ctx.rotate(Math.PI / 2);
+      ctx.fillRect(-18, -6, 36, 12);
+      ctx.strokeRect(-18, -6, 36, 12);
+      ctx.restore();
+
+      // Plaster dots
+      ctx.fillStyle = "#ea580c";
+      ctx.beginPath();
+      ctx.arc(24, 24, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      this.textures.addCanvas("prop-band-aid", canvas);
+    }
+
+    if (!this.textures.exists("prop-crying-tears")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext("2d")!;
+
+      // Two anime crying tear waterfalls
+      [14, 50].forEach((tx) => {
+        ctx.fillStyle = "#38bdf8";
+        ctx.beginPath();
+        ctx.moveTo(tx - 6, 8);
+        ctx.bezierCurveTo(tx - 12, 24, tx - 10, 48, tx, 58);
+        ctx.bezierCurveTo(tx + 10, 48, tx + 12, 24, tx + 6, 8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = "#0284c7";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // White highlight
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(tx - 2, 28, 3, 0, Math.PI * 2);
+        ctx.arc(tx - 1, 44, 2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      this.textures.addCanvas("prop-crying-tears", canvas);
+    }
+
+    if (!this.textures.exists("prop-shocked-eyes")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 72;
+      canvas.height = 36;
+      const ctx = canvas.getContext("2d")!;
+
+      // Huge cartoon popped-out eyes
+      [20, 52].forEach((ex) => {
+        ctx.beginPath();
+        ctx.arc(ex, 18, 15, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 3.5;
+        ctx.stroke();
+
+        // Spiral pupil
+        ctx.beginPath();
+        ctx.arc(ex, 18, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "#dc2626";
+        ctx.fill();
+      });
+
+      this.textures.addCanvas("prop-shocked-eyes", canvas);
+    }
+
+    // 28. Monsoon Waterlogging & Pickups
+    if (!this.textures.exists("fx-water-layer")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = BALANCE.LOGICAL_WIDTH;
+      canvas.height = 200;
+      const ctx = canvas.getContext("2d")!;
+
+      // Translucent Dhaka rainwater flood
+      ctx.fillStyle = "rgba(14, 165, 233, 0.45)";
+      ctx.fillRect(0, 0, BALANCE.LOGICAL_WIDTH, 200);
+
+      // Wavy surface ripples
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.75)";
+      ctx.lineWidth = 3;
+      for (let y = 10; y < 190; y += 35) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        for (let x = 0; x <= BALANCE.LOGICAL_WIDTH; x += 40) {
+          ctx.lineTo(x, y + Math.sin(x * 0.08) * 4);
+        }
+        ctx.stroke();
+      }
+
+      this.textures.addCanvas("fx-water-layer", canvas);
+    }
+
+    if (!this.textures.exists("prop-paper-boat")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 44;
+      canvas.height = 30;
+      const ctx = canvas.getContext("2d")!;
+
+      // Origami Paper Boat (কাগজের নৌকা)
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.moveTo(4, 20);
+      ctx.lineTo(40, 20);
+      ctx.lineTo(34, 28);
+      ctx.lineTo(10, 28);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Folded sail
+      ctx.beginPath();
+      ctx.moveTo(22, 4);
+      ctx.lineTo(34, 20);
+      ctx.lineTo(10, 20);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Red mini flag on top
+      ctx.fillStyle = "#ef4444";
+      ctx.beginPath();
+      ctx.moveTo(22, 4);
+      ctx.lineTo(30, 8);
+      ctx.lineTo(22, 12);
+      ctx.closePath();
+      ctx.fill();
+
+      this.textures.addCanvas("prop-paper-boat", canvas);
+    }
+
+    // 29. Pickups: Fresh Daab & N95 Mask
+    if (!this.textures.exists("pickup-daab")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 46;
+      canvas.height = 46;
+      const ctx = canvas.getContext("2d")!;
+
+      // Green Coconut (তাজা ডাব)
+      ctx.beginPath();
+      ctx.arc(23, 25, 18, 0, Math.PI * 2);
+      ctx.fillStyle = "#15803d";
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+
+      // Coconut crown cut
+      ctx.fillStyle = "#86efac";
+      ctx.beginPath();
+      ctx.ellipse(23, 14, 10, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Drinking straw (Red & white stripe)
+      ctx.strokeStyle = "#ef4444";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(23, 14);
+      ctx.lineTo(34, 4);
+      ctx.stroke();
+
+      this.textures.addCanvas("pickup-daab", canvas);
+    }
+
+    if (!this.textures.exists("pickup-mask")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 44;
+      canvas.height = 36;
+      const ctx = canvas.getContext("2d")!;
+
+      // N95 Face Mask (মাস্ক)
+      ctx.fillStyle = "#f8fafc";
+      ctx.beginPath();
+      ctx.moveTo(8, 16);
+      ctx.lineTo(22, 6);
+      ctx.lineTo(36, 16);
+      ctx.lineTo(32, 28);
+      ctx.lineTo(12, 28);
+      ctx.closePath();
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+
+      // Breath valve (Cyan dot)
+      ctx.fillStyle = "#0284c7";
+      ctx.beginPath();
+      ctx.arc(22, 18, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Elastic ear loops
+      ctx.strokeStyle = "#64748b";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(8, 16);
+      ctx.bezierCurveTo(2, 22, 2, 26, 12, 28);
+      ctx.moveTo(36, 16);
+      ctx.bezierCurveTo(42, 22, 42, 26, 32, 28);
+      ctx.stroke();
+
+      this.textures.addCanvas("pickup-mask", canvas);
+    }
+
+    // 30. Obstacle: Mirpur Construction Pothole (গর্ত ও বাঁশের ব্যারিকেড)
+    if (!this.textures.exists("obstacle-pothole")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 120;
+      canvas.height = 80;
+      const ctx = canvas.getContext("2d")!;
+
+      // Dark hole in road
+      ctx.fillStyle = "#020617";
+      ctx.beginPath();
+      ctx.ellipse(60, 55, 48, 18, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#451a03";
+      ctx.stroke();
+
+      // Dug-up dirt mounds around hole
+      ctx.fillStyle = "#78350f";
+      ctx.beginPath();
+      ctx.arc(30, 48, 14, 0, Math.PI * 2);
+      ctx.arc(90, 48, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Red-white caution banner on bamboo stakes
+      ctx.fillStyle = "#fef08a";
+      ctx.fillRect(20, 10, 80, 22);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(20, 10, 80, 22);
+
+      // Warning text
+      ctx.fillStyle = "#dc2626";
+      ctx.font = "bold 9px 'Hind Siliguri', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("সাবধান! কাজ চলছে!", 60, 24);
+
+      // Bamboo legs
+      ctx.strokeStyle = "#ca8a04";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(28, 32);
+      ctx.lineTo(28, 55);
+      ctx.moveTo(92, 32);
+      ctx.lineTo(92, 55);
+      ctx.stroke();
+
+      this.textures.addCanvas("obstacle-pothole", canvas);
+    }
+  }
+
+  private generateNearBuildingsTexture(
+    key: string,
+    billboards: Array<{ main: string; sub: string; bg: string; fg: string }>,
+    buildingColors: string[]
+  ) {
+    const canvas = document.createElement("canvas");
+    canvas.width = BALANCE.LOGICAL_WIDTH;
+    canvas.height = 360;
+    const ctx = canvas.getContext("2d")!;
+
+    let bbIndex = 0;
+    for (let x = 0; x < BALANCE.LOGICAL_WIDTH; x += 130) {
+      const col = buildingColors[(x / 130) % buildingColors.length];
+      const h = 190 + ((x * 17) % 130);
+
+      // Building facade
+      ctx.fillStyle = col;
+      ctx.fillRect(x, 360 - h, 120, h);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(x, 360 - h, 120, h);
+
+      // Windows
+      ctx.fillStyle = (x % 260 === 0) ? "rgba(56, 189, 248, 0.7)" : "rgba(254, 240, 138, 0.75)";
+      for (let wy = 360 - h + 30; wy < 340; wy += 32) {
+        for (let wx = x + 16; wx < x + 105; wx += 28) {
+          ctx.fillRect(wx, wy, 16, 18);
+          ctx.strokeStyle = "#0f172a";
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(wx, wy, 16, 18);
+        }
+      }
+
+      // Authentic Dhaka Billboard
+      const bb = billboards[bbIndex % billboards.length];
+      bbIndex++;
+
+      const bbWidth = 110;
+      const bbHeight = 36;
+      const bbX = x + 5;
+      const bbY = 360 - h + 10;
+
+      ctx.fillStyle = bb.bg;
+      ctx.fillRect(bbX, bbY, bbWidth, bbHeight);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(bbX, bbY, bbWidth, bbHeight);
+
+      ctx.strokeStyle = bb.fg;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(bbX + 2, bbY + 2, bbWidth - 4, bbHeight - 4);
+
+      ctx.fillStyle = bb.fg;
+      ctx.font = "bold 10px 'Hind Siliguri', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(bb.main, bbX + bbWidth / 2, bbY + 16);
+
+      ctx.font = "bold 7px 'Luckiest Guy', Impact, sans-serif";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText(bb.sub, bbX + bbWidth / 2, bbY + 28);
+    }
+
+    this.textures.addCanvas(key, canvas);
   }
 }

@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { BALANCE } from "@/config/balance";
 import { DEFAULT_VILLAIN } from "@/config/villains";
+import { DEFAULT_CRIME } from "@/config/crimes";
+import { DEFAULT_MAP } from "@/config/maps";
 import { WorldEvent } from "@/services/eventService";
 import { gameBus } from "@/game/bus";
 
@@ -33,6 +35,8 @@ export interface GameState {
   targetFaceUrl: string | null;
   targetName: string;
   villainId: string;
+  crimeId: string;
+  currentMapId: "mirpur" | "farmgate" | "newmarket";
 
   // Combat status
   villainHp: number;
@@ -42,6 +46,7 @@ export interface GameState {
   combo: number;
   taka: number;
   stamina: number; // 0..100
+  activeCounterBuff: { name: string; expiry: number } | null;
 
   // Event runtime
   activeEvent: WorldEvent | null;
@@ -58,6 +63,10 @@ export interface GameState {
   setTargetFace: (url: string | null) => void;
   setTargetName: (name: string) => void;
   setVillainId: (id: string) => void;
+  setCrimeId: (id: string) => void;
+  setMapId: (id: "mirpur" | "farmgate" | "newmarket") => void;
+  setCounterBuff: (name: string, durationSec: number) => void;
+  clearCounterBuff: () => void;
   startGame: () => void;
   inflictDamage: (amount: number) => void;
   addRage: (amount: number) => void;
@@ -94,6 +103,8 @@ export const useGameStore = create<GameState>()(
     targetFaceUrl: null,
     targetName: DEFAULT_VILLAIN.name.bn,
     villainId: DEFAULT_VILLAIN.id,
+    crimeId: DEFAULT_CRIME.id,
+    currentMapId: DEFAULT_MAP.id,
 
     villainHp: BALANCE.INITIAL_VILLAIN_HP,
     villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
@@ -102,6 +113,7 @@ export const useGameStore = create<GameState>()(
     combo: 0,
     taka: BALANCE.INITIAL_TAKA,
     stamina: BALANCE.INITIAL_STAMINA,
+    activeCounterBuff: null,
 
     activeEvent: null,
     eventTimeLeft: 0,
@@ -146,6 +158,16 @@ export const useGameStore = create<GameState>()(
     setTargetFace: (url) => set({ targetFaceUrl: url }),
     setTargetName: (name) => set({ targetName: name }),
     setVillainId: (id) => set({ villainId: id }),
+    setCrimeId: (id) => set({ crimeId: id }),
+    setMapId: (id) => set({ currentMapId: id }),
+    setCounterBuff: (name, durationSec) =>
+      set({
+        activeCounterBuff: {
+          name,
+          expiry: Date.now() + durationSec * 1000,
+        },
+      }),
+    clearCounterBuff: () => set({ activeCounterBuff: null }),
 
     startGame: () =>
       set({
@@ -155,6 +177,7 @@ export const useGameStore = create<GameState>()(
         rage: 0,
         combo: 0,
         stamina: BALANCE.INITIAL_STAMINA,
+        activeCounterBuff: null,
         activeEvent: null,
         eventTimeLeft: 0,
       }),
@@ -240,6 +263,7 @@ export const useGameStore = create<GameState>()(
         combo: 0,
         taka: BALANCE.INITIAL_TAKA,
         stamina: BALANCE.INITIAL_STAMINA,
+        activeCounterBuff: null,
         activeEvent: null,
         eventTimeLeft: 0,
       }),

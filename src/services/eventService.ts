@@ -27,7 +27,7 @@ export type EventBypass = z.infer<typeof BypassSchema>;
 
 export const WorldEventSchema = z.object({
   id: z.string(),
-  type: z.enum(["LOADSHEDDING", "POLLUTION", "STRIKE"]),
+  type: z.enum(["LOADSHEDDING", "POLLUTION", "STRIKE", "WATERLOGGING"]),
   title: LocalizedTextSchema,
   ticker: LocalizedTextSchema,
   description: LocalizedTextSchema,
