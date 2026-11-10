@@ -4,6 +4,7 @@ import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { FxSystem } from "@/game/systems/FxSystem";
 import { CombatSystem } from "@/game/systems/CombatSystem";
+import { EventSystem } from "@/game/systems/EventSystem";
 import { BALANCE } from "@/config/balance";
 import { gameBus } from "@/game/bus";
 
@@ -13,6 +14,7 @@ export class RunScene extends Phaser.Scene {
   public chaser!: Chaser;
   private fxSystem!: FxSystem;
   private combatSystem!: CombatSystem;
+  private eventSystem!: EventSystem;
 
   private isPaused = false;
   private runSpeed = BALANCE.BASE_RUN_SPEED;
@@ -29,7 +31,7 @@ export class RunScene extends Phaser.Scene {
     this.chaser = new Chaser(this);
     this.villain = new Villain(this);
 
-    // 3. Initialize FX & Combat Systems
+    // 3. Initialize FX, Combat & Event Systems
     this.fxSystem = new FxSystem(this);
     this.combatSystem = new CombatSystem(
       this,
@@ -37,6 +39,7 @@ export class RunScene extends Phaser.Scene {
       this.chaser,
       this.fxSystem
     );
+    this.eventSystem = new EventSystem(this, this.parallaxSystem);
 
     // 4. Camera Configuration
     this.cameras.main.setBounds(0, 0, BALANCE.LOGICAL_WIDTH, BALANCE.LOGICAL_HEIGHT);
@@ -50,6 +53,7 @@ export class RunScene extends Phaser.Scene {
       gameBus.off("game:pause", this.handlePause);
       gameBus.off("game:restart", this.handleRestart);
       this.combatSystem.destroy();
+      this.eventSystem.destroy();
     });
   }
 
@@ -76,6 +80,7 @@ export class RunScene extends Phaser.Scene {
     this.villain.update(time, delta);
     this.chaser.update(time, delta);
     this.combatSystem.update(time, delta);
+    this.eventSystem.update(time, delta);
 
     // Keep chaser following villain's lane smoothly
     this.chaser.followLane(this.villain.currentLane);

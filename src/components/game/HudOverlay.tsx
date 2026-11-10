@@ -15,6 +15,7 @@ import {
   Home,
   Flame,
 } from "lucide-react";
+import { EventBanner } from "@/components/game/EventBanner";
 
 export function HudOverlay() {
   const {
@@ -133,6 +134,11 @@ export function HudOverlay() {
               />
             </div>
           </div>
+        </div>
+
+        {/* Top-Center: World Event Banner */}
+        <div className="flex justify-center flex-1 px-2">
+          <EventBanner />
         </div>
 
         {/* Top-Right: Sound & Pause Controls */}
