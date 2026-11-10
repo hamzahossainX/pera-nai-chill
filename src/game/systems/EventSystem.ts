@@ -38,14 +38,20 @@ export class EventSystem {
 
     // Listen to external bus commands
     gameBus.on("event:trigger", this.handleForceEvent);
+    gameBus.on("event:clear", this.handleClearEvent);
     gameBus.on("event:bribe", this.handleBribe);
   }
 
   public destroy() {
     gameBus.off("event:trigger", this.handleForceEvent);
+    gameBus.off("event:clear", this.handleClearEvent);
     gameBus.off("event:bribe", this.handleBribe);
     this.clearCurrentEvent();
   }
+
+  private handleClearEvent = () => {
+    this.clearCurrentEvent();
+  };
 
   private handleForceEvent = (data: { eventId: string }) => {
     const event = eventService.getEventById(data.eventId);

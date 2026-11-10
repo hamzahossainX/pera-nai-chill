@@ -32,10 +32,21 @@ export function HudOverlay() {
     startGame,
     settings,
     updateSettings,
+    setDebugOpen,
   } = useGameStore();
 
   const [isPaused, setIsPaused] = useState(false);
   const [lagHp, setLagHp] = useState(villainHp);
+  const tapCountRef = React.useRef(0);
+
+  const handleAvatarTap = () => {
+    tapCountRef.current += 1;
+    if (tapCountRef.current >= 5) {
+      tapCountRef.current = 0;
+      setDebugOpen(true);
+      audioService.play("coin");
+    }
+  };
 
   // Stamina Auto-Regeneration: recovers in background
   useEffect(() => {
@@ -96,7 +107,11 @@ export function HudOverlay() {
       {/* Top Header Bar */}
       <div className="flex items-start justify-between w-full">
         {/* Top-Left: Target Avatar & HP Bar */}
-        <div className="pointer-events-auto flex items-center gap-3 rounded-2xl border-2 border-black/80 bg-slate-900/80 p-2.5 shadow-xl backdrop-blur-md">
+        <div
+          onClick={handleAvatarTap}
+          className="pointer-events-auto flex items-center gap-3 rounded-2xl border-2 border-black/80 bg-slate-900/80 p-2.5 shadow-xl backdrop-blur-md cursor-pointer active:scale-95 transition-transform"
+          title="Tap 5 times to open debug god mode"
+        >
           {/* Face Thumbnail */}
           <div className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-full border-2 border-yellow-400 bg-slate-800 shadow-md">
             {targetFaceUrl ? (

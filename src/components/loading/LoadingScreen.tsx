@@ -115,6 +115,11 @@ export function LoadingScreen() {
       try {
         localStorage.setItem("pernaichill_hasSeenIntro", "true");
       } catch {}
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("demo") === "1") {
+        setScreen("PLAYING");
+        return;
+      }
     }
     setScreen("LOBBY");
   };

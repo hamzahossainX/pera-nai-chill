@@ -176,6 +176,10 @@ class FaceService {
     return canvas.toDataURL("image/png");
   }
 
+  public generateDefaultCaricature(): string {
+    return this.generateDefaultFunnyFace();
+  }
+
   public generateDefaultFunnyFace(): string {
     const canvas = document.createElement("canvas");
     canvas.width = 256;

@@ -21,6 +21,7 @@ export class RunScene extends Phaser.Scene {
   public difficultySystem!: DifficultySystem;
 
   private isPaused = false;
+  private lastFpsReport = 0;
 
   constructor() {
     super({ key: "RunScene" });
@@ -58,17 +59,30 @@ export class RunScene extends Phaser.Scene {
     // 5. Setup Event Listeners from React UI Bus
     gameBus.on("game:pause", this.handlePause);
     gameBus.on("game:restart", this.handleRestart);
+    gameBus.on("debug:spawnObstacle", this.handleDebugSpawnObstacle);
+    gameBus.on("debug:timeScale", this.handleDebugTimeScale);
 
     // Clean up bus listeners on scene shutdown
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       gameBus.off("game:pause", this.handlePause);
       gameBus.off("game:restart", this.handleRestart);
+      gameBus.off("debug:spawnObstacle", this.handleDebugSpawnObstacle);
+      gameBus.off("debug:timeScale", this.handleDebugTimeScale);
       this.combatSystem.destroy();
       this.eventSystem.destroy();
       this.spawnSystem.clearAll();
       this.difficultySystem.reset();
     });
   }
+
+  private handleDebugSpawnObstacle = () => {
+    this.spawnSystem.spawnObstacle();
+  };
+
+  private handleDebugTimeScale = (data: { scale: number }) => {
+    this.time.timeScale = Math.max(0.05, Math.min(3.0, data.scale));
+    this.physics.world.timeScale = Math.max(0.05, Math.min(3.0, data.scale));
+  };
 
   private handlePause = (data: { paused: boolean }) => {
     this.isPaused = data.paused;
@@ -103,5 +117,11 @@ export class RunScene extends Phaser.Scene {
 
     // Keep chaser following villain's lane smoothly
     this.chaser.followLane(this.villain.currentLane);
+
+    // Periodically report actual FPS
+    if (time - this.lastFpsReport > 500) {
+      this.lastFpsReport = time;
+      gameBus.emit("fps:update", { fps: Math.round(this.game.loop.actualFps) });
+    }
   }
 }

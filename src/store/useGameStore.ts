@@ -48,6 +48,8 @@ export interface GameState {
 
   // User Settings
   settings: GameSettings;
+  isDebugOpen: boolean;
+  isDemoMode: boolean;
 
   // Actions
   setScreen: (screen: GameScreen) => void;
@@ -59,6 +61,8 @@ export interface GameState {
   inflictDamage: (amount: number) => void;
   addRage: (amount: number) => void;
   resetRage: () => void;
+  fillRage: () => void;
+  killVillain: () => void;
   incrementCombo: () => void;
   resetCombo: () => void;
   addTaka: (amount: number) => void;
@@ -69,6 +73,9 @@ export interface GameState {
   decrementEventTimer: (delta: number) => void;
   resetRun: () => void;
   updateSettings: (partial: Partial<GameSettings>) => void;
+  setDebugOpen: (open: boolean) => void;
+  toggleDebug: () => void;
+  setDemoMode: (active: boolean) => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -105,6 +112,9 @@ export const useGameStore = create<GameState>()(
       lang: "bn",
       reducedMotion: false,
     },
+
+    isDebugOpen: false,
+    isDemoMode: false,
 
     setScreen: (screen) => set({ screen }),
 
@@ -165,6 +175,13 @@ export const useGameStore = create<GameState>()(
     },
 
     resetRage: () => set({ rage: 0 }),
+    fillRage: () => set({ rage: BALANCE.MAX_RAGE }),
+    killVillain: () => {
+      const hp = get().villainHp;
+      if (hp > 0) {
+        get().inflictDamage(hp);
+      }
+    },
 
     incrementCombo: () => {
       const next = get().combo + 1;
@@ -221,5 +238,9 @@ export const useGameStore = create<GameState>()(
 
     updateSettings: (partial) =>
       set((state) => ({ settings: { ...state.settings, ...partial } })),
+
+    setDebugOpen: (open) => set({ isDebugOpen: open }),
+    toggleDebug: () => set((state) => ({ isDebugOpen: !state.isDebugOpen })),
+    setDemoMode: (active) => set({ isDemoMode: active }),
   }))
 );

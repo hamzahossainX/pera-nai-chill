@@ -4,9 +4,13 @@ export type GameEventTypes = {
   // UI -> Game
   "weapon:use": { weaponId: string; timestamp: number };
   "event:trigger": { eventId: string };
+  "event:clear": void;
   "event:bribe": { eventId: string };
   "game:pause": { paused: boolean };
   "game:restart": void;
+  "debug:spawnObstacle": void;
+  "debug:spawnPickup": { type?: string };
+  "debug:timeScale": { scale: number };
 
   // Game -> UI
   "hit": {
@@ -22,6 +26,7 @@ export type GameEventTypes = {
   "event:ended": { eventId: string };
   "loader:progress": { progress: number; task: string };
   "villain:laneChange": { lane: number };
+  "fps:update": { fps: number };
 };
 
 export const gameBus: Emitter<GameEventTypes> = mitt<GameEventTypes>();
