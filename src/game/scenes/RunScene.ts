@@ -39,7 +39,12 @@ export class RunScene extends Phaser.Scene {
       this.chaser,
       this.fxSystem
     );
-    this.eventSystem = new EventSystem(this, this.parallaxSystem);
+    this.eventSystem = new EventSystem(
+      this,
+      this.parallaxSystem,
+      this.villain,
+      this.chaser
+    );
 
     // 4. Camera Configuration
     this.cameras.main.setBounds(0, 0, BALANCE.LOGICAL_WIDTH, BALANCE.LOGICAL_HEIGHT);

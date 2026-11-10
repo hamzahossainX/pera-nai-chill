@@ -1,5 +1,8 @@
 import Phaser from "phaser";
 import { ParallaxSystem } from "@/game/systems/ParallaxSystem";
+import { Villain } from "@/game/entities/Villain";
+import { Chaser } from "@/game/entities/Chaser";
+import { BlackoutEffect, SmogEffect } from "@/game/fx";
 import { eventService, WorldEvent } from "@/services/eventService";
 import { useGameStore } from "@/store/useGameStore";
 import { gameBus } from "@/game/bus";
@@ -14,13 +17,20 @@ export class EventSystem {
   private nextEventTimer = 25000; // ms
   private cooldowns: Record<string, number> = {};
 
-  // Visual overlay placeholders for events
-  private blackoutOverlay?: Phaser.GameObjects.Rectangle;
-  private smogOverlay?: Phaser.GameObjects.Rectangle;
+  // High-fidelity marquee visual effects
+  private blackoutEffect: BlackoutEffect;
+  private smogEffect: SmogEffect;
 
-  constructor(scene: Phaser.Scene, parallaxSystem: ParallaxSystem) {
+  constructor(
+    scene: Phaser.Scene,
+    parallaxSystem: ParallaxSystem,
+    villain: Villain,
+    chaser: Chaser
+  ) {
     this.scene = scene;
     this.parallaxSystem = parallaxSystem;
+    this.blackoutEffect = new BlackoutEffect(scene, villain, chaser);
+    this.smogEffect = new SmogEffect(scene, villain);
 
     // Listen to external bus commands
     gameBus.on("event:trigger", this.handleForceEvent);
@@ -63,11 +73,11 @@ export class EventSystem {
       }
 
       if (effect.kind === "overlay" && effect.name === "blackout") {
-        this.applyBlackout(effect.params?.alpha ?? 0.92);
+        this.blackoutEffect.activate(effect.params?.alpha ?? 0.94);
       }
 
       if (effect.kind === "overlay" && effect.name === "smog") {
-        this.applySmog(effect.params?.alpha ?? 0.45);
+        this.smogEffect.activate(effect.params?.alpha ?? 0.45);
       }
 
       if (effect.kind === "sfx" && effect.name) {
@@ -90,18 +100,12 @@ export class EventSystem {
 
     const eventId = this.activeEvent.id;
 
-    // Revert Speed Modifiers
+    // Revert Speed Modifiers to 1.0 (baseline)
     this.parallaxSystem.speedMultiplier = 1.0;
 
-    // Remove Overlays
-    if (this.blackoutOverlay) {
-      this.blackoutOverlay.destroy();
-      this.blackoutOverlay = undefined;
-    }
-    if (this.smogOverlay) {
-      this.smogOverlay.destroy();
-      this.smogOverlay = undefined;
-    }
+    // Deactivate marquee effects with 400ms smooth fade
+    this.blackoutEffect.deactivate();
+    this.smogEffect.deactivate();
 
     // Record Cooldown
     this.cooldowns[eventId] = this.activeEvent.cooldownSec * 1000;
@@ -117,25 +121,10 @@ export class EventSystem {
     gameBus.emit("event:ended", { eventId });
   }
 
-  private applyBlackout(alpha: number) {
-    const W = this.scene.cameras.main.width;
-    const H = this.scene.cameras.main.height;
-    this.blackoutOverlay = this.scene.add
-      .rectangle(0, 0, W, H, 0x000000, alpha)
-      .setOrigin(0, 0)
-      .setDepth(90);
-  }
-
-  private applySmog(alpha: number) {
-    const W = this.scene.cameras.main.width;
-    const H = this.scene.cameras.main.height;
-    this.smogOverlay = this.scene.add
-      .rectangle(0, 0, W, H, 0x78716c, alpha)
-      .setOrigin(0, 0)
-      .setDepth(85);
-  }
-
   public update(_time: number, delta: number) {
+    // Update active visual effects
+    this.smogEffect.update(_time, delta);
+
     // Tick active event duration
     if (this.activeEvent) {
       this.eventTimeLeft -= delta;
