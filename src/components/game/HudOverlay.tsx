@@ -14,6 +14,8 @@ import {
   RotateCcw,
   Home,
   Flame,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { EventBanner } from "@/components/game/EventBanner";
 
@@ -37,7 +39,27 @@ export function HudOverlay() {
 
   const [isPaused, setIsPaused] = useState(false);
   const [lagHp, setLagHp] = useState(villainHp);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const tapCountRef = React.useRef(0);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    audioService.play("click");
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
 
   const handleAvatarTap = () => {
     tapCountRef.current += 1;
@@ -156,8 +178,20 @@ export function HudOverlay() {
           <EventBanner />
         </div>
 
-        {/* Top-Right: Sound & Pause Controls */}
+        {/* Top-Right: Sound, Fullscreen & Pause Controls */}
         <div className="pointer-events-auto flex items-center gap-2">
+          <button
+            onClick={toggleFullscreen}
+            className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-slate-900/80 text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"
+            title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+          >
+            {isFullscreen ? (
+              <Minimize2 className="h-5 w-5" />
+            ) : (
+              <Maximize2 className="h-5 w-5" />
+            )}
+          </button>
+
           <button
             onClick={handleSoundToggle}
             className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-slate-900/80 text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"

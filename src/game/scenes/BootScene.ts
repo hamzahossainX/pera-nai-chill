@@ -38,30 +38,80 @@ export class BootScene extends Phaser.Scene {
       g.destroy();
     }
 
-    // 3. Near Buildings & Colorful Billboards (1280 x 360)
+    // 3. Near Buildings & Authentic Dhaka Billboards (1280 x 360)
     if (!this.textures.exists("bg-near-buildings")) {
-      const g = this.make.graphics({ x: 0, y: 0 });
-      const buildingColors = [0x334155, 0x1e293b, 0x475569, 0x0f172a];
-      for (let x = 0; x < BALANCE.LOGICAL_WIDTH; x += 110) {
-        const col = buildingColors[(x / 110) % buildingColors.length];
-        const h = 180 + ((x * 13) % 120);
-        g.fillStyle(col, 1);
-        g.fillRect(x, 360 - h, 102, h);
+      const canvas = document.createElement("canvas");
+      canvas.width = BALANCE.LOGICAL_WIDTH;
+      canvas.height = 360;
+      const ctx = canvas.getContext("2d")!;
 
-        // Windows
-        g.fillStyle(0xfef08a, 0.7);
-        for (let wy = 360 - h + 20; wy < 340; wy += 30) {
-          for (let wx = x + 15; wx < x + 90; wx += 25) {
-            g.fillRect(wx, wy, 14, 18);
+      const buildingColors = ["#1e293b", "#0f172a", "#334155", "#1e1b4b", "#172554"];
+      const billboards = [
+        { main: "মিরপুর ১০ মেট্রো", sub: "MIRPUR 10 MRT", bg: "#0284c7", fg: "#ffffff" },
+        { main: "সাউথইস্ট ইউনিভার্সিটি", sub: "SOUTHEAST UNI", bg: "#047857", fg: "#fef08a" },
+        { main: "মিরপুর ১২ বাস স্ট্যান্ড", sub: "MIRPUR 12 STAND", bg: "#b91c1c", fg: "#ffffff" },
+        { main: "কাচ্চি ভাই বিরিয়ানি", sub: "KACCHI BHAI", bg: "#d97706", fg: "#ffffff" },
+        { main: "বাটার অরিজিনাল জুতো", sub: "BATA SHOES", bg: "#dc2626", fg: "#ffffff" },
+        { main: "লোডশেডিং স্পেশাল আইপিএস", sub: "IPS BATTERY", bg: "#4f46e5", fg: "#fef08a" },
+        { main: "প্যারা নাই চিল টি স্টল", sub: "PERA NAI CHILL", bg: "#e11d48", fg: "#ffffff" },
+      ];
+
+      let bbIndex = 0;
+      for (let x = 0; x < BALANCE.LOGICAL_WIDTH; x += 130) {
+        const col = buildingColors[(x / 130) % buildingColors.length];
+        const h = 190 + ((x * 17) % 130);
+        
+        // Building facade
+        ctx.fillStyle = col;
+        ctx.fillRect(x, 360 - h, 120, h);
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x, 360 - h, 120, h);
+
+        // Windows (glowing yellow/cyan)
+        ctx.fillStyle = (x % 260 === 0) ? "rgba(56, 189, 248, 0.7)" : "rgba(254, 240, 138, 0.75)";
+        for (let wy = 360 - h + 30; wy < 340; wy += 32) {
+          for (let wx = x + 16; wx < x + 105; wx += 28) {
+            ctx.fillRect(wx, wy, 16, 18);
+            ctx.strokeStyle = "#0f172a";
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(wx, wy, 16, 18);
           }
         }
 
-        // Colorful Dhaka Neon Signboards
-        g.fillStyle(0xef4444, 1);
-        g.fillRect(x + 10, 360 - h + 10, 80, 14);
+        // Authentic Dhaka Illuminated Neon Billboard
+        const bb = billboards[bbIndex % billboards.length];
+        bbIndex++;
+
+        const bbWidth = 110;
+        const bbHeight = 36;
+        const bbX = x + 5;
+        const bbY = 360 - h + 10;
+
+        // Sign background with thick black outline
+        ctx.fillStyle = bb.bg;
+        ctx.fillRect(bbX, bbY, bbWidth, bbHeight);
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(bbX, bbY, bbWidth, bbHeight);
+
+        // Inner glowing border
+        ctx.strokeStyle = bb.fg;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(bbX + 2, bbY + 2, bbWidth - 4, bbHeight - 4);
+
+        // Text rendering
+        ctx.fillStyle = bb.fg;
+        ctx.font = "bold 10px 'Hind Siliguri', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(bb.main, bbX + bbWidth / 2, bbY + 16);
+
+        ctx.font = "bold 7px 'Luckiest Guy', Impact, sans-serif";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(bb.sub, bbX + bbWidth / 2, bbY + 28);
       }
-      g.generateTexture("bg-near-buildings", BALANCE.LOGICAL_WIDTH, 360);
-      g.destroy();
+
+      this.textures.addCanvas("bg-near-buildings", canvas);
     }
 
     // 4. Dhaka 3-Lane Asphalt Road (1280 x 280)
@@ -120,6 +170,15 @@ export class BootScene extends Phaser.Scene {
         g.lineTo(x, 60 + Math.abs(sag));
       }
       g.strokePath();
+
+      // Tangled colorful paper kite (ঘুড়ি) stuck in the electric wires
+      g.fillStyle(0xef4444, 1);
+      g.fillTriangle(480, 55, 505, 38, 505, 72);
+      g.fillStyle(0xfacc15, 1);
+      g.fillTriangle(530, 55, 505, 38, 505, 72);
+      g.lineStyle(1.5, 0x000000, 1);
+      g.strokeTriangle(480, 55, 505, 38, 505, 72);
+      g.strokeTriangle(530, 55, 505, 38, 505, 72);
 
       g.generateTexture("bg-wires", BALANCE.LOGICAL_WIDTH, 150);
       g.destroy();
