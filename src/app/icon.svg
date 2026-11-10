@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#ea580c" />
+      <stop offset="100%" stop-color="#dc2626" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="8" flood-color="#000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded rectangle -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" />
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="#000000" stroke-width="16" />
+
+  <!-- Action rays -->
+  <path d="M256 32 L270 120 L242 120 Z" fill="#fef08a" opacity="0.6" />
+  <path d="M480 256 L392 270 L392 242 Z" fill="#fef08a" opacity="0.6" />
+  <path d="M256 480 L242 392 L270 392 Z" fill="#fef08a" opacity="0.6" />
+  <path d="M32 256 L120 242 L120 270 Z" fill="#fef08a" opacity="0.6" />
+  <path d="M414 98 L340 160 L320 140 Z" fill="#fef08a" opacity="0.6" />
+  <path d="M98 414 L172 352 L192 372 Z" fill="#fef08a" opacity="0.6" />
+
+  <!-- Chappal (Flying Bengali Slipper) -->
+  <g transform="translate(256, 256) rotate(-28) translate(-140, -200)" filter="url(#shadow)">
+    <!-- Sole Outer Shadow / Outline -->
+    <path d="M80 60 C140 30, 210 50, 220 120 C230 190, 180 240, 190 320 C200 390, 160 420, 110 420 C60 420, 30 380, 40 310 C50 230, 20 180, 30 110 C40 50, 60 70, 80 60 Z"
+          fill="#000000" />
+    
+    <!-- Sole Foam Base -->
+    <path d="M80 68 C135 40, 200 58, 210 122 C220 188, 172 238, 182 315 C190 380, 155 410, 110 410 C68 410, 40 372, 48 308 C58 232, 28 185, 38 118 C46 62, 65 76, 80 68 Z"
+          fill="#38bdf8" />
+
+    <!-- Sole Top Rubber Insole (Bright Yellow with Truck Art Dots) -->
+    <path d="M82 82 C130 58, 190 72, 198 128 C206 186, 162 232, 172 305 C180 366, 148 396, 110 396 C74 396, 50 362, 58 302 C66 232, 38 190, 48 128 C54 78, 70 88, 82 82 Z"
+          fill="#facc15" stroke="#000000" stroke-width="8" />
+
+    <!-- Insole Decorative Dots -->
+    <circle cx="120" cy="140" r="12" fill="#ef4444" />
+    <circle cx="120" cy="180" r="10" fill="#3b82f6" />
+    <circle cx="118" cy="220" r="10" fill="#10b981" />
+    <circle cx="116" cy="260" r="10" fill="#ec4899" />
+    <circle cx="114" cy="300" r="12" fill="#ef4444" />
+
+    <!-- V-Strap (Thong) -->
+    <!-- Toe post -->
+    <circle cx="122" cy="115" r="14" fill="#000000" />
+    <circle cx="122" cy="115" r="9" fill="#f97316" />
+
+    <!-- Left Strap -->
+    <path d="M122 115 Q75 160 45 220" fill="none" stroke="#000000" stroke-width="26" stroke-linecap="round" />
+    <path d="M122 115 Q75 160 45 220" fill="none" stroke="#ef4444" stroke-width="16" stroke-linecap="round" />
+
+    <!-- Right Strap -->
+    <path d="M122 115 Q155 160 178 220" fill="none" stroke="#000000" stroke-width="26" stroke-linecap="round" />
+    <path d="M122 115 Q155 160 178 220" fill="none" stroke="#ef4444" stroke-width="16" stroke-linecap="round" />
+  </g>
+
+  <!-- Comic Action Star in foreground -->
+  <g transform="translate(380, 140) rotate(15)">
+    <polygon points="0,-40 12,-12 40,-12 18,6 26,34 0,18 -26,34 -18,6 -40,-12 -12,-12"
+             fill="#ffffff" stroke="#000000" stroke-width="6" />
+  </g>
+</svg>

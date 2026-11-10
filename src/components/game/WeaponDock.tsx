@@ -12,9 +12,35 @@ export function WeaponDock() {
 
   // Track remaining cooldowns in ms for each weapon
   const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
+  const [showTutorial, setShowTutorial] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return localStorage.getItem("pernaichill_hasSeenWeaponTutorial") !== "true";
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    if (showTutorial) {
+      const timer = setTimeout(() => {
+        setShowTutorial(false);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [showTutorial]);
 
   const triggerWeapon = useCallback(
     (weapon: WeaponConfig) => {
+      setShowTutorial((prev) => {
+        if (prev) {
+          try {
+            localStorage.setItem("pernaichill_hasSeenWeaponTutorial", "true");
+          } catch {}
+          return false;
+        }
+        return prev;
+      });
       // Check cooldown
       if ((cooldowns[weapon.id] ?? 0) > 0) return;
 
@@ -114,6 +140,23 @@ export function WeaponDock() {
               ULTIMATE: CHAPPAL STORM! [SPACE]
             </span>
           </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* First-time Tutorial Callout */}
+      <AnimatePresence>
+        {showTutorial && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: [0, -6, 0] }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ y: { repeat: Infinity, duration: 1, ease: "easeInOut" } }}
+            className="flex items-center gap-1.5 rounded-full border-2 border-black bg-yellow-400 px-4 py-1.5 text-xs font-bold text-black shadow-lg"
+          >
+            <span className="font-bangla">জুতা ছুড়ে মারুন!</span>
+            <span className="font-comic">(TAP CHAPPAL!)</span>
+            <span>👇</span>
+          </motion.div>
         )}
       </AnimatePresence>
 
