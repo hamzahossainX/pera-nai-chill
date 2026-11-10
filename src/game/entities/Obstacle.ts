@@ -1,7 +1,12 @@
 import Phaser from "phaser";
 import { BALANCE } from "@/config/balance";
 
-export type ObstacleType = "barricade" | "tire-fire" | "brick";
+export type ObstacleType =
+  | "barricade"
+  | "tire-fire"
+  | "brick"
+  | "crowd"
+  | "rickshaw";
 
 export interface ObstacleOptions {
   scene: Phaser.Scene;
@@ -33,6 +38,10 @@ export class Obstacle extends Phaser.GameObjects.Sprite {
         ? "obstacle-barricade"
         : type === "tire-fire"
         ? "obstacle-tire-fire"
+        : type === "crowd"
+        ? "obstacle-crowd"
+        : type === "rickshaw"
+        ? "obstacle-rickshaw"
         : "projectile-brick";
 
     this.setTexture(textureKey);

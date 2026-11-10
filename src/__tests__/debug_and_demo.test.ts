@@ -30,10 +30,13 @@ describe("T13 - Debug Bar & Demo Mode State", () => {
   });
 
   it("kills villain and transitions to GAME_OVER when killVillain is called", () => {
+    vi.useFakeTimers();
     expect(useGameStore.getState().villainHp).toBe(1000);
     useGameStore.getState().killVillain();
     expect(useGameStore.getState().villainHp).toBe(0);
+    vi.advanceTimersByTime(1300);
     expect(useGameStore.getState().screen).toBe("GAME_OVER");
+    vi.useRealTimers();
   });
 
   it("adds 500 taka to player balance", () => {

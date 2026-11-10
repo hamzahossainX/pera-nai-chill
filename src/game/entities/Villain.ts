@@ -62,6 +62,10 @@ export class Villain {
     this.rig.triggerTrip(durationMs);
   }
 
+  public die(onComplete?: () => void) {
+    this.rig.triggerDead(onComplete);
+  }
+
   public update(time: number, delta: number) {
     this.rig.update(time, delta);
 

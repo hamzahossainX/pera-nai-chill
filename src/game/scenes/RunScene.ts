@@ -9,6 +9,7 @@ import { EventSystem } from "@/game/systems/EventSystem";
 import { DifficultySystem } from "@/game/systems/DifficultySystem";
 import { BALANCE } from "@/config/balance";
 import { gameBus } from "@/game/bus";
+import { audioService } from "@/services/audio";
 
 export class RunScene extends Phaser.Scene {
   public parallaxSystem!: ParallaxSystem;
@@ -61,6 +62,7 @@ export class RunScene extends Phaser.Scene {
     gameBus.on("game:restart", this.handleRestart);
     gameBus.on("debug:spawnObstacle", this.handleDebugSpawnObstacle);
     gameBus.on("debug:timeScale", this.handleDebugTimeScale);
+    gameBus.on("villain:dead", this.handleVillainDead);
 
     // Clean up bus listeners on scene shutdown
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -68,12 +70,25 @@ export class RunScene extends Phaser.Scene {
       gameBus.off("game:restart", this.handleRestart);
       gameBus.off("debug:spawnObstacle", this.handleDebugSpawnObstacle);
       gameBus.off("debug:timeScale", this.handleDebugTimeScale);
+      gameBus.off("villain:dead", this.handleVillainDead);
       this.combatSystem.destroy();
       this.eventSystem.destroy();
       this.spawnSystem.clearAll();
       this.difficultySystem.reset();
     });
   }
+
+  private handleVillainDead = () => {
+    this.villain.die();
+    this.fxSystem.triggerHitFx(
+      this.villain.rig.x,
+      this.villain.rig.y - 40,
+      "ধরা খাইসে!",
+      0,
+      true
+    );
+    audioService.play("fanfare");
+  };
 
   private handleDebugSpawnObstacle = () => {
     this.spawnSystem.spawnObstacle();

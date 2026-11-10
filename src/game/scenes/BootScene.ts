@@ -428,5 +428,141 @@ export class BootScene extends Phaser.Scene {
       g.generateTexture("pickup-helmet", 36, 36);
       g.destroy();
     }
+
+    // 23. Normal Hero Chaser Face (The runner who hits)
+    if (!this.textures.exists("hero-face")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext("2d")!;
+
+      // Normal Bengali skin tone
+      ctx.beginPath();
+      ctx.arc(64, 64, 56, 0, Math.PI * 2);
+      ctx.fillStyle = "#fed7aa";
+      ctx.fill();
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+
+      // Stylized modern black hair
+      ctx.beginPath();
+      ctx.arc(64, 50, 56, Math.PI * 1.1, Math.PI * 1.9);
+      ctx.fillStyle = "#0f172a";
+      ctx.fill();
+
+      // Determined comic eyes
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.ellipse(46, 62, 10, 8, 0, 0, Math.PI * 2);
+      ctx.ellipse(82, 62, 10, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#000000";
+      ctx.beginPath();
+      ctx.arc(48, 62, 5, 0, Math.PI * 2);
+      ctx.arc(84, 62, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Confident energetic smirk
+      ctx.beginPath();
+      ctx.arc(64, 82, 16, 0.1 * Math.PI, 0.9 * Math.PI);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+
+      this.textures.addCanvas("hero-face", canvas);
+    }
+
+    // 24. Street Crowd Obstacle (People gathering in lane)
+    if (!this.textures.exists("obstacle-crowd")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 120;
+      canvas.height = 90;
+      const ctx = canvas.getContext("2d")!;
+
+      // Crowd silhouettes (Colorful Bangladeshi shirts & panjabis)
+      const colors = ["#2563eb", "#dc2626", "#059669"];
+      [24, 60, 96].forEach((cx, idx) => {
+        // Head
+        ctx.beginPath();
+        ctx.arc(cx, 32, 12, 0, Math.PI * 2);
+        ctx.fillStyle = "#fcd34d";
+        ctx.fill();
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Body
+        ctx.fillStyle = colors[idx];
+        ctx.fillRect(cx - 14, 44, 28, 42);
+        ctx.strokeRect(cx - 14, 44, 28, 42);
+      });
+
+      // Warning Comic Speech Bubble
+      ctx.fillStyle = "#fef08a";
+      ctx.fillRect(10, 4, 100, 18);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(10, 4, 100, 18);
+
+      ctx.fillStyle = "#000000";
+      ctx.font = "bold 9px 'Hind Siliguri', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("ভিড়! রাস্তা ছাড়েন!", 60, 16);
+
+      this.textures.addCanvas("obstacle-crowd", canvas);
+    }
+
+    // 25. Authentic Dhaka Rickshaw Obstacle
+    if (!this.textures.exists("obstacle-rickshaw")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 110;
+      canvas.height = 80;
+      const ctx = canvas.getContext("2d")!;
+
+      // Rickshaw hood (Vibrant yellow with red-green truck art floral)
+      ctx.fillStyle = "#f59e0b";
+      ctx.beginPath();
+      ctx.arc(45, 35, 28, Math.PI, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Hood floral stripes
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(25, 30, 40, 6);
+      ctx.fillStyle = "#059669";
+      ctx.fillRect(25, 22, 40, 5);
+
+      // Frame & Seat
+      ctx.fillStyle = "#1e293b";
+      ctx.fillRect(18, 35, 55, 14);
+      ctx.strokeRect(18, 35, 55, 14);
+
+      // Wheels
+      [30, 75].forEach((wx) => {
+        ctx.beginPath();
+        ctx.arc(wx, 62, 14, 0, Math.PI * 2);
+        ctx.fillStyle = "#f8fafc";
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#000000";
+        ctx.stroke();
+
+        // Spokes
+        ctx.beginPath();
+        ctx.moveTo(wx - 12, 62);
+        ctx.lineTo(wx + 12, 62);
+        ctx.moveTo(wx, 50);
+        ctx.lineTo(wx, 74);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+
+      this.textures.addCanvas("obstacle-rickshaw", canvas);
+    }
   }
 }

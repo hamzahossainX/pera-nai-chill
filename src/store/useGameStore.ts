@@ -3,6 +3,7 @@ import { subscribeWithSelector } from "zustand/middleware";
 import { BALANCE } from "@/config/balance";
 import { DEFAULT_VILLAIN } from "@/config/villains";
 import { WorldEvent } from "@/services/eventService";
+import { gameBus } from "@/game/bus";
 
 export type GameScreen = "BOOT" | "LOBBY" | "PLAYING" | "PAUSED" | "GAME_OVER";
 
@@ -160,13 +161,20 @@ export const useGameStore = create<GameState>()(
 
     inflictDamage: (amount) => {
       const current = get().villainHp;
+      if (current === 0) return;
       const nextHp = Math.max(0, current - amount);
       const isDead = nextHp === 0;
       set({
         villainHp: nextHp,
         rageScore: get().rageScore + Math.round(amount * 5),
-        screen: isDead ? "GAME_OVER" : get().screen,
       });
+
+      if (isDead) {
+        gameBus.emit("villain:dead", { score: get().rageScore });
+        setTimeout(() => {
+          set({ screen: "GAME_OVER" });
+        }, 1200);
+      }
     },
 
     addRage: (amount) => {

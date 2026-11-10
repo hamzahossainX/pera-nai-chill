@@ -16,8 +16,10 @@ import {
   Flame,
   Maximize2,
   Minimize2,
+  Zap,
 } from "lucide-react";
 import { EventBanner } from "@/components/game/EventBanner";
+import { BribeButton } from "@/components/game/BribeButton";
 
 export function HudOverlay() {
   const {
@@ -29,6 +31,7 @@ export function HudOverlay() {
     combo,
     taka,
     stamina,
+    activeEvent,
     setStamina,
     setScreen,
     startGame,
@@ -213,6 +216,37 @@ export function HudOverlay() {
           </button>
         </div>
       </div>
+
+      {/* Loadshedding Dark Screen Center Generator Prompt */}
+      <AnimatePresence>
+        {activeEvent?.type === "LOADSHEDDING" && (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: [1, 1.03, 1], opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ scale: { repeat: Infinity, duration: 1.2 } }}
+            className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3 rounded-3xl border-4 border-yellow-400 bg-slate-950/95 p-5 sm:p-6 text-center shadow-[0_0_60px_rgba(250,204,21,0.6)] backdrop-blur-md z-40 max-w-sm"
+          >
+            <div className="flex items-center gap-2 text-yellow-300">
+              <Zap className="h-7 w-7 fill-yellow-300 animate-bounce" />
+              <span className="font-comic text-xl sm:text-2xl tracking-wider text-yellow-300 uppercase">
+                ঘোর অন্ধকার! কারেন্ট নাই!
+              </span>
+            </div>
+            <p className="font-bangla text-xs sm:text-sm font-bold text-slate-300">
+              লোডশেডিং চলছে! আলো ফেরাতে ৫০ ৳ দিয়ে জেনারেটর চালু করুন!
+            </p>
+            <BribeButton
+              eventId={activeEvent.id}
+              costTaka={activeEvent.bypass?.costTaka ?? 50}
+              label={{
+                bn: `জেনারেটর চালু করুন (${activeEvent.bypass?.costTaka ?? 50} ৳)`,
+                en: `Start Generator (${activeEvent.bypass?.costTaka ?? 50} ৳)`,
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Middle Screen: Combo Counter & Rage Thermometer */}
       <div className="flex items-center justify-between w-full">

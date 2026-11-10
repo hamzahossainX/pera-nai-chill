@@ -17,7 +17,10 @@ export class Chaser {
       scene,
       x: 320,
       y: initialY,
-      isSilhouette: true,
+      isSilhouette: false,
+      outfitColor: 0x059669, // Hero Green T-shirt
+      pantColor: 0x1e3a8a, // Denim Jeans
+      faceKey: "hero-face",
       scale: initialScale,
     });
 

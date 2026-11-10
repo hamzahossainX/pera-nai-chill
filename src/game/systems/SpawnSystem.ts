@@ -46,13 +46,15 @@ export class SpawnSystem {
     if (!free) return;
 
     const chosenLane = lane ?? Math.floor(Math.random() * 3);
+    const types: ObstacleType[] = [
+      "barricade",
+      "tire-fire",
+      "brick",
+      "crowd",
+      "rickshaw",
+    ];
     const chosenType =
-      type ??
-      (Math.random() < 0.5
-        ? "barricade"
-        : Math.random() < 0.5
-        ? "tire-fire"
-        : "brick");
+      type ?? types[Math.floor(Math.random() * types.length)];
 
     free.spawn(chosenLane, chosenType);
   }

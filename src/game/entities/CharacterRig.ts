@@ -253,6 +253,25 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     });
   }
 
+  public triggerDead(onComplete?: () => void) {
+    if (this.stateName === "DEAD") return;
+    this.stateName = "DEAD";
+    this.expressionSprite.setVisible(true);
+
+    this.scene.tweens.add({
+      targets: this,
+      rotation: 1.57,
+      y: this.y + 35,
+      x: this.x + 60,
+      alpha: 0.9,
+      duration: 600,
+      ease: "Bounce.Out",
+      onComplete: () => {
+        if (onComplete) onComplete();
+      },
+    });
+  }
+
   public triggerTrip(durationMs: number = 1600) {
     if (this.stateName === "DEAD" || this.stateName === "TRIPPED") return;
     this.stateName = "TRIPPED";

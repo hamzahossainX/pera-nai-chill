@@ -19,7 +19,10 @@ export class PreloadScene extends Phaser.Scene {
   create() {
     // If user has a custom face uploaded in Zustand store, install it dynamically into Phaser texture cache
     const targetFaceUrl = useGameStore.getState().targetFaceUrl;
-    if (targetFaceUrl && !this.textures.exists("target-face")) {
+    if (targetFaceUrl) {
+      if (this.textures.exists("target-face")) {
+        this.textures.remove("target-face");
+      }
       this.textures.once(Phaser.Textures.Events.ADD, () => {
         this.scene.start("RunScene");
       });
