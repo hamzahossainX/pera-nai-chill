@@ -316,5 +316,58 @@ export class BootScene extends Phaser.Scene {
       g.generateTexture("rig-expression-shock", 70, 70);
       g.destroy();
     }
+
+    // 19. Pickup Biriyani Box
+    if (!this.textures.exists("pickup-biriyani")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xf59e0b, 1);
+      g.fillRoundedRect(4, 4, 36, 26, 4);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeRoundedRect(4, 4, 36, 26, 4);
+      g.fillStyle(0xd97706, 1);
+      g.fillCircle(22, 16, 6); // Chicken roast piece
+      g.generateTexture("pickup-biriyani", 44, 34);
+      g.destroy();
+    }
+
+    // 20. Pickup Tong er Cha
+    if (!this.textures.exists("pickup-cha")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xd97706, 1);
+      g.fillRoundedRect(6, 8, 22, 24, 4);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeRoundedRect(6, 8, 22, 24, 4);
+      g.fillStyle(0xfde68a, 1);
+      g.fillRect(8, 10, 18, 6); // Hot milk tea
+      g.generateTexture("pickup-cha", 34, 36);
+      g.destroy();
+    }
+
+    // 21. Pickup Taka Bag
+    if (!this.textures.exists("pickup-taka-bag")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0x059669, 1);
+      g.fillCircle(18, 22, 14);
+      g.fillRect(12, 6, 12, 10);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeCircle(18, 22, 14);
+      g.fillStyle(0xfef08a, 1);
+      g.fillRect(16, 14, 4, 14); // ৳ sign
+      g.generateTexture("pickup-taka-bag", 36, 38);
+      g.destroy();
+    }
+
+    // 22. Pickup Helmet
+    if (!this.textures.exists("pickup-helmet")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xdc2626, 1);
+      g.fillCircle(18, 18, 14);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeCircle(18, 18, 14);
+      g.fillStyle(0x0f172a, 1);
+      g.fillRect(18, 14, 12, 8); // Visor
+      g.generateTexture("pickup-helmet", 36, 36);
+      g.destroy();
+    }
   }
 }

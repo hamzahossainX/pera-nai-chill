@@ -6,6 +6,7 @@ import { FxSystem } from "@/game/systems/FxSystem";
 import { CombatSystem } from "@/game/systems/CombatSystem";
 import { SpawnSystem } from "@/game/systems/SpawnSystem";
 import { EventSystem } from "@/game/systems/EventSystem";
+import { DifficultySystem } from "@/game/systems/DifficultySystem";
 import { BALANCE } from "@/config/balance";
 import { gameBus } from "@/game/bus";
 
@@ -17,9 +18,9 @@ export class RunScene extends Phaser.Scene {
   public combatSystem!: CombatSystem;
   public spawnSystem!: SpawnSystem;
   public eventSystem!: EventSystem;
+  public difficultySystem!: DifficultySystem;
 
   private isPaused = false;
-  private runSpeed = BALANCE.BASE_RUN_SPEED;
 
   constructor() {
     super({ key: "RunScene" });
@@ -33,8 +34,9 @@ export class RunScene extends Phaser.Scene {
     this.chaser = new Chaser(this);
     this.villain = new Villain(this);
 
-    // 3. Initialize FX, Combat, Spawn & Event Systems
+    // 3. Initialize FX, Combat, Spawn, Event & Difficulty Systems
     this.fxSystem = new FxSystem(this);
+    this.difficultySystem = new DifficultySystem();
     this.spawnSystem = new SpawnSystem(this, this.villain, this.fxSystem);
     this.combatSystem = new CombatSystem(
       this,
@@ -64,6 +66,7 @@ export class RunScene extends Phaser.Scene {
       this.combatSystem.destroy();
       this.eventSystem.destroy();
       this.spawnSystem.clearAll();
+      this.difficultySystem.reset();
     });
   }
 
@@ -83,16 +86,19 @@ export class RunScene extends Phaser.Scene {
   update(time: number, delta: number) {
     if (this.isPaused) return;
 
-    const currentSpeed = this.runSpeed * this.parallaxSystem.speedMultiplier;
+    // Update Difficulty Ramp
+    this.difficultySystem.update(time, delta);
+    const baseRampedSpeed = this.difficultySystem.getCurrentSpeed();
+    const effectiveSpeed = baseRampedSpeed * this.parallaxSystem.speedMultiplier;
 
     // Update parallax scenery
-    this.parallaxSystem.update(time, delta, this.runSpeed);
+    this.parallaxSystem.update(time, delta, baseRampedSpeed);
 
     // Update villain, chaser, and combat projectiles
     this.villain.update(time, delta);
     this.chaser.update(time, delta);
     this.combatSystem.update(time, delta);
-    this.spawnSystem.update(time, delta, currentSpeed);
+    this.spawnSystem.update(time, delta, effectiveSpeed);
     this.eventSystem.update(time, delta);
 
     // Keep chaser following villain's lane smoothly
