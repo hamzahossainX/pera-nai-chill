@@ -1,1 +1,66 @@
-[]
+{
+  "currentTrendingHeadline": "হঠাৎ কারেন্ট গায়েব! মোমবাতি খুঁজে পাওয়া যাচ্ছে না!",
+  "events": [
+    {
+      "id": "evt_loadshedding",
+      "type": "LOADSHEDDING",
+      "title": { "bn": "বিদ্যুৎ বিভ্রাট!", "en": "Loadshedding!" },
+      "ticker": { "bn": "ব্রেকিং: এলাকায় লোডশেডিং!", "en": "BREAKING: Power cut across the city!" },
+      "description": { "bn": "লাইনম্যানকে ১০০ টাকা দিলে এখনই কারেন্ট আসবে!", "en": "Bribe the lineman 100 Taka for instant power!" },
+      "durationSec": 20,
+      "weight": 3,
+      "cooldownSec": 40,
+      "bypass": {
+        "enabled": true,
+        "costTaka": 100,
+        "label": { "en": "Pay 100 Taka to the Lineman", "bn": "লাইনম্যানকে ১০০ টাকা দিন" }
+      },
+      "effects": [
+        { "kind": "overlay", "name": "blackout", "params": { "alpha": 0.95, "eyes": true } },
+        { "kind": "sfx", "name": "powercut" }
+      ]
+    },
+    {
+      "id": "evt_pollution",
+      "type": "POLLUTION",
+      "title": { "bn": "তীব্র বায়ুদূষণ! (AQI 450+)", "en": "Severe Air Pollution (AQI 450+)" },
+      "ticker": { "bn": "সতর্কতা: AQI বিপজ্জনক!", "en": "ALERT: AQI hazardous!" },
+      "description": { "bn": "দম নিতে কষ্ট হচ্ছে, স্পিড কমে গেছে!", "en": "Can't breathe, everyone slows down!" },
+      "durationSec": 25,
+      "weight": 3,
+      "cooldownSec": 40,
+      "bypass": {
+        "enabled": true,
+        "costTaka": 50,
+        "label": { "en": "Buy an N95 Mask (50 Taka)", "bn": "মাস্ক কিনুন (৫০ টাকা)" }
+      },
+      "effects": [
+        { "kind": "overlay", "name": "smog", "params": { "alpha": 0.45, "particles": true } },
+        { "kind": "modifier", "target": "speed", "multiplier": 0.6 },
+        { "kind": "modifier", "target": "staminaRegen", "multiplier": 0.4 },
+        { "kind": "status", "name": "cough", "intervalSec": 1.2 },
+        { "kind": "sfx", "name": "cough" }
+      ]
+    },
+    {
+      "id": "evt_strike",
+      "type": "STRIKE",
+      "title": { "bn": "গার্মেন্টস স্ট্রাইক ও অবরোধ!", "en": "Garments Strike & Blockade!" },
+      "ticker": { "bn": "ব্রেকিং: রাস্তায় প্রচণ্ড জ্যাম!", "en": "BREAKING: Massive traffic jam!" },
+      "description": { "bn": "বাধার ভেতর দিয়েই দৌড়াতে হবে!", "en": "Run through the chaos!" },
+      "durationSec": 20,
+      "weight": 2,
+      "cooldownSec": 40,
+      "bypass": {
+        "enabled": false,
+        "costTaka": 0
+      },
+      "effects": [
+        { "kind": "spawner", "name": "crowd", "params": { "density": 0.8, "bricks": true, "burningTires": true } },
+        { "kind": "modifier", "target": "speed", "multiplier": 0.75 },
+        { "kind": "bonus", "name": "villainTripped", "comboBonus": 1.5 },
+        { "kind": "sfx", "name": "siren" }
+      ]
+    }
+  ]
+}
