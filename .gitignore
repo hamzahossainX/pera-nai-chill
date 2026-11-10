@@ -1,0 +1,7 @@
+node_modules/
+.next/
+dist/
+The_A_Stack/
+The_A_Stack.zip
+.DS_Store
+*.log
