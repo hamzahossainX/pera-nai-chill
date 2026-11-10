@@ -237,5 +237,84 @@ export class BootScene extends Phaser.Scene {
       g.generateTexture("particle-coin", 24, 24);
       g.destroy();
     }
+
+    // 12. Rig Torso
+    if (!this.textures.exists("rig-torso")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xffffff, 1);
+      g.fillRoundedRect(2, 2, 40, 52, 6);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeRoundedRect(2, 2, 40, 52, 6);
+      g.generateTexture("rig-torso", 44, 56);
+      g.destroy();
+    }
+
+    // 13. Rig Upper Limb (Arm / Thigh)
+    if (!this.textures.exists("rig-limb-upper")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xffffff, 1);
+      g.fillRoundedRect(2, 2, 12, 26, 5);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeRoundedRect(2, 2, 12, 26, 5);
+      g.generateTexture("rig-limb-upper", 16, 30);
+      g.destroy();
+    }
+
+    // 14. Rig Lower Limb (Forearm / Shin)
+    if (!this.textures.exists("rig-limb-lower")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xffffff, 1);
+      g.fillRoundedRect(2, 2, 10, 24, 4);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeRoundedRect(2, 2, 10, 24, 4);
+      g.generateTexture("rig-limb-lower", 14, 28);
+      g.destroy();
+    }
+
+    // 15. Rig Hand
+    if (!this.textures.exists("rig-hand")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xfbcfe8, 1);
+      g.fillCircle(7, 7, 6);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeCircle(7, 7, 6);
+      g.generateTexture("rig-hand", 14, 14);
+      g.destroy();
+    }
+
+    // 16. Rig Foot
+    if (!this.textures.exists("rig-foot")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0x1e293b, 1);
+      g.fillRoundedRect(2, 2, 24, 10, 4);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeRoundedRect(2, 2, 24, 10, 4);
+      g.generateTexture("rig-foot", 28, 14);
+      g.destroy();
+    }
+
+    // 17. Rig Ground Shadow
+    if (!this.textures.exists("rig-shadow")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0x000000, 0.5);
+      g.fillEllipse(36, 12, 34, 10);
+      g.generateTexture("rig-shadow", 72, 24);
+      g.destroy();
+    }
+
+    // 18. Rig Shock Expression Overlay
+    if (!this.textures.exists("rig-expression-shock")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      // Sweat drops
+      g.fillStyle(0x38bdf8, 1);
+      g.fillCircle(12, 14, 6);
+      g.fillCircle(58, 16, 7);
+      // Comic exclamation marks
+      g.lineStyle(3, 0xef4444, 1);
+      g.lineBetween(32, 2, 32, 10);
+      g.lineBetween(38, 2, 38, 10);
+      g.generateTexture("rig-expression-shock", 70, 70);
+      g.destroy();
+    }
   }
 }
