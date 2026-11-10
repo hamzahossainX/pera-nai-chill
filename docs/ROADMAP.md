@@ -8,10 +8,10 @@
 - [ ] T-102 — High-Score Anti-Cheat Edge Function [app:web][tags:backend,security]
 
 ## Done
-- [x] T18 — Monsoon Waterlogging Event, Pickups & Counter-Buffs: `evt_waterlogging`, `WaterloggingEffect`, paper boats, Daab / Mask pickups (`commit pending`)
-- [x] T17 — Selectable Dhaka Scenarios & Maps: Mirpur 10, Farmgate, New Market, custom procedural skies, signboards, potholes (`commit pending`)
-- [x] T16 — Reactive Comic Face Props: spinning dizzy stars, plaster band-aid, anime tears, popped shocked eyes (`commit pending`)
-- [x] T15 — Wanted Reason / Crime Tags & HUD Banner: 6 hilarious Dhaka reasons, bounty badges, Lobby selector (`commit pending`)
+- [x] T18 — Monsoon Waterlogging Event, Pickups & Counter-Buffs: `evt_waterlogging`, `WaterloggingEffect`, paper boats, Daab / Mask pickups (`commit a97c634`)
+- [x] T17 — Selectable Dhaka Scenarios & Maps: Mirpur 10, Farmgate, New Market, custom procedural skies, signboards, potholes (`commit a97c634`)
+- [x] T16 — Reactive Comic Face Props: spinning dizzy stars, plaster band-aid, anime tears, popped shocked eyes (`commit a97c634`)
+- [x] T15 — Wanted Reason / Crime Tags & HUD Banner: 6 hilarious Dhaka reasons, bounty badges, Lobby selector (`commit a97c634`)
 - [x] T00 — Scaffolding: Next.js App Router, Phaser 4, Tailwind CSS, project layout (`commit a42773e`)
 - [x] T01 — State, Event Bus & Config: `useGameStore`, typed mitt `gameBus`, weapons, villains, Zod validated `eventService` (`commit 877c069`)
 - [x] T02 — Boot & Loading Screen: weighted progress, road track, tip rotation, WebAudio unlock (`commit d578c60`)
