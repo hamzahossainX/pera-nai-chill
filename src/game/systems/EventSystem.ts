@@ -69,6 +69,7 @@ export class EventSystem {
 
     this.activeEvent = event;
     this.eventTimeLeft = event.durationSec * 1000;
+    audioService.duckBgm(true);
 
     // Apply Effects
     for (const effect of event.effects) {
@@ -121,6 +122,7 @@ export class EventSystem {
 
     this.activeEvent = null;
     this.eventTimeLeft = 0;
+    audioService.duckBgm(false);
 
     // Reset next event timer (random between 25s - 45s)
     this.nextEventTimer = 25000 + Math.random() * 20000;
