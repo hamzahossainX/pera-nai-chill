@@ -7,15 +7,34 @@ import { FaceUploader } from "@/components/lobby/FaceUploader";
 import { VillainPreview } from "@/components/lobby/VillainPreview";
 import { WeaponSelector } from "@/components/lobby/WeaponSelector";
 import { SettingsSheet } from "@/components/lobby/SettingsSheet";
-import { Settings, Play } from "lucide-react";
+import { GameHost } from "@/components/game/GameHost";
+import { Settings, Play, ArrowLeft } from "lucide-react";
 import { audioService } from "@/services/audio";
 
 export function AppShell() {
-  const { screen, startGame } = useGameStore();
+  const { screen, startGame, setScreen } = useGameStore();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   if (screen === "BOOT") {
     return <LoadingScreen />;
+  }
+
+  if (screen === "PLAYING") {
+    return (
+      <div className="relative h-screen w-screen overflow-hidden bg-black select-none">
+        <GameHost />
+
+        {/* Temporary Playing Top Bar (until full HUD Overlay in T07) */}
+        <div className="pointer-events-auto absolute top-3 left-3 z-40 flex items-center gap-2">
+          <button
+            onClick={() => setScreen("LOBBY")}
+            className="flex items-center gap-1 rounded-xl border-2 border-black bg-slate-900/80 px-3 py-1.5 font-comic text-xs text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"
+          >
+            <ArrowLeft className="h-4 w-4" /> &larr; LOBBY
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const handleStartGame = () => {
@@ -24,7 +43,7 @@ export function AppShell() {
   };
 
   return (
-    <div className="relative min-h-screen w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6">
+    <div className="relative min-h-screen w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6 select-none">
       <SettingsSheet
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
