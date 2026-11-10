@@ -1,37 +1,79 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useGameStore } from "@/store/useGameStore";
 import { LoadingScreen } from "@/components/loading/LoadingScreen";
+import { FaceUploader } from "@/components/lobby/FaceUploader";
+import { VillainPreview } from "@/components/lobby/VillainPreview";
+import { WeaponSelector } from "@/components/lobby/WeaponSelector";
+import { SettingsSheet } from "@/components/lobby/SettingsSheet";
+import { Settings, Play } from "lucide-react";
+import { audioService } from "@/services/audio";
 
 export function AppShell() {
-  const { screen, setScreen } = useGameStore();
+  const { screen, startGame } = useGameStore();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   if (screen === "BOOT") {
     return <LoadingScreen />;
   }
 
+  const handleStartGame = () => {
+    audioService.play("click");
+    startGame();
+  };
+
   return (
-    <main className="flex h-screen w-screen flex-col items-center justify-center bg-slate-950 p-4 text-center">
-      <div className="max-w-md rounded-2xl border-4 border-amber-500 bg-slate-900 p-8 shadow-2xl">
-        <h1 className="font-comic text-4xl text-amber-400 drop-shadow-md sm:text-5xl">
-          PERA NAI CHILL
-        </h1>
-        <p className="font-bangla mt-2 text-xl font-semibold text-rose-400">
-          ঢাকা রেজ রানার &bull; লবি
-        </p>
-        <p className="mt-4 text-sm text-slate-300">
-          Current State: <span className="font-mono font-bold text-amber-300">{screen}</span>
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
+    <div className="relative min-h-screen w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6">
+      <SettingsSheet
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
+
+      {/* Top Bar */}
+      <header className="mx-auto flex max-w-4xl items-center justify-between py-2">
+        <div>
+          <h1 className="font-comic text-3xl tracking-wider text-amber-400 drop-shadow-[0_2px_0_rgba(0,0,0,1)] sm:text-4xl">
+            PERA NAI CHILL
+          </h1>
+          <p className="font-bangla text-xs font-bold text-rose-400">
+            ঢাকা রেজ রানার &bull; লবি কন্ট্রোল
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => setScreen("BOOT")}
-            className="rounded-xl border-2 border-black bg-amber-500 px-4 py-2 font-comic text-sm text-slate-950 shadow-md hover:bg-amber-400"
+            onClick={() => setIsSettingsOpen(true)}
+            className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-slate-800 p-2.5 text-slate-300 shadow-md hover:bg-slate-700 hover:text-white"
+            title="Settings"
           >
-            &larr; Re-run Boot Screen
+            <Settings className="h-5 w-5" />
           </button>
         </div>
-      </div>
-    </main>
+      </header>
+
+      {/* Main Lobby Form Sections */}
+      <main className="mx-auto mt-4 flex max-w-4xl flex-col gap-6 pb-28">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <FaceUploader />
+          <VillainPreview />
+        </div>
+
+        <WeaponSelector />
+      </main>
+
+      {/* Fixed Bottom Launch Bar */}
+      <footer className="fixed bottom-0 left-0 right-0 z-30 border-t-4 border-black bg-slate-950/95 p-3.5 backdrop-blur-md">
+        <div className="mx-auto flex max-w-md items-center justify-center">
+          <button
+            onClick={handleStartGame}
+            className="flex w-full items-center justify-center gap-3 rounded-2xl border-4 border-black bg-gradient-to-r from-amber-500 via-rose-500 to-rose-600 py-3.5 font-comic text-2xl tracking-wider text-white shadow-[0_5px_0px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-1 active:shadow-none"
+          >
+            <Play className="h-7 w-7 fill-white" />
+            <span>রাস্তায় নামাও (START RUN)</span>
+          </button>
+        </div>
+      </footer>
+    </div>
   );
 }
