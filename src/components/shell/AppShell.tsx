@@ -8,6 +8,7 @@ import { VillainPreview } from "@/components/lobby/VillainPreview";
 import { WeaponSelector } from "@/components/lobby/WeaponSelector";
 import { SettingsSheet } from "@/components/lobby/SettingsSheet";
 import { GameHost } from "@/components/game/GameHost";
+import { WeaponDock } from "@/components/game/WeaponDock";
 import { Settings, Play, ArrowLeft } from "lucide-react";
 import { audioService } from "@/services/audio";
 
@@ -24,7 +25,7 @@ export function AppShell() {
       <div className="relative h-screen w-screen overflow-hidden bg-black select-none">
         <GameHost />
 
-        {/* Temporary Playing Top Bar (until full HUD Overlay in T07) */}
+        {/* Top Control Bar */}
         <div className="pointer-events-auto absolute top-3 left-3 z-40 flex items-center gap-2">
           <button
             onClick={() => setScreen("LOBBY")}
@@ -33,6 +34,9 @@ export function AppShell() {
             <ArrowLeft className="h-4 w-4" /> &larr; LOBBY
           </button>
         </div>
+
+        {/* Weapon Dock at Bottom */}
+        <WeaponDock />
       </div>
     );
   }
