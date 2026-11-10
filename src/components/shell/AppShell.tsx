@@ -8,35 +8,35 @@ import { VillainPreview } from "@/components/lobby/VillainPreview";
 import { WeaponSelector } from "@/components/lobby/WeaponSelector";
 import { SettingsSheet } from "@/components/lobby/SettingsSheet";
 import { GameHost } from "@/components/game/GameHost";
+import { HudOverlay } from "@/components/game/HudOverlay";
 import { WeaponDock } from "@/components/game/WeaponDock";
-import { Settings, Play, ArrowLeft } from "lucide-react";
+import { GameOverScreen } from "@/components/gameover/GameOverScreen";
+import { Settings, Play } from "lucide-react";
 import { audioService } from "@/services/audio";
 
 export function AppShell() {
-  const { screen, startGame, setScreen } = useGameStore();
+  const { screen, startGame } = useGameStore();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   if (screen === "BOOT") {
     return <LoadingScreen />;
   }
 
-  if (screen === "PLAYING") {
+  if (screen === "PLAYING" || screen === "PAUSED") {
     return (
       <div className="relative h-screen w-screen overflow-hidden bg-black select-none">
         <GameHost />
-
-        {/* Top Control Bar */}
-        <div className="pointer-events-auto absolute top-3 left-3 z-40 flex items-center gap-2">
-          <button
-            onClick={() => setScreen("LOBBY")}
-            className="flex items-center gap-1 rounded-xl border-2 border-black bg-slate-900/80 px-3 py-1.5 font-comic text-xs text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"
-          >
-            <ArrowLeft className="h-4 w-4" /> &larr; LOBBY
-          </button>
-        </div>
-
-        {/* Weapon Dock at Bottom */}
+        <HudOverlay />
         <WeaponDock />
+      </div>
+    );
+  }
+
+  if (screen === "GAME_OVER") {
+    return (
+      <div className="relative h-screen w-screen overflow-hidden bg-black select-none">
+        <GameHost />
+        <GameOverScreen />
       </div>
     );
   }
