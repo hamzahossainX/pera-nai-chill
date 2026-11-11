@@ -3,6 +3,7 @@ import { ParallaxSystem } from "@/game/systems/ParallaxSystem";
 import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { SpawnSystem } from "@/game/systems/SpawnSystem";
+import { TimeOfDaySystem } from "@/game/systems/TimeOfDaySystem";
 import { BlackoutEffect, SmogEffect, WaterloggingEffect } from "@/game/fx";
 import { eventService, WorldEvent } from "@/services/eventService";
 import { useGameStore } from "@/store/useGameStore";
@@ -13,6 +14,7 @@ export class EventSystem {
   private scene: Phaser.Scene;
   private parallaxSystem: ParallaxSystem;
   private spawnSystem: SpawnSystem;
+  private timeOfDaySystem?: TimeOfDaySystem;
 
   public activeEvent: WorldEvent | null = null;
   private eventTimeLeft = 0;
@@ -24,18 +26,24 @@ export class EventSystem {
   private smogEffect: SmogEffect;
   private waterloggingEffect: WaterloggingEffect;
 
+  // Strike night visuals
+  private burningTyres: Phaser.GameObjects.Sprite[] = [];
+  private tyreLightPools: Phaser.GameObjects.Sprite[] = [];
+
   constructor(
     scene: Phaser.Scene,
     parallaxSystem: ParallaxSystem,
     villain: Villain,
     chaser: Chaser,
-    spawnSystem: SpawnSystem
+    spawnSystem: SpawnSystem,
+    timeOfDaySystem?: TimeOfDaySystem
   ) {
     this.scene = scene;
     this.parallaxSystem = parallaxSystem;
     this.spawnSystem = spawnSystem;
-    this.blackoutEffect = new BlackoutEffect(scene, villain, chaser);
-    this.smogEffect = new SmogEffect(scene, villain);
+    this.timeOfDaySystem = timeOfDaySystem;
+    this.blackoutEffect = new BlackoutEffect(scene, villain, chaser, timeOfDaySystem);
+    this.smogEffect = new SmogEffect(scene, villain, timeOfDaySystem);
     this.waterloggingEffect = new WaterloggingEffect(scene, villain, chaser);
 
     // Listen to external bus commands
@@ -99,6 +107,13 @@ export class EventSystem {
 
       if (effect.kind === "spawner" && effect.name === "crowd") {
         this.spawnSystem.setStrikeActive(true);
+        const currentPhase =
+          this.timeOfDaySystem?.getCurrentPhase() ||
+          useGameStore.getState().timeOfDay ||
+          "noon";
+        if (currentPhase === "night" || currentPhase === "goldenHour") {
+          this.initStrikeNightVisuals();
+        }
       }
 
       if (effect.kind === "sfx" && effect.name) {
@@ -116,6 +131,48 @@ export class EventSystem {
     });
   }
 
+  private initStrikeNightVisuals() {
+    if (!this.scene.textures.exists("fx-burning-tyre")) return;
+    const positions = [340, 860];
+    for (const x of positions) {
+      const tyre = this.scene.add
+        .sprite(x, 475, "fx-burning-tyre")
+        .setDepth(3.6)
+        .setScale(1.1);
+
+      this.scene.tweens.add({
+        targets: tyre,
+        scaleY: 1.25,
+        scaleX: 1.05,
+        duration: 150 + Math.random() * 100,
+        yoyo: true,
+        repeat: -1,
+      });
+      this.burningTyres.push(tyre);
+
+      // Warm orange light pool on road illuminating marchers
+      if (this.scene.textures.exists("fx-light-halo")) {
+        const light = this.scene.add
+          .sprite(x, 490, "fx-light-halo")
+          .setDepth(3.55)
+          .setBlendMode(Phaser.BlendModes.ADD)
+          .setTint(0xf97316)
+          .setScale(1.8)
+          .setAlpha(0.55);
+
+        this.scene.tweens.add({
+          targets: light,
+          alpha: 0.35,
+          scale: 1.6,
+          duration: 220,
+          yoyo: true,
+          repeat: -1,
+        });
+        this.tyreLightPools.push(light);
+      }
+    }
+  }
+
   public clearCurrentEvent() {
     if (!this.activeEvent) return;
 
@@ -129,6 +186,12 @@ export class EventSystem {
     this.smogEffect.deactivate();
     this.waterloggingEffect.deactivate();
     this.spawnSystem.setStrikeActive(false);
+
+    // Clear strike night visuals
+    for (const tyre of this.burningTyres) tyre.destroy();
+    for (const light of this.tyreLightPools) light.destroy();
+    this.burningTyres = [];
+    this.tyreLightPools = [];
 
     // Record Cooldown
     this.cooldowns[eventId] = this.activeEvent.cooldownSec * 1000;
@@ -147,6 +210,7 @@ export class EventSystem {
 
   public update(_time: number, delta: number) {
     // Update active visual effects
+    this.blackoutEffect.update();
     this.smogEffect.update(_time, delta);
     this.waterloggingEffect.update(_time, delta);
 

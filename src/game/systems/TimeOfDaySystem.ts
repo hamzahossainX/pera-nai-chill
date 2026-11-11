@@ -69,6 +69,48 @@ export class TimeOfDaySystem {
     }
   }
 
+  public isLampsEnabled = true;
+
+  public getCurrentPhase(): TimeOfDay {
+    return this.currentPhaseId;
+  }
+
+  public getStreetLamps(): Phaser.GameObjects.Sprite[] {
+    return this.streetLamps;
+  }
+
+  public setLampsEnabled(enabled: boolean) {
+    this.isLampsEnabled = enabled;
+    if (!enabled) {
+      // Loadshedding flicker power cut
+      for (const lamp of this.streetLamps) {
+        this.scene.tweens.killTweensOf(lamp);
+        this.scene.tweens.add({
+          targets: lamp,
+          alpha: 0,
+          duration: 90,
+          yoyo: true,
+          repeat: 2,
+          onComplete: () => {
+            lamp.alpha = 0;
+          },
+        });
+      }
+    } else {
+      // Power restored
+      const targetAlpha = this.getCurrentConfig().streetLightsAlpha;
+      for (const lamp of this.streetLamps) {
+        this.scene.tweens.killTweensOf(lamp);
+        this.scene.tweens.add({
+          targets: lamp,
+          alpha: targetAlpha,
+          duration: 800,
+          ease: "Quad.Out",
+        });
+      }
+    }
+  }
+
   public applyPhase(phaseId: TimeOfDay, durationMs: number = 8000) {
     const config = TIME_OF_DAY_CONFIGS[phaseId] || TIME_OF_DAY_CONFIGS.noon;
     this.currentPhaseId = phaseId;
@@ -112,13 +154,15 @@ export class TimeOfDaySystem {
       });
     }
 
-    for (const l of this.streetLamps) {
-      this.scene.tweens.add({
-        targets: l,
-        alpha: config.streetLightsAlpha,
-        duration: durationMs,
-        ease: "Quad.InOut",
-      });
+    if (this.isLampsEnabled) {
+      for (const l of this.streetLamps) {
+        this.scene.tweens.add({
+          targets: l,
+          alpha: config.streetLightsAlpha,
+          duration: durationMs,
+          ease: "Quad.InOut",
+        });
+      }
     }
   }
 

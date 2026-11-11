@@ -62,7 +62,8 @@ export class RunScene extends Phaser.Scene {
       this.parallaxSystem,
       this.villain,
       this.chaser,
-      this.spawnSystem
+      this.spawnSystem,
+      this.timeOfDaySystem
     );
 
     // 4. Camera Configuration

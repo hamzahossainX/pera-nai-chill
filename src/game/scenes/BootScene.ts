@@ -525,6 +525,103 @@ export class BootScene extends Phaser.Scene {
       this.textures.addCanvas("fx-floating-slipper", canvas);
     }
 
+    // 23. Phone Flashlight Beam (240 x 100)
+    if (!this.textures.exists("fx-flashlight")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 240;
+      canvas.height = 100;
+      const ctx = canvas.getContext("2d")!;
+      const grad = ctx.createLinearGradient(10, 50, 230, 50);
+      grad.addColorStop(0, "rgba(224, 242, 254, 0.95)");
+      grad.addColorStop(0.3, "rgba(186, 230, 253, 0.65)");
+      grad.addColorStop(0.8, "rgba(125, 211, 252, 0.25)");
+      grad.addColorStop(1, "rgba(125, 211, 252, 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(10, 50);
+      ctx.lineTo(235, 12);
+      ctx.lineTo(235, 88);
+      ctx.closePath();
+      ctx.fill();
+      this.textures.addCanvas("fx-flashlight", canvas);
+    }
+
+    // 24. Generator-Lit Shop Window (80 x 60)
+    if (!this.textures.exists("fx-shop-generator")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 80;
+      canvas.height = 60;
+      const ctx = canvas.getContext("2d")!;
+      // Warm amber glow window
+      const grad = ctx.createRadialGradient(40, 30, 6, 40, 30, 40);
+      grad.addColorStop(0, "rgba(254, 240, 138, 0.95)");
+      grad.addColorStop(0.6, "rgba(245, 158, 11, 0.7)");
+      grad.addColorStop(1, "rgba(217, 119, 6, 0.1)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(4, 4, 72, 52);
+      // Small generator box at corner
+      ctx.fillStyle = "#334155";
+      ctx.fillRect(8, 42, 18, 14);
+      ctx.fillStyle = "#ef4444";
+      ctx.fillRect(10, 44, 4, 4);
+      ctx.strokeStyle = "#1e293b";
+      ctx.strokeRect(4, 4, 72, 52);
+      this.textures.addCanvas("fx-shop-generator", canvas);
+    }
+
+    // 25. Smog Light Halo (100 x 100)
+    if (!this.textures.exists("fx-light-halo")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 100;
+      canvas.height = 100;
+      const ctx = canvas.getContext("2d")!;
+      const grad = ctx.createRadialGradient(50, 50, 8, 50, 50, 50);
+      grad.addColorStop(0, "rgba(254, 240, 138, 0.75)");
+      grad.addColorStop(0.35, "rgba(245, 158, 11, 0.35)");
+      grad.addColorStop(0.7, "rgba(217, 119, 6, 0.12)");
+      grad.addColorStop(1, "rgba(217, 119, 6, 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(50, 50, 50, 0, Math.PI * 2);
+      ctx.fill();
+      this.textures.addCanvas("fx-light-halo", canvas);
+    }
+
+    // 26. Burning Tyre Strike Flame (70 x 60)
+    if (!this.textures.exists("fx-burning-tyre")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 70;
+      canvas.height = 60;
+      const ctx = canvas.getContext("2d")!;
+      // Black tyre
+      ctx.fillStyle = "#1e293b";
+      ctx.beginPath();
+      ctx.ellipse(35, 48, 28, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.ellipse(35, 48, 16, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Outer orange flame
+      ctx.fillStyle = "#ef4444";
+      ctx.beginPath();
+      ctx.moveTo(18, 48);
+      ctx.quadraticCurveTo(24, 25, 30, 8);
+      ctx.quadraticCurveTo(36, 22, 42, 14);
+      ctx.quadraticCurveTo(46, 24, 52, 48);
+      ctx.closePath();
+      ctx.fill();
+      // Inner yellow flame
+      ctx.fillStyle = "#facc15";
+      ctx.beginPath();
+      ctx.moveTo(25, 48);
+      ctx.quadraticCurveTo(32, 28, 35, 16);
+      ctx.quadraticCurveTo(38, 28, 45, 48);
+      ctx.closePath();
+      ctx.fill();
+      this.textures.addCanvas("fx-burning-tyre", canvas);
+    }
+
     // 12. Rig Torso
     if (!this.textures.exists("rig-torso")) {
       const g = this.make.graphics({ x: 0, y: 0 });
