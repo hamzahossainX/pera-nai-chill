@@ -1,7 +1,9 @@
 import Phaser from "phaser";
+import { useGameStore } from "@/store/useGameStore";
 
 export class FxSystem {
   private scene: Phaser.Scene;
+  private particlePool: Phaser.GameObjects.Sprite[] = [];
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -51,9 +53,24 @@ export class FxSystem {
   }
 
   public spawnHitParticles(x: number, y: number, count: number = 8, textureKey: string = "particle-star") {
+    const isLow = useGameStore.getState().settings.quality === "low";
+    const effectiveCount = isLow ? Math.max(3, Math.floor(count * 0.5)) : Math.min(count, 20);
     const key = this.scene.textures.exists(textureKey) ? textureKey : "particle-star";
-    for (let i = 0; i < count; i++) {
-      const p = this.scene.add.sprite(x, y, key).setDepth(150);
+
+    for (let i = 0; i < effectiveCount; i++) {
+      let p = this.particlePool.pop();
+      if (!p) {
+        p = this.scene.add.sprite(x, y, key).setDepth(150);
+      } else {
+        p.setTexture(key);
+        p.setPosition(x, y);
+        p.setAlpha(1);
+        p.setScale(1);
+        p.setRotation(0);
+        p.setVisible(true);
+        p.setActive(true);
+      }
+
       const angle = Math.random() * Math.PI * 2;
       const speed = 70 + Math.random() * 160;
       const vx = Math.cos(angle) * speed;
@@ -70,7 +87,15 @@ export class FxSystem {
         duration: 400 + Math.random() * 300,
         ease: "Quad.Out",
         onComplete: () => {
-          p.destroy();
+          if (p) {
+            p.setVisible(false);
+            p.setActive(false);
+            if (this.particlePool.length < 50) {
+              this.particlePool.push(p);
+            } else {
+              p.destroy();
+            }
+          }
         },
       });
     }
@@ -232,5 +257,14 @@ export class FxSystem {
       default:
         this.spawnHitParticles(x, y, 12, "particle-star");
     }
+  }
+
+  public destroy() {
+    this.particlePool.forEach((p) => {
+      try {
+        p.destroy();
+      } catch {}
+    });
+    this.particlePool = [];
   }
 }

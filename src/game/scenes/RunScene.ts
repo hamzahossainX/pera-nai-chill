@@ -30,6 +30,8 @@ export class RunScene extends Phaser.Scene {
 
   private isPaused = false;
   private lastFpsReport = 0;
+  private lowFpsAccumulator = 0;
+  private hasAutoSwitchedQuality = false;
 
   constructor() {
     super({ key: "RunScene" });
@@ -111,6 +113,7 @@ export class RunScene extends Phaser.Scene {
       gameBus.off("debug:timeScale", this.handleDebugTimeScale);
       gameBus.off("villain:dead", this.handleVillainDead);
       this.combatSystem.destroy();
+      this.fxSystem.destroy();
       this.timeOfDaySystem.destroy();
       this.weatherSystem.destroy();
       this.eventSystem.destroy();
@@ -243,23 +246,39 @@ export class RunScene extends Phaser.Scene {
   update(time: number, delta: number) {
     if (this.isPaused) return;
 
+    // 1. Timestep clamp to 33.33ms (guarantees physics stability & prevents tunneling)
+    const clampedDelta = Math.min(delta, 33.33);
+
+    // 2. Auto-Quality Monitoring: If FPS < 45 for 3s, switch to Low Quality
+    const currentFps = this.game.loop.actualFps;
+    const currentQuality = useGameStore.getState().settings.quality;
+    if (currentQuality === "high" && currentFps > 0 && currentFps < 45) {
+      this.lowFpsAccumulator += clampedDelta;
+      if (this.lowFpsAccumulator > 3000 && !this.hasAutoSwitchedQuality) {
+        this.hasAutoSwitchedQuality = true;
+        useGameStore.getState().updateSettings({ quality: "low" });
+      }
+    } else if (currentFps >= 45) {
+      this.lowFpsAccumulator = Math.max(0, this.lowFpsAccumulator - clampedDelta * 0.5);
+    }
+
     // Update Difficulty Ramp
-    this.difficultySystem.update(time, delta);
+    this.difficultySystem.update(time, clampedDelta);
     const baseRampedSpeed = this.difficultySystem.getCurrentSpeed();
     const effectiveSpeed = baseRampedSpeed * this.parallaxSystem.speedMultiplier;
 
     // Update parallax scenery
-    this.parallaxSystem.update(time, delta, baseRampedSpeed);
+    this.parallaxSystem.update(time, clampedDelta, baseRampedSpeed);
 
     // Update villain, chaser, and combat projectiles
-    this.villain.update(time, delta);
-    this.chaser.update(time, delta);
-    this.combatSystem.update(time, delta);
-    this.spawnSystem.update(time, delta, effectiveSpeed);
-    this.eventSystem.update(time, delta);
-    this.dialogueSystem.update(time, delta);
-    this.timeOfDaySystem.update(time, delta);
-    this.weatherSystem.update(time, delta);
+    this.villain.update(time, clampedDelta);
+    this.chaser.update(time, clampedDelta);
+    this.combatSystem.update(time, clampedDelta);
+    this.spawnSystem.update(time, clampedDelta, effectiveSpeed);
+    this.eventSystem.update(time, clampedDelta);
+    this.dialogueSystem.update(time, clampedDelta);
+    this.timeOfDaySystem.update(time, clampedDelta);
+    this.weatherSystem.update(time, clampedDelta);
 
     // Keep chaser following villain's lane smoothly
     this.chaser.followLane(this.villain.currentLane);
