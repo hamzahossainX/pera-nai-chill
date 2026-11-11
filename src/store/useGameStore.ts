@@ -37,6 +37,7 @@ export interface GameState {
   villainId: string;
   crimeId: string;
   currentMapId: "mirpur" | "farmgate" | "newmarket";
+  selectedChappalId: string;
 
   // Combat status
   villainHp: number;
@@ -65,6 +66,7 @@ export interface GameState {
   setVillainId: (id: string) => void;
   setCrimeId: (id: string) => void;
   setMapId: (id: "mirpur" | "farmgate" | "newmarket") => void;
+  setSelectedChappalId: (id: string) => void;
   setCounterBuff: (name: string, durationSec: number) => void;
   clearCounterBuff: () => void;
   startGame: () => void;
@@ -105,6 +107,7 @@ export const useGameStore = create<GameState>()(
     villainId: DEFAULT_VILLAIN.id,
     crimeId: DEFAULT_CRIME.id,
     currentMapId: DEFAULT_MAP.id,
+    selectedChappalId: "chappal-bata",
 
     villainHp: BALANCE.INITIAL_VILLAIN_HP,
     villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
@@ -160,6 +163,7 @@ export const useGameStore = create<GameState>()(
     setVillainId: (id) => set({ villainId: id }),
     setCrimeId: (id) => set({ crimeId: id }),
     setMapId: (id) => set({ currentMapId: id }),
+    setSelectedChappalId: (id) => set({ selectedChappalId: id }),
     setCounterBuff: (name, durationSec) =>
       set({
         activeCounterBuff: {

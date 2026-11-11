@@ -28,6 +28,25 @@ export interface OutfitDefinition {
 }
 
 export const OUTFITS: Record<string, OutfitDefinition> = {
+  chaserJanata: {
+    id: "chaserJanata",
+    name: { bn: "আম-জনতা হিরো পোশাক", en: "Aam-Janata Hero Casual" },
+    slots: {
+      torso: "chaser-torso",
+      upperArm: "chaser-arm-upper",
+      lowerArm: "chaser-arm-lower",
+      hand: "chaser-hand",
+      thigh: "chaser-thigh",
+      shin: "chaser-shin",
+      foot: "chaser-foot",
+      shadow: "rig-shadow",
+    },
+    defaultColors: {
+      outfit: 0x059669,
+      pants: 0x1e3a8a,
+      accent: 0xf59e0b,
+    },
+  },
   phoneSnatcher: {
     id: "phoneSnatcher",
     name: { bn: "ছিনতাইকারী হুডি", en: "Snatcher Hoodie" },

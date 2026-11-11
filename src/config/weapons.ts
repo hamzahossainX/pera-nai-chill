@@ -14,6 +14,65 @@ export interface WeaponConfig {
   description: LocalizedText;
 }
 
+export interface ChappalVariety {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  damage: number;
+  flightDurationMs: number;
+  takaMultiplier: number;
+  textureKey: string;
+  soundKey: string;
+  icon: string;
+}
+
+export const CHAPPAL_VARIETIES: ChappalVariety[] = [
+  {
+    id: "chappal-bata",
+    name: { en: "Bata Hawai Chappal", bn: "বাটা হাওয়াই চপ্পল" },
+    description: {
+      en: "Classic blue rubber slipper. Lightweight, high-velocity Dhaka classic.",
+      bn: "ঐতিহাসিক নীল-সাদা রাবার স্যান্ডেল। দ্রুত ও নিখুঁত নিশানা!",
+    },
+    damage: 85,
+    flightDurationMs: 420,
+    takaMultiplier: 1.0,
+    textureKey: "projectile-chappal",
+    soundKey: "sfx-whoosh",
+    icon: "🩴",
+  },
+  {
+    id: "chappal-leather",
+    name: { en: "Paduka Pro Leather", bn: "পাদুকা প্রো চামড়ার চপ্পল" },
+    description: {
+      en: "Heavy pure leather sandal with brass buckle. Heavy knockback and damage.",
+      bn: "খাঁটি ভারী চামড়ার চটি। বিরাট ওজন ও প্রবল আঘাত!",
+    },
+    damage: 130,
+    flightDurationMs: 500,
+    takaMultiplier: 1.25,
+    textureKey: "projectile-chappal-leather",
+    soundKey: "sfx-punch",
+    icon: "👞",
+  },
+  {
+    id: "chappal-golden",
+    name: { en: "Shonar Chappal (24K)", bn: "সোনার চপ্পল (২৪ ক্যারেট)" },
+    description: {
+      en: "Dazzling 24K gold bridal sandal. Rains 2x Taka coins on impact!",
+      bn: "চকচকে সোনার বিয়ের চপ্পল। প্রতি আঘাতে ডাবল টাকা লাভ!",
+    },
+    damage: 105,
+    flightDurationMs: 380,
+    takaMultiplier: 2.0,
+    textureKey: "projectile-chappal-golden",
+    soundKey: "sfx-slap",
+    icon: "✨",
+  },
+];
+
+export const DEFAULT_CHAPPAL = CHAPPAL_VARIETIES[0];
+
 export const WEAPONS: WeaponConfig[] = [
   {
     id: "slap",

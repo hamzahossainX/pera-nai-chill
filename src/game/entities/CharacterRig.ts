@@ -557,15 +557,62 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   }
 
   public triggerAttack(type: "slap" | "punch" | "kick" | "throw") {
-    this.attackTimer = 250; // ms
+    this.attackTimer = 280; // ms
+
     if (type === "kick") {
-      this.frontLegGroup.rotation = -1.2;
-    } else if (type === "slap" || type === "punch") {
-      this.frontArmGroup.rotation = -1.4;
-      this.frontArmLowerGroup.rotation = -0.8;
+      // Airborne flying drop-kick
+      const origY = this.y;
+      this.scene.tweens.add({
+        targets: this,
+        y: origY - 26,
+        duration: 90,
+        yoyo: true,
+        ease: "Quad.Out",
+      });
+      this.scene.tweens.add({
+        targets: this.frontLegGroup,
+        rotation: -1.55,
+        duration: 90,
+        yoyo: true,
+        ease: "Back.Out",
+      });
+    } else if (type === "punch") {
+      // Heavy lunging gut punch
+      this.scene.tweens.add({
+        targets: this.frontArmGroup,
+        rotation: -1.75,
+        duration: 90,
+        yoyo: true,
+        ease: "Quad.Out",
+      });
+      this.scene.tweens.add({
+        targets: this.torsoSprite,
+        rotation: 0.22,
+        duration: 80,
+        yoyo: true,
+        ease: "Quad.Out",
+      });
+    } else if (type === "slap") {
+      // Fast stinging face slap
+      this.scene.tweens.add({
+        targets: this.frontArmGroup,
+        rotation: -1.5,
+        duration: 70,
+        yoyo: true,
+        ease: "Quad.Out",
+      });
     } else {
-      // Throw
-      this.frontArmGroup.rotation = 1.2;
+      // Baseball windup throw
+      this.frontArmGroup.rotation = 1.4;
+      this.scene.time.delayedCall(70, () => {
+        this.scene.tweens.add({
+          targets: this.frontArmGroup,
+          rotation: -1.6,
+          duration: 90,
+          yoyo: true,
+          ease: "Back.Out",
+        });
+      });
     }
   }
 

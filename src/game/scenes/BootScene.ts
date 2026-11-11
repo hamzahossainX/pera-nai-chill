@@ -214,6 +214,69 @@ export class BootScene extends Phaser.Scene {
       g.destroy();
     }
 
+    // 6b. Heavy Leather Sandal Projectile (Paduka Pro)
+    if (!this.textures.exists("projectile-chappal-leather")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      // Dark brown leather sole
+      g.fillStyle(0x78350f, 1);
+      g.fillRoundedRect(5, 12, 62, 28, 10);
+      g.lineStyle(3, 0x000000, 1);
+      g.strokeRoundedRect(5, 12, 62, 28, 10);
+      // Stitched edge
+      g.lineStyle(1.5, 0xd97706, 1);
+      g.strokeRoundedRect(8, 15, 56, 22, 8);
+      // Broad leather cross strap
+      g.fillStyle(0x451a03, 1);
+      g.fillRect(24, 14, 20, 24);
+      // Golden buckle
+      g.fillStyle(0xfbbf24, 1);
+      g.fillRect(30, 20, 8, 12);
+      g.fillStyle(0x451a03, 1);
+      g.fillRect(32, 22, 4, 8);
+      g.generateTexture("projectile-chappal-leather", 72, 52);
+      g.destroy();
+    }
+
+    // 6c. Shonar Chappal Projectile (Golden Bridal Sandal)
+    if (!this.textures.exists("projectile-chappal-golden")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      // Shimmering gold sole
+      g.fillStyle(0xf59e0b, 1);
+      g.fillRoundedRect(5, 12, 60, 26, 12);
+      g.lineStyle(2.5, 0x78350f, 1);
+      g.strokeRoundedRect(5, 12, 60, 26, 12);
+      // Glossy inner gold layer
+      g.fillStyle(0xfef08a, 1);
+      g.fillRoundedRect(8, 14, 54, 22, 10);
+      // Sparkle gem straps
+      g.lineStyle(4, 0xd97706, 1);
+      g.beginPath();
+      g.moveTo(22, 14);
+      g.lineTo(44, 25);
+      g.lineTo(22, 36);
+      g.strokePath();
+      // Gem jewel
+      g.fillStyle(0xef4444, 1);
+      g.fillCircle(44, 25, 4);
+      g.generateTexture("projectile-chappal-golden", 70, 50);
+      g.destroy();
+    }
+
+    // 6d. Comic Dash Dust Puff
+    if (!this.textures.exists("fx-dash-dust")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xe2e8f0, 0.85);
+      g.fillCircle(14, 14, 10);
+      g.fillCircle(24, 12, 8);
+      g.fillCircle(32, 16, 9);
+      g.lineStyle(2, 0x94a3b8, 0.8);
+      g.strokeCircle(14, 14, 10);
+      g.strokeCircle(24, 12, 8);
+      g.strokeCircle(32, 16, 9);
+      g.generateTexture("fx-dash-dust", 46, 30);
+      g.destroy();
+    }
+
     // 7. Brick Projectile
     if (!this.textures.exists("projectile-brick")) {
       const g = this.make.graphics({ x: 0, y: 0 });

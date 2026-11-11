@@ -3,7 +3,13 @@ import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { Projectile } from "@/game/entities/Projectile";
 import { FxSystem } from "@/game/systems/FxSystem";
-import { WEAPONS, ULTIMATE_WEAPON, WeaponConfig } from "@/config/weapons";
+import {
+  WEAPONS,
+  ULTIMATE_WEAPON,
+  WeaponConfig,
+  CHAPPAL_VARIETIES,
+  DEFAULT_CHAPPAL,
+} from "@/config/weapons";
 import { calculateComboMultiplier } from "@/config/balance";
 import { useGameStore } from "@/store/useGameStore";
 import { gameBus } from "@/game/bus";
@@ -56,9 +62,24 @@ export class CombatSystem {
     const finalDamage = Math.round(weapon.damage * multiplier);
 
     if (weapon.type === "projectile") {
+      // Look up currently selected chappal variety
+      const selectedChappal =
+        CHAPPAL_VARIETIES.find((c) => c.id === store.selectedChappalId) ||
+        DEFAULT_CHAPPAL;
+
+      const projectileDamage = Math.round(selectedChappal.damage * multiplier);
+      const projectileTaka = Math.round(weapon.takaReward * selectedChappal.takaMultiplier);
+
+      const comicWord =
+        selectedChappal.id === "chappal-leather"
+          ? "ধুম্মম চামড়ার বাড়ি!"
+          : selectedChappal.id === "chappal-golden"
+          ? "ঝলমলে সোনার চটি!"
+          : "ঠাস করে জুতা!";
+
       // Throw Flying Chappal from chaser hand to villain head
       this.chaser.attack("throw");
-      audioService.play(weapon.soundKey);
+      audioService.play(selectedChappal.soundKey);
 
       const startX = this.chaser.rig.x + 20;
       const startY = this.chaser.rig.y - 65;
@@ -71,16 +92,23 @@ export class CombatSystem {
         startY,
         targetX,
         targetY,
-        texture: "projectile-chappal",
+        texture: selectedChappal.textureKey,
+        duration: selectedChappal.flightDurationMs,
         onHit: (hitX, hitY) => {
+          if (selectedChappal.id === "chappal-golden") {
+            this.fxSystem.spawnHitParticles(hitX, hitY, 10, "particle-coin");
+          }
           this.applyHit({
             x: hitX,
             y: hitY,
-            damage: finalDamage,
-            comicWord: "ঠাস করে জুতা!",
-            weapon,
+            damage: projectileDamage,
+            comicWord,
+            weapon: {
+              ...weapon,
+              takaReward: projectileTaka,
+            },
             isCrit: true,
-            knockback: 45,
+            knockback: selectedChappal.id === "chappal-leather" ? 60 : 45,
           });
         },
       });

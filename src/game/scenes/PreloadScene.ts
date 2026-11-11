@@ -19,8 +19,17 @@ export class PreloadScene extends Phaser.Scene {
       console.warn("Asset load error, falling back to procedural texture:", file?.key);
     });
 
-    // 2x rasterized SVG character parts for all 7 archetypes
+    // 2x rasterized SVG character parts for all 7 archetypes + Chaser
     const svgAssets = [
+      // Aam-Janata Hero Chaser
+      { key: "chaser-torso", url: "/assets/characters/chaser/torso.svg" },
+      { key: "chaser-arm-upper", url: "/assets/characters/chaser/arm_upper.svg" },
+      { key: "chaser-arm-lower", url: "/assets/characters/chaser/arm_lower.svg" },
+      { key: "chaser-hand", url: "/assets/characters/chaser/hand.svg" },
+      { key: "chaser-thigh", url: "/assets/characters/chaser/thigh.svg" },
+      { key: "chaser-shin", url: "/assets/characters/chaser/shin.svg" },
+      { key: "chaser-foot", url: "/assets/characters/chaser/foot.svg" },
+
       // Phone Snatcher
       { key: "snatcher-torso", url: "/assets/characters/phoneSnatcher/torso.svg" },
       { key: "snatcher-arm-upper", url: "/assets/characters/phoneSnatcher/arm_upper.svg" },

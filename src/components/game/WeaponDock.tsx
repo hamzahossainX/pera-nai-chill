@@ -1,14 +1,22 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { WEAPONS, ULTIMATE_WEAPON, WeaponConfig } from "@/config/weapons";
+import {
+  WEAPONS,
+  ULTIMATE_WEAPON,
+  WeaponConfig,
+  CHAPPAL_VARIETIES,
+  DEFAULT_CHAPPAL,
+} from "@/config/weapons";
 import { useGameStore } from "@/store/useGameStore";
 import { gameBus } from "@/game/bus";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap } from "lucide-react";
 
 export function WeaponDock() {
-  const { rage, stamina, setStamina } = useGameStore();
+  const { rage, stamina, setStamina, selectedChappalId } = useGameStore();
+  const activeChappal =
+    CHAPPAL_VARIETIES.find((c) => c.id === selectedChappalId) || DEFAULT_CHAPPAL;
 
   // Track remaining cooldowns in ms for each weapon
   const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
@@ -204,7 +212,7 @@ export function WeaponDock() {
                   ? "👊"
                   : w.id === "kick"
                   ? "🦵"
-                  : "🩴"}
+                  : activeChappal.icon}
               </span>
 
               {/* Hotkey Tag */}
@@ -214,7 +222,7 @@ export function WeaponDock() {
 
               {/* Damage Tag */}
               <span className="font-comic text-[10px] text-white drop-shadow-sm sm:text-xs">
-                {w.damage}
+                {w.id === "chappal" ? activeChappal.damage : w.damage}
               </span>
             </button>
           );

@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { WEAPONS, ULTIMATE_WEAPON } from "@/config/weapons";
+import { WEAPONS, ULTIMATE_WEAPON, CHAPPAL_VARIETIES } from "@/config/weapons";
 import { useGameStore } from "@/store/useGameStore";
-import { Zap, ShieldAlert } from "lucide-react";
+import { Zap, ShieldAlert, Sparkles } from "lucide-react";
 
 export function WeaponSelector() {
-  const { settings } = useGameStore();
+  const { settings, selectedChappalId, setSelectedChappalId } = useGameStore();
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border-4 border-black bg-slate-900/90 p-5 shadow-xl backdrop-blur-md">
@@ -57,6 +57,48 @@ export function WeaponSelector() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Chappal Variety Selector (P2-04) */}
+      <div className="flex flex-col gap-2 rounded-xl border-2 border-amber-500/50 bg-slate-800/80 p-3">
+        <div className="flex items-center justify-between">
+          <label className="font-comic text-xs uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+            <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+            CHAPPAL VARIETY / চপ্পল নির্বাচন (৩ ধরন)
+          </label>
+          <span className="font-mono text-[10px] text-slate-400">Select active projectile</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          {CHAPPAL_VARIETIES.map((c) => {
+            const isSelected = selectedChappalId === c.id;
+            return (
+              <button
+                key={c.id}
+                onClick={() => setSelectedChappalId(c.id)}
+                className={`flex items-center gap-2.5 rounded-lg border-2 p-2 text-left transition-all ${
+                  isSelected
+                    ? "border-amber-400 bg-amber-400/20 scale-101 shadow-md"
+                    : "border-slate-700 bg-slate-900/60 hover:border-slate-500"
+                }`}
+              >
+                <span className="text-2xl">{c.icon}</span>
+                <div className="flex flex-col min-w-0">
+                  <span className="truncate font-comic text-xs font-bold text-white">
+                    {c.name.en}
+                  </span>
+                  <span className="truncate font-bangla text-[11px] text-slate-300">
+                    {c.name.bn}
+                  </span>
+                  <div className="mt-0.5 flex gap-2 font-mono text-[10px] text-amber-300">
+                    <span>DMG {c.damage}</span>
+                    <span>৳ {c.takaMultiplier}x</span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Ultimate Card */}

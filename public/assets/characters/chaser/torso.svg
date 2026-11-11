@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 74" width="64" height="74">
+  <!-- Aam-Janata Hero green polo shirt with collar -->
+  <path d="M 12 10 Q 32 4 52 10 L 56 64 Q 32 70 8 64 Z" fill="#059669" stroke="#000000" stroke-width="2.5"/>
+  <!-- Collar -->
+  <polygon points="20,10 32,22 16,16" fill="#047857" stroke="#000000" stroke-width="1.5"/>
+  <polygon points="44,10 32,22 48,16" fill="#047857" stroke="#000000" stroke-width="1.5"/>
+  <!-- Button placket -->
+  <rect x="30" y="14" width="4" height="18" rx="1" fill="#047857" stroke="#000000" stroke-width="1"/>
+  <circle cx="32" cy="18" r="1.5" fill="#f8fafc"/>
+  <circle cx="32" cy="26" r="1.5" fill="#f8fafc"/>
+</svg>
