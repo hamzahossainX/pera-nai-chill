@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Zap } from "lucide-react";
 
 export function WeaponDock() {
-  const { rage, stamina, setStamina, selectedChappalId } = useGameStore();
+  const { rage, stamina, setStamina, selectedChappalId, screen } = useGameStore();
   const activeChappal =
     CHAPPAL_VARIETIES.find((c) => c.id === selectedChappalId) || DEFAULT_CHAPPAL;
 
@@ -101,9 +101,10 @@ export function WeaponDock() {
     return () => clearInterval(interval);
   }, []);
 
-  // Keyboard shortcut listener (1, 2, 3, 4, Space)
+  // Keyboard shortcut listener (1, 2, 3, 4, 5, Space)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (screen !== "PLAYING") return;
       if (e.repeat) return;
 
       if (e.code === "Space") {
@@ -121,7 +122,7 @@ export function WeaponDock() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [triggerWeapon, triggerUltimate]);
+  }, [screen, triggerWeapon, triggerUltimate]);
 
   return (
     <div className="pointer-events-none absolute bottom-4 left-0 right-0 z-30 flex flex-col items-center gap-3 px-4">

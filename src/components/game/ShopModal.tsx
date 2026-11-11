@@ -34,6 +34,9 @@ export function ShopModal({ isOpen, onClose }: ShopModalProps) {
     }
   });
 
+  const [lastPurchasedId, setLastPurchasedId] = useState<string | null>(null);
+  const [failedItemId, setFailedItemId] = useState<string | null>(null);
+
   useEffect(() => {
     try {
       localStorage.setItem("dhaka_runner_shop_unlocked", JSON.stringify(unlockedItems));
@@ -46,6 +49,8 @@ export function ShopModal({ isOpen, onClose }: ShopModalProps) {
     if (unlockedItems.includes(item.id)) return;
     if (taka < item.price) {
       audioService.play("cough");
+      setFailedItemId(item.id);
+      setTimeout(() => setFailedItemId(null), 600);
       return;
     }
 
@@ -53,6 +58,17 @@ export function ShopModal({ isOpen, onClose }: ShopModalProps) {
     if (success) {
       audioService.play("coin");
       setUnlockedItems((prev) => [...prev, item.id]);
+      setLastPurchasedId(item.id);
+      setTimeout(() => setLastPurchasedId(null), 1200);
+      // Auto-equip on purchase
+      if (item.category === "chappal") {
+        setSelectedChappalId(item.id);
+      } else if (item.category === "outfit") {
+        setEquippedOutfit(item.id);
+        try {
+          localStorage.setItem("dhaka_runner_equipped_outfit", item.id);
+        } catch {}
+      }
     }
   };
 
@@ -128,10 +144,19 @@ export function ShopModal({ isOpen, onClose }: ShopModalProps) {
                 : equippedOutfit === item.id;
             const canAfford = taka >= item.price;
 
+            const isJustPurchased = lastPurchasedId === item.id;
+            const isFailed = failedItemId === item.id;
+
             return (
               <div
                 key={item.id}
-                className="flex items-center justify-between rounded-2xl border-2 border-black/70 bg-slate-950/80 p-3 shadow"
+                className={`relative flex items-center justify-between rounded-2xl border-2 p-3 shadow transition-all duration-300 ${
+                  isJustPurchased
+                    ? "border-yellow-400 bg-yellow-950/60 ring-4 ring-yellow-400 scale-[1.02]"
+                    : isFailed
+                    ? "border-rose-500 bg-rose-950/40 translate-x-1"
+                    : "border-black/70 bg-slate-950/80"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <span className="text-3xl sm:text-4xl drop-shadow">{item.icon}</span>

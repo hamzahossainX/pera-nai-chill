@@ -95,13 +95,16 @@ export class DialogueSystem {
   }
 
   public showBubble(target: "villain" | "chaser", line: DialogueLine) {
+    if (!this.scene || !this.scene.add || !this.scene.tweens) return;
+    const charRig = target === "villain" ? this.villain?.rig : this.chaser?.rig;
+    if (!charRig || !charRig.scene) return;
+
     // Clean up existing bubble for this character (never stack/overlap)
     this.clearBubble(target);
 
     const lang = useGameStore.getState().settings.lang || "bn";
     const displayText = lang === "en" ? line.en : line.bn;
 
-    const charRig = target === "villain" ? this.villain.rig : this.chaser.rig;
     const startX = charRig.x;
     const startY = charRig.y - 140;
 
@@ -223,5 +226,10 @@ export class DialogueSystem {
         this.triggerLine("chaser", "chaser_taunt");
       }
     }
+  }
+
+  public destroy() {
+    this.clearBubble("villain");
+    this.clearBubble("chaser");
   }
 }
