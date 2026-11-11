@@ -1,54 +1,28 @@
-import { VILLAINS } from "@/config/villains";
-import { WeatherType, TimeOfDay } from "@/store/useGameStore";
+// Daily Challenge configuration (Phase 3 placeholder)
+// Each challenge is seeded by the current date (local only) and defines a
+// specific scenario with optional constraints.
+// Example shape:
+// {
+//   id: string; // unique key
+//   description_bn: string; // Bangla description shown to user
+//   description_en: string; // English description
+//   conditions: {
+//     timeOfDay?: "morning" | "noon" | "evening" | "night";
+//     event?: "loadshedding" | "pollution" | "strike" | "flood";
+//     villainArchetype?: string; // matches key in villains.ts
+//   };
+//   rewardTaka: number;
+//   badgeId?: string; // reference to achievement badge
+// }
 
-export interface DailyChallenge {
-  dateKey: string;
-  title: { bn: string; en: string };
-  description: { bn: string; en: string };
-  villainId: string;
-  weather: WeatherType;
-  timeOfDay: TimeOfDay;
-  targetCombo: number;
-  rewardTaka: number;
-}
-
-export function getTodayChallenge(): DailyChallenge {
-  const now = new Date();
-  const dateKey = now.toISOString().slice(0, 10); // YYYY-MM-DD
-
-  // Deterministic hash based on date string
-  let hash = 0;
-  for (let i = 0; i < dateKey.length; i++) {
-    hash = (hash << 5) - hash + dateKey.charCodeAt(i);
-    hash |= 0;
-  }
-  const positiveHash = Math.abs(hash);
-
-  const villainList = VILLAINS;
-  const villain = villainList[positiveHash % villainList.length];
-
-  const weathers: WeatherType[] = ["rain", "clear", "fog", "flood"];
-  const weather = weathers[positiveHash % weathers.length];
-
-  const times: TimeOfDay[] = ["night", "goldenHour", "noon", "dawn"];
-  const timeOfDay = times[(positiveHash >> 2) % times.length];
-
-  const targetCombo = 8 + (positiveHash % 8); // 8 - 15 combo
-
-  return {
-    dateKey,
-    title: {
-      bn: `দৈনিক মিশন: ${villain.name.bn} পাকড়াও!`,
-      en: `Daily Mission: Catch ${villain.name.en}!`,
-    },
-    description: {
-      bn: `${timeOfDay === "night" ? "রাতের আঁধারে" : "রাস্তায়"} ${villain.name.bn}কে ${targetCombo}x কম্বো দিয়ে পরাস্ত করুন!`,
-      en: `Defeat ${villain.name.en} with at least ${targetCombo}x combo!`,
-    },
-    villainId: villain.id,
-    weather,
-    timeOfDay,
-    targetCombo,
-    rewardTaka: 450,
-  };
-}
+export const DAILY_CHALLENGES: Record<string, any> = {
+  "night-loadshedding": {
+    id: "night-loadshedding",
+    description_bn: "রাতের লোডশেডিং‑এ ফোন চোরকে ফাঁদে ফেলো",
+    description_en: "Trap the Phone Snatcher during night loadshedding",
+    conditions: { timeOfDay: "night", event: "loadshedding", villainArchetype: "phoneSnatcher" },
+    rewardTaka: 5000,
+    badgeId: "nightLoadshdding",
+  },
+  // Add more challenges as needed
+};
