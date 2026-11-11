@@ -8,6 +8,21 @@
 - [ ] T-102 — High-Score Anti-Cheat Edge Function [app:web][tags:backend,security]
 
 ## Done
+- [x] P2-14 — Performance Pass & Polish: Timestep clamping, particle pooling, auto-quality fallback, audit docs (`commit 764ada5`)
+- [x] P2-13 — Audio Engine Upgrade: Dynamic slapstick BGM sequencer, situational lowpass/bandpass filters, vehicle Doppler stereo panning (`commit 8e13f75`)
+- [x] P2-12 — Local Shop, Achievements, Daily Challenge & Wanted Poster: 100% offline Canvas export, localStorage persistence (`commit 85a0daf`)
+- [x] P2-11 — Street Interactions, New Weapons, Boss Chase & Caught Sequence: Banana peel trap, soda can kick, Chor-er Sardar boss, Havildar Mama (`commit afc49d2`)
+- [x] P2-10 — Dialogue Speech Bubbles, Taunt System, Ticker & Combo Names: Poetic bilingual lines, Dhaka TV ticker, taunt morale drain (`commit bb19bb4`)
+- [x] P2-09 — Event x Time-of-Day Cross-Interactions: Night loadshedding darkness & flashlight beam, smog halos, burning tyre light pools (`commit bf7fe29`)
+- [x] P2-08 — Weather System & Urban Flood Event: Rain drops, puddles, lightning, fog, floating chappals, -25% flood wading speed penalty (`commit e836ea0`)
+- [x] P2-07 — Time-of-Day Progression & Ambient Lighting: Dawn, Noon, Sunset, Night phases, stars, crescent moon, street lamps (`commit 43fc0f4`)
+- [x] P2-06 — Street Kit-Bash Parallax & Vehicles: MRT-6 metro track & train, perched crows, tea stalls, rickshaws, CNGs, buses, bikes (`commit 7ca85fa`)
+- [x] P2-05 — Lobby Archetype Carousel & Dress-up Preview: Live running preview wearing uploaded face, stats, time & weather pickers (`commit 71d320d`)
+- [x] P2-04 — Aam-Janata Hero Chaser Rig & Chappal Variety Framework: Bata, leather, gold chappals, attack impact frames, dash dust (`commit 7f31e43`)
+- [x] P2-03 — Dynamic Mask-Slip & Reactive Expressions: Slips at 66% HP, falls at 33% HP, dizzy stars, crying tears, archetype defeats (`commit d219aae`)
+- [x] P2-02 — 7 Distinct Dhaka Archetypes & Secondary Motion: Snatcher, Pickpocket, Cable, Manhole, Eid Market, Chicken Chor, Sardar (`commit 676e140`)
+- [x] P2-01 — Layered SVG Slot Rig Architecture: 15-slot standardized rig, Phone Snatcher vector SVG kit, procedural fallbacks (`commit 6176e6e`)
+- [x] P2-00 — Performance Baseline Audit: Codebase inspection, baseline report in `docs/perf-baseline.md` (`commit 765d9fb`)
 - [x] T18 — Monsoon Waterlogging Event, Pickups & Counter-Buffs: `evt_waterlogging`, `WaterloggingEffect`, paper boats, Daab / Mask pickups (`commit a97c634`)
 - [x] T17 — Selectable Dhaka Scenarios & Maps: Mirpur 10, Farmgate, New Market, custom procedural skies, signboards, potholes (`commit a97c634`)
 - [x] T16 — Reactive Comic Face Props: spinning dizzy stars, plaster band-aid, anime tears, popped shocked eyes (`commit a97c634`)
