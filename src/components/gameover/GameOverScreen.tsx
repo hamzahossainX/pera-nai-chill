@@ -1,12 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useGameStore } from "@/store/useGameStore";
 import { audioService } from "@/services/audio";
-import { Trophy, RotateCcw, User } from "lucide-react";
+import { Trophy, RotateCcw, User, FileText } from "lucide-react";
+import { WantedPosterModal } from "@/components/game/WantedPosterModal";
 
 export function GameOverScreen() {
+  const [isPosterOpen, setIsPosterOpen] = useState(false);
   const {
     villainHp,
     targetName,
@@ -134,6 +136,13 @@ export function GameOverScreen() {
           </button>
 
           <button
+            onClick={() => setIsPosterOpen(true)}
+            className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-emerald-500 py-3 font-comic text-sm font-bold text-black hover:bg-emerald-400 active:scale-95"
+          >
+            <FileText className="h-4 w-4" /> পোস্টার এক্সপোর্ট / WANTED POSTER
+          </button>
+
+          <button
             onClick={handleChangeFace}
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-slate-800 py-3 font-comic text-sm text-slate-200 hover:bg-slate-700 hover:text-white"
           >
@@ -141,6 +150,11 @@ export function GameOverScreen() {
           </button>
         </div>
       </motion.div>
+
+      <WantedPosterModal
+        isOpen={isPosterOpen}
+        onClose={() => setIsPosterOpen(false)}
+      />
     </div>
   );
 }

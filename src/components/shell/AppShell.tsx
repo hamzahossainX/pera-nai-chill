@@ -8,13 +8,17 @@ import { VillainPreview } from "@/components/lobby/VillainPreview";
 import { MapSelector } from "@/components/lobby/MapSelector";
 import { WeaponSelector } from "@/components/lobby/WeaponSelector";
 import { SettingsSheet } from "@/components/lobby/SettingsSheet";
+import { ShopModal } from "@/components/game/ShopModal";
+import { AchievementsModal } from "@/components/game/AchievementsModal";
+import { WantedPosterModal } from "@/components/game/WantedPosterModal";
+import { DailyChallengeCard } from "@/components/game/DailyChallengeCard";
 import { GameHost } from "@/components/game/GameHost";
 import { HudOverlay } from "@/components/game/HudOverlay";
 import { WeaponDock } from "@/components/game/WeaponDock";
 import { GameOverScreen } from "@/components/gameover/GameOverScreen";
 import { DebugBar } from "@/components/game/DebugBar";
 import { DemoRunner } from "@/components/game/DemoRunner";
-import { Settings, Play } from "lucide-react";
+import { Settings, Play, ShoppingBag, Trophy, FileText } from "lucide-react";
 import { audioService } from "@/services/audio";
 import { faceService } from "@/services/faceService";
 
@@ -29,6 +33,9 @@ export function AppShell() {
   } = useGameStore();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isShopOpen, setIsShopOpen] = useState(false);
+  const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
+  const [isPosterOpen, setIsPosterOpen] = useState(false);
   const logoTapRef = useRef(0);
 
   // Check URL parameters for ?debug=1 and ?demo=1
@@ -108,8 +115,44 @@ export function AppShell() {
 
             <div className="flex items-center gap-2">
               <button
+                onClick={() => {
+                  audioService.play("click");
+                  setIsShopOpen(true);
+                }}
+                className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-500 px-3 py-2 text-slate-950 font-comic text-xs font-bold shadow-md hover:bg-amber-400 active:scale-95"
+                title="Shop"
+              >
+                <ShoppingBag className="h-4 w-4" />
+                <span className="hidden sm:inline">দোকান / SHOP</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  audioService.play("click");
+                  setIsAchievementsOpen(true);
+                }}
+                className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-yellow-400 px-3 py-2 text-slate-950 font-comic text-xs font-bold shadow-md hover:bg-yellow-300 active:scale-95"
+                title="Achievements"
+              >
+                <Trophy className="h-4 w-4" />
+                <span className="hidden sm:inline">অর্জন</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  audioService.play("click");
+                  setIsPosterOpen(true);
+                }}
+                className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-emerald-500 px-3 py-2 text-slate-950 font-comic text-xs font-bold shadow-md hover:bg-emerald-400 active:scale-95"
+                title="Wanted Poster Maker"
+              >
+                <FileText className="h-4 w-4" />
+                <span className="hidden sm:inline">পোস্টার</span>
+              </button>
+
+              <button
                 onClick={() => setIsSettingsOpen(true)}
-                className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-slate-800 p-2.5 text-slate-300 shadow-md hover:bg-slate-700 hover:text-white"
+                className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-slate-800 p-2 text-slate-300 shadow-md hover:bg-slate-700 hover:text-white"
                 title="Settings"
               >
                 <Settings className="h-5 w-5" />
@@ -119,6 +162,8 @@ export function AppShell() {
 
           {/* Main Lobby Form Sections */}
           <main className="mx-auto mt-4 flex max-w-4xl flex-col gap-6 pb-28">
+            <DailyChallengeCard />
+
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FaceUploader />
               <VillainPreview />
@@ -128,6 +173,20 @@ export function AppShell() {
 
             <WeaponSelector />
           </main>
+
+          {/* Modals */}
+          <ShopModal
+            isOpen={isShopOpen}
+            onClose={() => setIsShopOpen(false)}
+          />
+          <AchievementsModal
+            isOpen={isAchievementsOpen}
+            onClose={() => setIsAchievementsOpen(false)}
+          />
+          <WantedPosterModal
+            isOpen={isPosterOpen}
+            onClose={() => setIsPosterOpen(false)}
+          />
 
           {/* Fixed Bottom Launch Bar */}
           <footer className="fixed bottom-0 left-0 right-0 z-30 border-t-4 border-black bg-slate-950/95 p-3.5 backdrop-blur-md">
