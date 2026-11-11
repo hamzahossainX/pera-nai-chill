@@ -622,6 +622,149 @@ export class BootScene extends Phaser.Scene {
       this.textures.addCanvas("fx-burning-tyre", canvas);
     }
 
+    // 27. Slippery Banana Peel (40 x 30)
+    if (!this.textures.exists("projectile-banana")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 40;
+      canvas.height = 30;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#facc15";
+      ctx.strokeStyle = "#a16207";
+      ctx.lineWidth = 1.5;
+      // Peel 1 left
+      ctx.beginPath();
+      ctx.moveTo(20, 15);
+      ctx.quadraticCurveTo(8, 12, 4, 25);
+      ctx.quadraticCurveTo(12, 22, 20, 20);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      // Peel 2 right
+      ctx.beginPath();
+      ctx.moveTo(20, 15);
+      ctx.quadraticCurveTo(32, 12, 36, 25);
+      ctx.quadraticCurveTo(28, 22, 20, 20);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      // Peel 3 top
+      ctx.beginPath();
+      ctx.moveTo(20, 15);
+      ctx.quadraticCurveTo(24, 6, 20, 3);
+      ctx.quadraticCurveTo(16, 6, 20, 20);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      // Brown stem tip
+      ctx.fillStyle = "#78350f";
+      ctx.fillRect(18, 2, 4, 3);
+      this.textures.addCanvas("projectile-banana", canvas);
+    }
+
+    // 28. Crushed Soda Can (36 x 22)
+    if (!this.textures.exists("projectile-can")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 36;
+      canvas.height = 22;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#dc2626";
+      ctx.beginPath();
+      ctx.ellipse(18, 11, 14, 8, -0.15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#991b1b";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Silver rim & pull tab
+      ctx.fillStyle = "#e2e8f0";
+      ctx.beginPath();
+      ctx.ellipse(6, 11, 3, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillRect(8, 9, 4, 4);
+      this.textures.addCanvas("projectile-can", canvas);
+    }
+
+    // 29. Cartoon Policeman / Havildar Mama (110 x 140)
+    if (!this.textures.exists("fx-policeman")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 110;
+      canvas.height = 140;
+      const ctx = canvas.getContext("2d")!;
+      // Khaki shirt torso
+      ctx.fillStyle = "#ca8a04";
+      ctx.fillRect(25, 60, 60, 60);
+      ctx.strokeStyle = "#713f12";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(25, 60, 60, 60);
+      // Red epaulets
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(20, 60, 10, 8);
+      ctx.fillRect(80, 60, 10, 8);
+      // Round head
+      ctx.fillStyle = "#fde047";
+      ctx.beginPath();
+      ctx.arc(55, 42, 22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      // Big comic eyes
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(47, 38, 6, 0, Math.PI * 2);
+      ctx.arc(63, 38, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#000000";
+      ctx.beginPath();
+      ctx.arc(48, 38, 2.5, 0, Math.PI * 2);
+      ctx.arc(62, 38, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      // Giant comic mustache
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.moveTo(35, 46);
+      ctx.quadraticCurveTo(55, 40, 75, 46);
+      ctx.quadraticCurveTo(55, 56, 35, 46);
+      ctx.fill();
+      // Whistle in mouth
+      ctx.fillStyle = "#e2e8f0";
+      ctx.fillRect(52, 48, 14, 6);
+      ctx.strokeRect(52, 48, 14, 6);
+      // Khaki Police Cap
+      ctx.fillStyle = "#a16207";
+      ctx.beginPath();
+      ctx.ellipse(55, 24, 25, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(32, 22, 46, 5);
+      this.textures.addCanvas("fx-policeman", canvas);
+    }
+
+    // 30. Police Rubber Stamp (280 x 110)
+    if (!this.textures.exists("fx-police-stamp")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 280;
+      canvas.height = 110;
+      const ctx = canvas.getContext("2d")!;
+      ctx.translate(140, 55);
+      ctx.rotate(-0.08);
+      // Outer red box
+      ctx.strokeStyle = "#dc2626";
+      ctx.lineWidth = 5;
+      ctx.strokeRect(-130, -45, 260, 90);
+      // Inner red border
+      ctx.lineWidth = 2;
+      ctx.strokeRect(-124, -39, 248, 78);
+      // Stencil Text
+      ctx.fillStyle = "#dc2626";
+      ctx.textAlign = "center";
+      ctx.font = "bold 24px 'Luckiest Guy', Impact, sans-serif";
+      ctx.fillText("থানায় চালান!", 0, -4);
+      ctx.font = "bold 13px 'Luckiest Guy', Impact, sans-serif";
+      ctx.fillText("TO THE POLICE STATION!", 0, 20);
+      this.textures.addCanvas("fx-police-stamp", canvas);
+    }
+
     // 12. Rig Torso
     if (!this.textures.exists("rig-torso")) {
       const g = this.make.graphics({ x: 0, y: 0 });

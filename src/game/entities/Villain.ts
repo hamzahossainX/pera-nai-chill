@@ -11,6 +11,7 @@ export class Villain {
   public archetype: (typeof VILLAINS)[number];
   public currentLane = 1; // 0, 1, or 2 (middle lane default)
   private laneChangeTimer = 0;
+  private isBossPhase2 = false;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -69,11 +70,72 @@ export class Villain {
     const store = useGameStore.getState();
     const remainingHp = Math.max(0, store.villainHp - damage);
     const maxHp = Math.max(1, store.villainMaxHp);
-    this.rig.updateHealth(remainingHp / maxHp);
+    const healthPercent = remainingHp / maxHp;
+    this.rig.updateHealth(healthPercent);
+
+    // Boss Phase 2 Check (Chor-er Sardar enters phase 2 below 50% HP)
+    if (this.archetype.id === "chorSardar" && healthPercent <= 0.5 && !this.isBossPhase2) {
+      this.isBossPhase2 = true;
+      this.scene.cameras.main.shake(200, 0.008);
+      // Spawn sweat drops
+      if (this.scene.textures.exists("fx-splash")) {
+        const sweat = this.scene.add
+          .sprite(this.rig.x - 10, this.rig.y - 120, "fx-splash")
+          .setDepth(this.rig.depth + 1)
+          .setScale(0.8);
+        this.scene.tweens.add({
+          targets: sweat,
+          y: sweat.y - 20,
+          alpha: 0,
+          duration: 400,
+          onComplete: () => sweat.destroy(),
+        });
+      }
+    }
   }
 
   public trip(durationMs: number = 1600) {
     this.rig.triggerTrip(durationMs);
+  }
+
+  public isVaulting = false;
+  public isHiding = false;
+
+  public vault() {
+    if (this.isVaulting) return;
+    this.isVaulting = true;
+    const currentY = this.rig.y;
+
+    this.scene.tweens.add({
+      targets: this.rig,
+      y: currentY - 50,
+      rotation: -0.25,
+      duration: 200,
+      yoyo: true,
+      ease: "Quad.Out",
+      onComplete: () => {
+        this.rig.rotation = 0;
+        this.rig.y = currentY;
+        this.isVaulting = false;
+      },
+    });
+  }
+
+  public hideBehindVehicle() {
+    if (this.isHiding) return;
+    this.isHiding = true;
+
+    this.scene.tweens.add({
+      targets: this.rig,
+      scaleY: this.rig.scaleY * 0.8,
+      alpha: 0.65,
+      duration: 300,
+      yoyo: true,
+      hold: 800,
+      onComplete: () => {
+        this.isHiding = false;
+      },
+    });
   }
 
   public die(onComplete?: () => void) {
@@ -83,11 +145,12 @@ export class Villain {
   public update(time: number, delta: number) {
     this.rig.update(time, delta);
 
-    // AI Lane Dodging: changes lane every 4 to 8 seconds
+    // AI Lane Dodging: changes lane every 4 to 8 seconds (faster in boss phase 2)
     this.laneChangeTimer += delta;
-    if (this.laneChangeTimer > 4500) {
+    const threshold = this.isBossPhase2 ? 2200 : 4500;
+    if (this.laneChangeTimer > threshold) {
       this.laneChangeTimer = 0;
-      if (Math.random() < 0.6) {
+      if (Math.random() < (this.isBossPhase2 ? 0.8 : 0.6)) {
         const nextLane =
           this.currentLane === 0
             ? 1

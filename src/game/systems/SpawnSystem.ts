@@ -131,26 +131,59 @@ export class SpawnSystem {
 
       obs.update(_time, delta, speed);
 
-      // Check collision with villain in same lane
-      if (
-        obs.lane === this.villain.currentLane &&
-        Math.abs(obs.x - this.villain.rig.x) < 45
-      ) {
-        // Villain trips over the barricade/tire/pothole!
-        this.villain.trip(1800);
-        this.fxSystem.triggerHitStop(60);
-        this.fxSystem.spawnFloatingText(
-          this.villain.rig.x,
-          this.villain.rig.y - 100,
-          obs.obstacleType === "pothole"
-            ? "গর্তে আছাড়!"
-            : "আছাড়! (TRIPPED!)",
-          "#f43f5e",
-          "30px"
-        );
-        audioService.play("sfx-punch");
+      // Villain AI interaction (Vault / Shove / Trip)
+      if (obs.lane === this.villain.currentLane) {
+        const dist = obs.x - this.villain.rig.x;
+        // Obstacle approaching villain: 50% chance villain vaults
+        if (dist > 35 && dist < 95 && !this.villain.isVaulting) {
+          if (Math.random() < 0.5) {
+            this.villain.vault();
+          } else if (obs.obstacleType === "barricade" && Math.random() < 0.3) {
+            // Villain shoves the barricade backwards!
+            obs.x -= 80;
+          }
+        } else if (Math.abs(dist) < 40 && !this.villain.isVaulting) {
+          // Villain trips over the barricade/tire/pothole!
+          this.villain.trip(1800);
+          this.fxSystem.triggerHitStop(60);
+          this.fxSystem.spawnFloatingText(
+            this.villain.rig.x,
+            this.villain.rig.y - 100,
+            obs.obstacleType === "pothole"
+              ? "গর্তে আছাড়!"
+              : "আছাড়! (TRIPPED!)",
+            "#f43f5e",
+            "30px"
+          );
+          audioService.play("sfx-punch");
+          obs.deactivate();
+        }
+      }
 
-        obs.deactivate();
+      // Chaser interaction with obstacles (potholes/puddles stumble)
+      if (
+        this.chaser &&
+        obs.lane === this.chaser.currentLane &&
+        Math.abs(obs.x - this.chaser.rig.x) < 40
+      ) {
+        if (obs.obstacleType === "pothole") {
+          this.chaser.stumble();
+          const store = useGameStore.getState();
+          store.setStamina(Math.max(0, store.stamina - 6));
+          if (this.scene.textures.exists("fx-splash")) {
+            const splash = this.scene.add
+              .sprite(this.chaser.rig.x, this.chaser.rig.y, "fx-splash")
+              .setDepth(this.chaser.rig.depth + 1);
+            this.scene.tweens.add({
+              targets: splash,
+              alpha: 0,
+              y: splash.y - 15,
+              duration: 300,
+              onComplete: () => splash.destroy(),
+            });
+          }
+          obs.deactivate();
+        }
       }
     }
 

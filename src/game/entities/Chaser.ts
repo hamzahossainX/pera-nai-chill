@@ -82,6 +82,20 @@ export class Chaser {
     this.rig.triggerAttack(type);
   }
 
+  public stumble() {
+    this.scene.tweens.add({
+      targets: this.rig,
+      rotation: 0.18,
+      duration: 100,
+      yoyo: true,
+      repeat: 1,
+      ease: "Quad.InOut",
+      onComplete: () => {
+        this.rig.rotation = 0;
+      },
+    });
+  }
+
   public update(time: number, delta: number) {
     this.rig.update(time, delta);
   }

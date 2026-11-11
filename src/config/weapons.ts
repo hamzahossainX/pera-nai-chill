@@ -138,6 +138,38 @@ export const WEAPONS: WeaponConfig[] = [
       bn: "অমোঘ নির্ভুল উড়ন্ত জুতা!",
     },
   },
+  {
+    id: "banana",
+    name: { en: "Banana Peel", bn: "কলার খোসা" },
+    damage: 60,
+    cooldownSec: 1.6,
+    staminaCost: 20,
+    rageGain: 12,
+    takaReward: 40,
+    type: "projectile",
+    soundKey: "sfx-slap",
+    hotkey: "5",
+    description: {
+      en: "Drops slippery banana peel on the road. Thief flips 360° and stumbles!",
+      bn: "পিচ্ছিল কলার খোসা! চোর পিছলে ৩৬০° ডিগবাজি খাবে!",
+    },
+  },
+  {
+    id: "can-kick",
+    name: { en: "Can Kick", bn: "ক্যান কিক" },
+    damage: 45,
+    cooldownSec: 1.0,
+    staminaCost: 15,
+    rageGain: 10,
+    takaReward: 30,
+    type: "projectile",
+    soundKey: "sfx-kick",
+    hotkey: "6",
+    description: {
+      en: "Kicks a metal soda can rolling into thief shins!",
+      bn: "ধাতব সোডা ক্যানে কিক! চোরের হাঁটুতে লাগবে!",
+    },
+  },
 ];
 
 export const ULTIMATE_WEAPON: WeaponConfig = {

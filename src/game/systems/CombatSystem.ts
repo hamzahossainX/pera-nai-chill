@@ -62,6 +62,73 @@ export class CombatSystem {
     const finalDamage = Math.round(weapon.damage * multiplier);
 
     if (weapon.type === "projectile") {
+      if (weapon.id === "banana") {
+        this.chaser.attack("throw");
+        audioService.play(weapon.soundKey);
+        const p = new Projectile({
+          scene: this.scene,
+          startX: this.chaser.rig.x + 20,
+          startY: this.chaser.rig.y - 45,
+          targetX: this.villain.rig.x,
+          targetY: this.villain.rig.y - 20,
+          texture: "projectile-banana",
+          duration: 380,
+          onHit: (hitX, hitY) => {
+            // Villain 360 degree slip flip!
+            this.scene.tweens.add({
+              targets: this.villain.rig,
+              rotation: Math.PI * 2,
+              y: this.villain.rig.y - 40,
+              duration: 350,
+              yoyo: true,
+              ease: "Quad.Out",
+              onComplete: () => {
+                this.villain.rig.rotation = 0;
+              },
+            });
+
+            this.applyHit({
+              x: hitX,
+              y: hitY,
+              damage: Math.round(weapon.damage * multiplier),
+              comicWord: "পিছলে গেল! ডিগবাজি!",
+              weapon,
+              isCrit: true,
+              knockback: 70,
+            });
+          },
+        });
+        this.projectiles.push(p);
+        return;
+      }
+
+      if (weapon.id === "can-kick") {
+        this.chaser.attack("kick");
+        audioService.play(weapon.soundKey);
+        const p = new Projectile({
+          scene: this.scene,
+          startX: this.chaser.rig.x + 30,
+          startY: this.chaser.rig.y - 15,
+          targetX: this.villain.rig.x - 10,
+          targetY: this.villain.rig.y - 15,
+          texture: "projectile-can",
+          duration: 300,
+          onHit: (hitX, hitY) => {
+            this.applyHit({
+              x: hitX,
+              y: hitY,
+              damage: Math.round(weapon.damage * multiplier),
+              comicWord: "ক্যান শট! ঠকাস!",
+              weapon,
+              isCrit: false,
+              knockback: 35,
+            });
+          },
+        });
+        this.projectiles.push(p);
+        return;
+      }
+
       // Look up currently selected chappal variety
       const selectedChappal =
         CHAPPAL_VARIETIES.find((c) => c.id === store.selectedChappalId) ||

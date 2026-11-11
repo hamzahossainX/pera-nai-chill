@@ -13,6 +13,7 @@ import { DifficultySystem } from "@/game/systems/DifficultySystem";
 import { BALANCE } from "@/config/balance";
 import { gameBus } from "@/game/bus";
 import { audioService } from "@/services/audio";
+import { useGameStore } from "@/store/useGameStore";
 
 export class RunScene extends Phaser.Scene {
   public parallaxSystem!: ParallaxSystem;
@@ -35,6 +36,24 @@ export class RunScene extends Phaser.Scene {
   }
 
   create() {
+    // Boss Check: Every 3rd run triggers Chor-er Sardar Boss Fight
+    let runCount = 1;
+    if (typeof window !== "undefined") {
+      try {
+        runCount = Number(localStorage.getItem("dhaka_runner_run_count") || "0") + 1;
+        localStorage.setItem("dhaka_runner_run_count", String(runCount));
+      } catch {}
+    }
+
+    const isBossRun = runCount % 3 === 0;
+    if (isBossRun) {
+      useGameStore.setState({
+        villainId: "chorSardar",
+        villainHp: 500,
+        villainMaxHp: 500,
+      });
+    }
+
     // 1. Initialize Parallax Background & Day/Night Lighting & Weather
     this.parallaxSystem = new ParallaxSystem(this);
     this.timeOfDaySystem = new TimeOfDaySystem(this, this.parallaxSystem);
@@ -97,7 +116,10 @@ export class RunScene extends Phaser.Scene {
   }
 
   private handleVillainDead = () => {
-    // Comic Dramatic Slow-Mo Finisher!
+    const W = BALANCE.LOGICAL_WIDTH;
+    const H = BALANCE.LOGICAL_HEIGHT;
+
+    // 1. Comic Dramatic Slow-Mo Finisher!
     this.time.timeScale = 0.25;
     this.cameras.main.shake(350, 0.015);
     this.cameras.main.zoomTo(1.08, 250);
@@ -120,7 +142,74 @@ export class RunScene extends Phaser.Scene {
       0,
       true
     );
+
+    // 2. Havildar Mama cartoon policeman slides in blowing whistle
+    audioService.play("whistle");
+    if (this.textures.exists("fx-policeman")) {
+      const police = this.add
+        .sprite(W + 120, this.villain.rig.y - 15, "fx-policeman")
+        .setDepth(160)
+        .setScale(1.15);
+
+      this.tweens.add({
+        targets: police,
+        x: this.villain.rig.x + 95,
+        duration: 450,
+        ease: "Back.Out",
+      });
+    }
+
+    // 3. Giant Comic Red Rubber Stamp Slams in Center ("থানায় চালান! / TO THE POLICE STATION!")
+    this.time.delayedCall(350, () => {
+      audioService.play("sfx-punch");
+      this.cameras.main.shake(400, 0.02);
+
+      if (this.textures.exists("fx-police-stamp")) {
+        const stamp = this.add
+          .sprite(W / 2, H / 2 - 30, "fx-police-stamp")
+          .setDepth(200)
+          .setScale(2.4)
+          .setAlpha(0);
+
+        this.tweens.add({
+          targets: stamp,
+          scale: 1.0,
+          alpha: 1,
+          duration: 180,
+          ease: "Bounce.Out",
+        });
+      }
+
+      // Ink splatter particles
+      this.fxSystem.spawnHitParticles(W / 2, H / 2 - 30, 16, "particle-star");
+    });
+
+    // 4. Massive Taka Shower (+500 Taka victory bonus)
+    useGameStore.getState().addTaka(500);
     audioService.play("fanfare");
+
+    this.time.delayedCall(600, () => {
+      for (let i = 0; i < 35; i++) {
+        const coin = this.add
+          .sprite(
+            Math.random() * W,
+            -20 - Math.random() * 80,
+            "particle-coin"
+          )
+          .setDepth(210)
+          .setScale(0.8 + Math.random() * 0.4);
+
+        this.tweens.add({
+          targets: coin,
+          y: H + 30,
+          x: coin.x + (Math.random() - 0.5) * 80,
+          rotation: Math.random() * 6,
+          duration: 900 + Math.random() * 500,
+          ease: "Quad.In",
+          onComplete: () => coin.destroy(),
+        });
+      }
+    });
   };
 
   private handleDebugSpawnObstacle = () => {

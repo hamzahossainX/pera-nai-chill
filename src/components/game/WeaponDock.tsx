@@ -191,6 +191,10 @@ export function WeaponDock() {
                   ? "bg-rose-500"
                   : w.id === "punch"
                   ? "bg-indigo-600"
+                  : w.id === "banana"
+                  ? "bg-yellow-400"
+                  : w.id === "can-kick"
+                  ? "bg-red-500"
                   : "bg-teal-500"
               }`}
             >
@@ -212,6 +216,10 @@ export function WeaponDock() {
                   ? "👊"
                   : w.id === "kick"
                   ? "🦵"
+                  : w.id === "banana"
+                  ? "🍌"
+                  : w.id === "can-kick"
+                  ? "🥫"
                   : activeChappal.icon}
               </span>
 
