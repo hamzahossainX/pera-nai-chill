@@ -95,6 +95,11 @@ export class RunScene extends Phaser.Scene {
     });
 
     this.villain.die();
+    this.fxSystem.triggerArchetypeDefeatReaction(
+      this.villain.archetype.id,
+      this.villain.rig.x,
+      this.villain.rig.y
+    );
     this.fxSystem.triggerHitFx(
       this.villain.rig.x,
       this.villain.rig.y - 40,

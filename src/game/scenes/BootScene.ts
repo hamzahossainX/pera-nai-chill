@@ -298,6 +298,56 @@ export class BootScene extends Phaser.Scene {
       g.destroy();
     }
 
+    // 12. Cash Note Particle (৳500 / ৳100 paper money)
+    if (!this.textures.exists("particle-cash-note")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0x15803d, 1);
+      g.fillRect(1, 1, 30, 16);
+      g.lineStyle(1.5, 0x14532d, 1);
+      g.strokeRect(1, 1, 30, 16);
+      g.fillStyle(0xdcfce7, 1);
+      g.fillCircle(16, 9, 4);
+      g.generateTexture("particle-cash-note", 32, 18);
+      g.destroy();
+    }
+
+    // 13. Feather Particle (Deshi rooster)
+    if (!this.textures.exists("particle-feather")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xea580c, 1);
+      g.fillEllipse(12, 6, 22, 10);
+      g.fillStyle(0xfef08a, 1);
+      g.fillRect(4, 5, 14, 2);
+      g.generateTexture("particle-feather", 24, 12);
+      g.destroy();
+    }
+
+    // 14. Spark Particle (Wire cutter / Cable chor)
+    if (!this.textures.exists("particle-spark")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0x38bdf8, 1);
+      g.fillRect(5, 1, 4, 12);
+      g.fillRect(1, 5, 12, 4);
+      g.fillStyle(0xffffff, 1);
+      g.fillCircle(7, 7, 3);
+      g.generateTexture("particle-spark", 14, 14);
+      g.destroy();
+    }
+
+    // 15. Stamped Document Particle (Sardar bribe papers)
+    if (!this.textures.exists("particle-document")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xffffff, 1);
+      g.fillRect(2, 2, 22, 28);
+      g.lineStyle(1.5, 0x000000, 1);
+      g.strokeRect(2, 2, 22, 28);
+      // Red stamp
+      g.fillStyle(0xef4444, 0.8);
+      g.fillCircle(13, 16, 5);
+      g.generateTexture("particle-document", 26, 32);
+      g.destroy();
+    }
+
     // 12. Rig Torso
     if (!this.textures.exists("rig-torso")) {
       const g = this.make.graphics({ x: 0, y: 0 });

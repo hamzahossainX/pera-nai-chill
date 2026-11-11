@@ -8,6 +8,7 @@ import { useGameStore } from "@/store/useGameStore";
 export class Villain {
   public scene: Phaser.Scene;
   public rig: CharacterRig;
+  public archetype: (typeof VILLAINS)[number];
   public currentLane = 1; // 0, 1, or 2 (middle lane default)
   private laneChangeTimer = 0;
 
@@ -20,6 +21,8 @@ export class Villain {
     const villainConfig =
       VILLAINS.find((v) => v.id === useGameStore.getState().villainId) ||
       VILLAINS[0];
+
+    this.archetype = villainConfig;
 
     const outfit = OUTFITS[villainConfig.outfitId] || OUTFITS.phoneSnatcher;
 

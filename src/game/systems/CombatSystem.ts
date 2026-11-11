@@ -185,6 +185,11 @@ export class CombatSystem {
   }) {
     // 1. Villain reactions
     this.villain.hit(params.damage, params.knockback, params.isCrit);
+    this.fxSystem.triggerArchetypeHitReaction(
+      this.villain.archetype.id,
+      params.x,
+      params.y
+    );
 
     // 2. Visual & Sound FX
     this.fxSystem.triggerHitFx(
