@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20" width="24" height="20">
+  <defs>
+    <linearGradient id="neckGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="30%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <!-- Tapered neck column with sternocleidomastoid shadow -->
+  <path d="M 5 1 C 5 7 7 18 3 20 L 21 20 C 17 18 19 7 19 1 Z" fill="url(#neckGrad)" stroke="#000000" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Under-chin ambient occlusion -->
+  <ellipse cx="12" cy="3" rx="7" ry="2" fill="#78350f" opacity="0.6"/>
+</svg>

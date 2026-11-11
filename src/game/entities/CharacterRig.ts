@@ -27,6 +27,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   // Rig Components
   private shadowSprite!: Phaser.GameObjects.Sprite;
   private torsoSprite!: Phaser.GameObjects.Sprite;
+  private neckSprite?: Phaser.GameObjects.Sprite;
   private headGroup!: Phaser.GameObjects.Container;
   private headBackSprite?: Phaser.GameObjects.Sprite;
   private faceSprite!: Phaser.GameObjects.Sprite;
@@ -34,6 +35,10 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   private maskLowerSprite?: Phaser.GameObjects.Sprite;
   private headFrontSprite?: Phaser.GameObjects.Sprite;
   private expressionSprite!: Phaser.GameObjects.Sprite;
+
+  // Debug Skeleton Overlay
+  private skeletonGraphics?: Phaser.GameObjects.Graphics;
+  public showSkeleton: boolean = false;
 
   // Comic Reactive Face Props
   private propDizzyStars!: Phaser.GameObjects.Sprite;
@@ -170,6 +175,12 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.torsoSprite.setScale(bodyScale.torso);
     this.add(this.torsoSprite);
 
+    // 5.5 Neck (Connecting Torso to Head)
+    const neckKey = this.resolveTexture(slots?.neck, "rig-neck");
+    this.neckSprite = this.scene.add.sprite(0, -70, neckKey).setOrigin(0.5, 0.5);
+    this.neckSprite.setScale(bodyScale.head * 0.95);
+    this.add(this.neckSprite);
+
     // 6. Front Prop (e.g. chest harness, badge)
     if (slots?.frontProp && this.scene.textures.exists(slots.frontProp)) {
       this.frontPropSprite = this.scene.add
@@ -211,8 +222,8 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.frontArmGroup.add([this.frontArmUpper, this.frontArmLowerGroup]);
     this.add(this.frontArmGroup);
 
-    // 9. Head Group (Head Container)
-    this.headGroup = this.scene.add.container(0, -90);
+    // 9. Head Group (Head Container - Chibi 3-Head Height Ratio)
+    this.headGroup = this.scene.add.container(0, -82);
     this.headGroup.setScale(bodyScale.head);
 
     // Slot: HeadBack (e.g. hoodie back cavity / back hair)
@@ -231,7 +242,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.faceSprite = this.scene.add
       .sprite(0, 0, effectiveFaceKey)
       .setOrigin(0.5, 0.5)
-      .setDisplaySize(68, 68);
+      .setDisplaySize(58, 58);
     this.headGroup.add(this.faceSprite);
 
     // Slot: MaskUpper (balaclava forehead band)
@@ -415,7 +426,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   public setFaceTexture(key: string) {
     if (this.scene && this.scene.textures && this.scene.textures.exists(key)) {
       this.faceKey = key;
-      this.faceSprite.setTexture(key).setDisplaySize(68, 68);
+      this.faceSprite.setTexture(key).setDisplaySize(58, 58);
     }
   }
 
@@ -430,6 +441,17 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.torsoSprite.setTint(flashColor);
     this.faceSprite.setTint(flashColor);
     this.expressionSprite.setVisible(true);
+
+    // Comic slapstick squash & stretch on body (scaleX: 1.3, scaleY: 0.7 -> scaleX: 0.8, scaleY: 1.2 -> settle)
+    const baseScale = this.scaleX;
+    this.scene.tweens.chain({
+      targets: this,
+      tweens: [
+        { scaleX: baseScale * 1.3, scaleY: baseScale * 0.7, duration: 60, ease: "Quad.Out" },
+        { scaleX: baseScale * 0.8, scaleY: baseScale * 1.2, duration: 80, ease: "Quad.InOut" },
+        { scaleX: baseScale, scaleY: baseScale, duration: 100, ease: "Back.Out" },
+      ],
+    });
 
     // Show comic popped eyes or band-aid on big hit
     if (isCrit || knockbackX >= 30) {
@@ -456,7 +478,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       duration: 120,
       yoyo: true,
       onComplete: () => {
-        this.faceSprite.setDisplaySize(68, 68);
+        this.faceSprite.setDisplaySize(58, 58);
       },
     });
 
@@ -647,11 +669,80 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.torsoSprite.y = -55 + Math.abs(Math.sin(t)) * -bounce;
     this.torsoSprite.rotation = hunch;
 
-    // Head wobble & secondary motion lag
+    // Neck follows torso top
+    if (this.neckSprite) {
+      this.neckSprite.y = -70 + (this.torsoSprite.y + 55) * 0.7;
+      this.neckSprite.rotation = hunch * 0.7;
+    }
+
+    // Head wobble & secondary motion lag (Spring / Chibi)
     this.headGroup.rotation = hunch + Math.sin(t * 2) * 0.08;
-    this.headGroup.y = -90 + (this.torsoSprite.y + 55) + Math.sin(t * 2 + 0.5) * 2;
+    this.headGroup.y = -82 + (this.torsoSprite.y + 55) + Math.sin(t * 2 + 0.5) * 2;
+
+    // Ground Shadow Squash & Stretch with Footfalls
+    if (this.shadowSprite) {
+      const shadowScale = 1.0 - Math.abs(Math.sin(t)) * 0.22;
+      this.shadowSprite.setScale(shadowScale, shadowScale * 0.85);
+      this.shadowSprite.setAlpha(0.5 + Math.abs(Math.cos(t)) * 0.3);
+    }
 
     // Update Secondary Motion (cloth fluttering & prop spring bounce)
     this.secondaryMotion.update(time, delta, this.runSpeedFactor * 120);
+
+    // Draw Skeleton Joint Hierarchy if Debug Enabled
+    if (this.showSkeleton) {
+      this.drawDebugSkeleton();
+    }
+  }
+
+  public setDebugSkeleton(show: boolean) {
+    this.showSkeleton = show;
+    if (!show && this.skeletonGraphics) {
+      this.skeletonGraphics.clear();
+      this.skeletonGraphics.setVisible(false);
+    }
+  }
+
+  private drawDebugSkeleton() {
+    if (!this.scene) return;
+    if (!this.skeletonGraphics) {
+      this.skeletonGraphics = this.scene.add.graphics();
+      this.add(this.skeletonGraphics);
+      this.skeletonGraphics.setDepth(999);
+    }
+    this.skeletonGraphics.setVisible(true);
+    this.skeletonGraphics.clear();
+
+    // Bone lines (Bright fluorescent green/yellow)
+    this.skeletonGraphics.lineStyle(2, 0x00ff88, 0.9);
+    this.skeletonGraphics.lineBetween(0, 0, 0, -30);
+    this.skeletonGraphics.lineBetween(0, -30, this.torsoSprite.x, this.torsoSprite.y);
+    this.skeletonGraphics.lineBetween(this.torsoSprite.x, this.torsoSprite.y, this.headGroup.x, this.headGroup.y);
+
+    // Arms
+    this.skeletonGraphics.lineBetween(this.frontArmGroup.x, this.frontArmGroup.y, this.frontArmGroup.x + this.frontArmLowerGroup.x, this.frontArmGroup.y + this.frontArmLowerGroup.y);
+    this.skeletonGraphics.lineBetween(this.backArmGroup.x, this.backArmGroup.y, this.backArmGroup.x + this.backArmLowerGroup.x, this.backArmGroup.y + this.backArmLowerGroup.y);
+
+    // Legs
+    this.skeletonGraphics.lineBetween(this.frontLegGroup.x, this.frontLegGroup.y, this.frontLegGroup.x + this.frontLegShinGroup.x, this.frontLegGroup.y + this.frontLegShinGroup.y);
+    this.skeletonGraphics.lineBetween(this.backLegGroup.x, this.backLegGroup.y, this.backLegGroup.x + this.backLegShinGroup.x, this.backLegGroup.y + this.backLegShinGroup.y);
+
+    // Joints (Cyan circles with black border)
+    this.skeletonGraphics.fillStyle(0x00ffff, 1);
+    this.skeletonGraphics.lineStyle(1.5, 0x000000, 1);
+    const joints = [
+      { x: 0, y: 0 },
+      { x: 0, y: -30 },
+      { x: this.torsoSprite.x, y: this.torsoSprite.y },
+      { x: this.headGroup.x, y: this.headGroup.y },
+      { x: this.frontArmGroup.x, y: this.frontArmGroup.y },
+      { x: this.backArmGroup.x, y: this.backArmGroup.y },
+      { x: this.frontLegGroup.x, y: this.frontLegGroup.y },
+      { x: this.backLegGroup.x, y: this.backLegGroup.y },
+    ];
+    for (const j of joints) {
+      this.skeletonGraphics.fillCircle(j.x, j.y, 3.5);
+      this.skeletonGraphics.strokeCircle(j.x, j.y, 3.5);
+    }
   }
 }

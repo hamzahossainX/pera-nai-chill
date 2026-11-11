@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 26" width="60" height="26">
-  <!-- Boss dark aviator sunglasses -->
-  <rect x="8" y="6" width="20" height="14" rx="4" fill="#09090b" stroke="#fbbf24" stroke-width="2"/>
-  <rect x="32" y="6" width="20" height="14" rx="4" fill="#09090b" stroke="#fbbf24" stroke-width="2"/>
-  <line x1="28" y1="12" x2="32" y2="12" stroke="#fbbf24" stroke-width="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 22" width="54" height="22">
+  <!-- Aviator teardrop lenses -->
+  <path d="M 8 4 Q 22 2 24 14 Q 18 20 10 16 Z" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+  <path d="M 46 4 Q 32 2 30 14 Q 36 20 44 16 Z" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+  <!-- Double Bridge -->
+  <line x1="22" y1="6" x2="32" y2="6" stroke="#f59e0b" stroke-width="2"/>
+  <line x1="23" y1="9" x2="31" y2="9" stroke="#f59e0b" stroke-width="1.5"/>
 </svg>

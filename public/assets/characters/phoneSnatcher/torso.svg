@@ -1,25 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 68" width="56" height="68">
-  <!-- Black Hoodie Torso -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="hoodieShade" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#090d16"/>
-      <stop offset="60%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+    <linearGradient id="hoodieGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="80%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
     </linearGradient>
   </defs>
-  <!-- Main Jacket -->
-  <path d="M 10 6 C 18 2 38 2 46 6 L 52 60 C 52 64 48 66 42 66 L 14 66 C 8 66 4 64 4 60 Z" fill="url(#hoodieShade)" stroke="#000000" stroke-width="3.5" stroke-linejoin="round"/>
-  <!-- Shoulder seam lines -->
-  <path d="M 12 8 L 18 24 M 44 8 L 38 24" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
-  <!-- Front Zipper Line -->
-  <line x1="28" y1="12" x2="28" y2="64" stroke="#475569" stroke-width="2.5" stroke-dasharray="2 1"/>
-  <!-- Kangaroo Pouch Pocket -->
-  <path d="M 12 38 L 44 38 L 40 58 L 16 58 Z" fill="#0f172a" stroke="#000000" stroke-width="2.5" stroke-linejoin="round"/>
-  <path d="M 16 38 L 12 50 M 40 38 L 44 50" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
-  <!-- Drawstrings -->
-  <path d="M 23 12 Q 21 24 22 28 M 33 12 Q 35 24 34 28" fill="none" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
-  <circle cx="22" cy="29" r="1.5" fill="#f59e0b"/>
-  <circle cx="34" cy="29" r="1.5" fill="#f59e0b"/>
-  <!-- Parody Brand Logo (adidos 3 slanting bars) -->
-  <path d="M 38 22 L 40 18 M 41 22 L 43 16 M 44 22 L 46 14" stroke="#e2e8f0" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Contoured hoodie torso with shoulder taper -->
+  <path d="M 12 10 Q 32 7 52 10 L 46 54 Q 32 56 18 54 Z" fill="url(#hoodieGrad)" stroke="#000000" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Comic edge rim highlight -->
+  <path d="M 14 11 Q 32 8 50 11" stroke="#475569" stroke-width="1.5" fill="none"/>
+  <!-- Kangaroo front pocket -->
+  <path d="M 20 36 L 44 36 L 42 50 L 22 50 Z" fill="#0f172a" stroke="#000000" stroke-width="1.8"/>
+  <line x1="20" y1="36" x2="23" y2="46" stroke="#475569" stroke-width="1.2"/>
+  <line x1="44" y1="36" x2="41" y2="46" stroke="#475569" stroke-width="1.2"/>
+  <!-- Center Zipper -->
+  <line x1="32" y1="12" x2="32" y2="36" stroke="#94a3b8" stroke-width="2" stroke-dasharray="2,1"/>
+  <!-- Dangling Drawstrings with metal aglets -->
+  <path d="M 27 12 Q 25 22 24 28" stroke="#f8fafc" stroke-width="1.5" fill="none"/>
+  <rect x="23" y="27" width="2" height="3" fill="#cbd5e1"/>
+  <path d="M 37 12 Q 39 22 40 28" stroke="#f8fafc" stroke-width="1.5" fill="none"/>
+  <rect x="39" y="27" width="2" height="3" fill="#cbd5e1"/>
 </svg>

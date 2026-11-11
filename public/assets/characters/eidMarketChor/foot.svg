@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 24" width="42" height="24">
-  <!-- Traditional Nagra pointy shoes -->
-  <path d="M 4 14 Q 24 8 36 12 Q 40 10 38 16 Q 20 22 4 18 Z" fill="#b45309" stroke="#000000" stroke-width="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 20" width="38" height="20">
+  <!-- Upturned Royal Nagra Slipper -->
+  <path d="M 6 5 C 9 2 15 2 18 5 L 34 11 C 38 8 38 15 33 15 L 3 15 C 1 13 1 7 6 5 Z" fill="#e11d48" stroke="#000000" stroke-width="2.2"/>
+  <!-- Gold embroidery on toe -->
+  <path d="M 22 9 Q 30 11 34 8" stroke="#f59e0b" stroke-width="2" fill="none"/>
 </svg>

@@ -1,8 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Stolen copper cable coil on back -->
-  <circle cx="24" cy="24" r="20" fill="none" stroke="#b45309" stroke-width="6"/>
-  <circle cx="24" cy="24" r="14" fill="none" stroke="#0f172a" stroke-width="5"/>
-  <circle cx="24" cy="24" r="8" fill="none" stroke="#f59e0b" stroke-width="4"/>
-  <!-- Dangling copper loose wire ends -->
-  <path d="M 38 32 Q 44 40 40 46" stroke="#f59e0b" stroke-width="3" fill="none"/>
+  <!-- Coiled copper wire roll carried on back -->
+  <circle cx="24" cy="24" r="20" fill="none" stroke="#b45309" stroke-width="5"/>
+  <circle cx="24" cy="24" r="16" fill="none" stroke="#d97706" stroke-width="4"/>
+  <circle cx="24" cy="24" r="12" fill="none" stroke="#f59e0b" stroke-width="3"/>
+  <!-- Exposed raw wire ends with sparks -->
+  <line x1="24" y1="4" x2="32" y2="1" stroke="#b45309" stroke-width="3"/>
+  <circle cx="33" cy="1" r="2" fill="#38bdf8"/>
 </svg>

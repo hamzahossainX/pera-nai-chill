@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-  <circle cx="12" cy="12" r="9" fill="#c2410c" stroke="#000000" stroke-width="2"/>
-  <path d="M 8 12 Q 12 16 16 12" stroke="#7c2d12" stroke-width="1.5" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Stolen Brown Bi-fold Wallet -->
+  <rect x="8" y="6" width="22" height="18" rx="3" fill="#451a03" stroke="#000000" stroke-width="2"/>
+  <!-- Green 500 Taka notes poking out -->
+  <path d="M 12 4 L 24 3 L 26 8 L 14 9 Z" fill="#10b981" stroke="#000000" stroke-width="1.2"/>
+  <text x="16" y="7" font-size="4" font-weight="bold" fill="#064e3b">৳</text>
+  <!-- Sleight of hand nimble fingers -->
+  <path d="M 2 12 C 2 7 12 7 14 12 L 15 24 C 15 28 4 28 2 24 Z" fill="#b45309" stroke="#000000" stroke-width="2.2"/>
 </svg>

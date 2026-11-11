@@ -829,6 +829,27 @@ export class BootScene extends Phaser.Scene {
       g.destroy();
     }
 
+    if (!this.textures.exists("rig-shadow-soft")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0x000000, 0.4);
+      g.fillEllipse(40, 14, 38, 12);
+      g.fillStyle(0x000000, 0.7);
+      g.fillEllipse(40, 14, 26, 8);
+      g.generateTexture("rig-shadow-soft", 80, 28);
+      g.destroy();
+    }
+
+    // 17b. Rig Neck
+    if (!this.textures.exists("rig-neck")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0xd97706, 1);
+      g.fillRect(2, 2, 16, 12);
+      g.lineStyle(2, 0x000000, 1);
+      g.strokeRect(2, 2, 16, 12);
+      g.generateTexture("rig-neck", 20, 16);
+      g.destroy();
+    }
+
     // 18. Rig Shock Expression Overlay
     if (!this.textures.exists("rig-expression-shock")) {
       const g = this.make.graphics({ x: 0, y: 0 });

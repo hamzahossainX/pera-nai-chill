@@ -1,4 +1,5 @@
 export interface RigSlotTextures {
+  neck?: string;
   headBack?: string;
   headFront?: string;
   maskUpper?: string;
@@ -32,6 +33,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
     id: "chaserJanata",
     name: { bn: "আম-জনতা হিরো পোশাক", en: "Aam-Janata Hero Casual" },
     slots: {
+      neck: "rig-neck",
       torso: "chaser-torso",
       upperArm: "chaser-arm-upper",
       lowerArm: "chaser-arm-lower",
@@ -39,7 +41,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
       thigh: "chaser-thigh",
       shin: "chaser-shin",
       foot: "chaser-foot",
-      shadow: "rig-shadow",
+      shadow: "rig-shadow-soft",
     },
     defaultColors: {
       outfit: 0x059669,
@@ -51,6 +53,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
     id: "phoneSnatcher",
     name: { bn: "ছিনতাইকারী হুডি", en: "Snatcher Hoodie" },
     slots: {
+      neck: "rig-neck",
       headBack: "snatcher-hood-back",
       headFront: "snatcher-hood-front",
       maskUpper: "snatcher-mask-upper",
@@ -63,7 +66,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
       shin: "snatcher-shin",
       foot: "snatcher-foot",
       handProp: "snatcher-prop-phone",
-      shadow: "rig-shadow",
+      shadow: "rig-shadow-soft",
     },
     defaultColors: {
       outfit: 0x0f172a,
@@ -75,6 +78,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
     id: "pickpocket",
     name: { bn: "পকেটমার জামা ও গামছা", en: "Pickpocket Gamchha & Stripes" },
     slots: {
+      neck: "rig-neck",
       maskLower: "pickpocket-mask-lower",
       torso: "pickpocket-torso",
       upperArm: "pickpocket-arm-upper",
@@ -84,7 +88,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
       shin: "pickpocket-shin",
       foot: "pickpocket-foot",
       handProp: "pickpocket-prop-wallet",
-      shadow: "rig-shadow",
+      shadow: "rig-shadow-soft",
     },
     defaultColors: {
       outfit: 0xd97706,
@@ -96,6 +100,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
     id: "cableChor",
     name: { bn: "তার-চোরের সেফটি ভেস্ট", en: "Cable Chor High-Vis Vest" },
     slots: {
+      neck: "rig-neck",
       torso: "cableChor-torso",
       upperArm: "cableChor-arm-upper",
       lowerArm: "cableChor-arm-lower",
@@ -105,7 +110,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
       foot: "cableChor-foot",
       handProp: "cableChor-prop-cutter",
       backProp: "cableChor-prop-wire-coil",
-      shadow: "rig-shadow",
+      shadow: "rig-shadow-soft",
     },
     defaultColors: {
       outfit: 0x84cc16,
@@ -117,6 +122,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
     id: "manholeChor",
     name: { bn: "ম্যানহোল-চোরের বানিয়ান", en: "Manhole Chor Ribbed Vest" },
     slots: {
+      neck: "rig-neck",
       torso: "manholeChor-torso",
       upperArm: "manholeChor-arm-upper",
       lowerArm: "manholeChor-arm-lower",
@@ -125,7 +131,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
       shin: "manholeChor-shin",
       foot: "manholeChor-foot",
       handProp: "manholeChor-prop-manhole-cover",
-      shadow: "rig-shadow",
+      shadow: "rig-shadow-soft",
     },
     defaultColors: {
       outfit: 0xf1f5f9,
@@ -137,6 +143,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
     id: "eidMarketChor",
     name: { bn: "ঈদ মার্কেটের চকচকে পাঞ্জাবি", en: "Eid Market Festive Panjabi" },
     slots: {
+      neck: "rig-neck",
       headFront: "eidMarketChor-headFront",
       torso: "eidMarketChor-torso",
       upperArm: "eidMarketChor-arm-upper",
@@ -146,7 +153,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
       shin: "eidMarketChor-shin",
       foot: "eidMarketChor-foot",
       handProp: "eidMarketChor-prop-shopping-bags",
-      shadow: "rig-shadow",
+      shadow: "rig-shadow-soft",
     },
     defaultColors: {
       outfit: 0x881337,
@@ -158,6 +165,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
     id: "chickenChor",
     name: { bn: "মুরগি-চোরের দেশি মুরগি লুক", en: "Chicken Chor Lungi & Deshi Rooster" },
     slots: {
+      neck: "rig-neck",
       torso: "chickenChor-torso",
       upperArm: "chickenChor-arm-upper",
       lowerArm: "chickenChor-arm-lower",
@@ -166,7 +174,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
       shin: "chickenChor-shin",
       foot: "chickenChor-foot",
       handProp: "chickenChor-prop-chicken",
-      shadow: "rig-shadow",
+      shadow: "rig-shadow-soft",
     },
     defaultColors: {
       outfit: 0x15803d,
@@ -178,6 +186,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
     id: "chorSardar",
     name: { bn: "চোরের সরদারের ব্লেজার ও স্যুটকেস", en: "Sardar Mafia Blazer & Briefcase" },
     slots: {
+      neck: "rig-neck",
       headFront: "chorSardar-headFront",
       torso: "chorSardar-torso",
       upperArm: "chorSardar-arm-upper",
@@ -187,7 +196,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
       shin: "chorSardar-shin",
       foot: "chorSardar-foot",
       handProp: "chorSardar-prop-briefcase",
-      shadow: "rig-shadow",
+      shadow: "rig-shadow-soft",
     },
     defaultColors: {
       outfit: 0x4c0519,

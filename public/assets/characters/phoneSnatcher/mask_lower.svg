@@ -1,16 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 74 44" width="74" height="44">
-  <!-- Balaclava Lower Mouth/Chin Cover -->
-  <defs>
-    <linearGradient id="maskLowerGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#090d16"/>
-    </linearGradient>
-  </defs>
-  <path d="M 6 8 C 16 14 26 16 37 16 C 48 16 58 14 68 8 C 68 28 54 40 37 40 C 20 40 6 28 6 8 Z" fill="url(#maskLowerGrad)" stroke="#000000" stroke-width="3" stroke-linejoin="round"/>
-  <!-- Nose bridge seam line -->
-  <line x1="37" y1="16" x2="37" y2="34" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
-  <!-- Breath ventilation dots -->
-  <circle cx="31" cy="24" r="1.5" fill="#475569"/>
-  <circle cx="37" cy="24" r="1.5" fill="#475569"/>
-  <circle cx="43" cy="24" r="1.5" fill="#475569"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 28" width="64" height="28">
+  <!-- Balaclava lower jaw face mask -->
+  <path d="M 12 2 Q 32 6 52 2 L 48 24 Q 32 28 16 24 Z" fill="#0f172a" stroke="#000000" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Breathing vent dots -->
+  <circle cx="28" cy="14" r="1.2" fill="#475569"/>
+  <circle cx="32" cy="14" r="1.2" fill="#475569"/>
+  <circle cx="36" cy="14" r="1.2" fill="#475569"/>
+  <circle cx="30" cy="18" r="1.2" fill="#475569"/>
+  <circle cx="34" cy="18" r="1.2" fill="#475569"/>
 </svg>

@@ -1,15 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 42" width="26" height="42">
-  <!-- Jogger Thigh -->
-  <defs>
-    <linearGradient id="joggerShade" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#090d16"/>
-      <stop offset="70%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#334155"/>
-    </linearGradient>
-  </defs>
-  <path d="M 5 6 C 5 2 21 2 21 6 L 19 38 C 19 40 7 40 7 38 Z" fill="url(#joggerShade)" stroke="#000000" stroke-width="3" stroke-linejoin="round"/>
-  <!-- White track stripe -->
-  <line x1="8" y1="6" x2="9" y2="38" stroke="#f8fafc" stroke-width="2" stroke-linecap="round"/>
-  <!-- Fabric wrinkle crease -->
-  <path d="M 12 18 Q 16 20 18 19" fill="none" stroke="#0f172a" stroke-width="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 38" width="24" height="38">
+  <path d="M 4 2 C 4 2 3 34 6 36 C 10 38 21 36 21 2 Z" fill="#1e293b" stroke="#000000" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- White jogger stripe -->
+  <line x1="6" y1="4" x2="7" y2="35" stroke="#f8fafc" stroke-width="1.8"/>
 </svg>

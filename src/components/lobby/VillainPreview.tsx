@@ -78,15 +78,21 @@ export function VillainPreview() {
           <span>{currentVillain.name.en}</span>
         </div>
 
-        {/* Live Slot-Based Running Character Rig Preview */}
+        {/* Animated Cartoon Running Puppet - Layered Vector Anatomy */}
         <motion.div
-          animate={{ y: [0, -8, 0] }}
-          transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
-          className="relative flex flex-col items-center"
+          animate={{
+            y: [-3, 3, -3],
+          }}
+          transition={{
+            repeat: Infinity,
+            duration: 0.5,
+            ease: "easeInOut",
+          }}
+          className="relative flex flex-col items-center select-none"
         >
-          {/* Head & Mask Group */}
-          <div className="relative z-20 flex items-center justify-center -mb-2">
-            {/* Hood / Hair Back */}
+          {/* Head & Neck Group */}
+          <div className="relative flex flex-col items-center z-20">
+            {/* Back Hair / Cavity */}
             <div
               className="absolute -inset-1.5 rounded-full border-2 border-black"
               style={{
@@ -98,7 +104,7 @@ export function VillainPreview() {
             <motion.div
               animate={{ rotate: [-3, 3, -3] }}
               transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
-              className="relative z-10 h-18 w-18 overflow-hidden rounded-full border-3 border-black bg-yellow-200 shadow-lg"
+              className="relative z-10 h-16 w-16 overflow-hidden rounded-full border-3 border-black bg-yellow-200 shadow-lg"
             >
               {targetFaceUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -117,124 +123,128 @@ export function VillainPreview() {
             {/* Archetype Specific Mask / Headpiece */}
             {currentVillain.id === "phoneSnatcher" && (
               <>
-                <div className="absolute top-0 z-20 h-4 w-16 rounded-t-full bg-slate-900 border-t-2 border-black" />
-                <div className="absolute bottom-0 z-20 flex items-center justify-center gap-1 h-5 w-16 rounded-b-xl bg-slate-900 border-b-2 border-black shadow-md">
-                  <span className="h-1 w-1 rounded-full bg-slate-700" />
-                  <span className="h-1 w-1 rounded-full bg-slate-700" />
-                  <span className="h-1 w-1 rounded-full bg-slate-700" />
-                </div>
-                <div className="pointer-events-none absolute -inset-2 rounded-full border-[5px] border-slate-900 border-t-slate-800 shadow-md" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/assets/characters/phoneSnatcher/mask_upper.svg"
+                  alt="Forehead Mask"
+                  className="pointer-events-none absolute -top-1 z-25 w-16"
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/assets/characters/phoneSnatcher/mask_lower.svg"
+                  alt="Jaw Mask"
+                  className="pointer-events-none absolute bottom-0 z-25 w-14"
+                />
               </>
             )}
 
             {currentVillain.id === "pickpocket" && (
-              <div className="absolute bottom-0 z-20 flex items-center justify-center h-6 w-16 rounded-b-xl bg-red-600 border-b-2 border-black shadow-md overflow-hidden">
-                <div className="w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.4)_50%,transparent_75%)] bg-[size:6px_6px]" />
-              </div>
-            )}
-
-            {currentVillain.id === "eidMarketChor" && (
-              <div className="absolute top-1 z-25 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/80 border border-yellow-400">
-                <span className="h-2 w-3 rounded-xs bg-slate-950 border border-yellow-400" />
-                <span className="h-2 w-3 rounded-xs bg-slate-950 border border-yellow-400" />
-              </div>
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src="/assets/characters/pickpocket/mask_lower.svg"
+                alt="Mustache"
+                className="pointer-events-none absolute bottom-1 z-25 w-12"
+              />
             )}
 
             {currentVillain.id === "chorSardar" && (
-              <div className="absolute top-1 z-25 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black border border-yellow-400 shadow">
-                <span className="h-2.5 w-3.5 rounded-xs bg-black border border-yellow-400" />
-                <span className="h-2.5 w-3.5 rounded-xs bg-black border border-yellow-400" />
-              </div>
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src="/assets/characters/chorSardar/headFront.svg"
+                alt="Aviator Shades"
+                className="pointer-events-none absolute top-3 z-25 w-14"
+              />
             )}
+
+            {/* Neck connecting Head to Torso (No floating heads!) */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/characters/shared/neck.svg"
+              alt="Neck"
+              className="relative -mt-2 z-10 h-4 w-6 object-contain"
+            />
           </div>
 
-          {/* Torso / Costume */}
-          <div
-            className="relative z-10 h-16 w-16 rounded-t-xl rounded-b-md border-2 border-black shadow-md flex flex-col items-center justify-between p-1"
-            style={{
-              backgroundColor: `#${currentVillain.outfitColor.toString(16).padStart(6, "0")}`,
-            }}
-          >
-            {/* Torso details per archetype */}
-            {currentVillain.id === "phoneSnatcher" && (
-              <>
-                <div className="h-4 w-0.5 bg-yellow-400 rounded-full" />
-                <div className="flex gap-0.5">
-                  <div className="h-2 w-1 bg-white/80 -rotate-12 rounded-sm" />
-                  <div className="h-3 w-1 bg-white/80 -rotate-12 rounded-sm" />
-                  <div className="h-4 w-1 bg-white/80 -rotate-12 rounded-sm" />
-                </div>
-                <div className="w-12 h-4 rounded-t-md bg-black/25 border-t border-black/40" />
-              </>
-            )}
-
-            {currentVillain.id === "pickpocket" && (
-              <div className="w-full h-full flex justify-around">
-                <div className="w-1 h-full bg-white/60" />
-                <div className="w-1 h-full bg-white/60" />
-                <div className="w-1 h-full bg-white/60" />
-              </div>
-            )}
-
-            {currentVillain.id === "cableChor" && (
-              <div className="w-full h-full flex flex-col justify-around py-1">
-                <div className="h-2 w-full bg-slate-200 border-y border-black" />
-                <div className="h-2 w-full bg-slate-200 border-y border-black" />
-              </div>
-            )}
-
-            {currentVillain.id === "manholeChor" && (
-              <div className="w-full h-full flex justify-around py-2">
-                <div className="w-0.5 h-full bg-slate-400" />
-                <div className="w-0.5 h-full bg-slate-400" />
-              </div>
-            )}
-
-            {currentVillain.id === "eidMarketChor" && (
-              <div className="flex flex-col items-center">
-                <div className="h-8 w-2 bg-yellow-400 rounded-sm" />
-              </div>
-            )}
-
-            {currentVillain.id === "chorSardar" && (
-              <div className="flex flex-col items-center justify-center">
-                <div className="h-3 w-8 rounded-full border-2 border-yellow-400 bg-transparent" />
-                <div className="h-2 w-2 rounded-full bg-yellow-400 mt-0.5" />
-              </div>
-            )}
-
-            {/* Archetype Hand Prop */}
+          {/* Torso & Arms Layered */}
+          <div className="relative -mt-1 flex items-center justify-center z-15">
+            {/* Back Arm (Swinging opposite) */}
             <motion.div
-              animate={{ rotate: [-10, 10, -10], y: [-2, 2, -2] }}
+              animate={{ rotate: [25, -25, 25] }}
               transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
-              className="absolute -right-4 top-5 z-25 text-lg drop-shadow-md select-none"
+              className="absolute -left-3 top-1 origin-top"
             >
-              {currentVillain.id === "phoneSnatcher" && "📱"}
-              {currentVillain.id === "pickpocket" && "👛"}
-              {currentVillain.id === "cableChor" && "✂️"}
-              {currentVillain.id === "manholeChor" && "🛡️"}
-              {currentVillain.id === "eidMarketChor" && "🛍️"}
-              {currentVillain.id === "chickenChor" && "🐓"}
-              {currentVillain.id === "chorSardar" && "💼"}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/assets/characters/${currentVillain.id}/arm_upper.svg`}
+                alt="Back Arm"
+                className="h-9 w-6 object-contain"
+              />
+            </motion.div>
+
+            {/* Contoured Vector Torso */}
+            <div className="relative z-10 flex items-center justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/assets/characters/${currentVillain.id}/torso.svg`}
+                alt="Costume Torso"
+                className="h-16 w-16 object-contain drop-shadow-md"
+              />
+
+              {/* Hand Prop Animated */}
+              <motion.div
+                animate={{ rotate: [-12, 12, -12], y: [-2, 2, -2] }}
+                transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
+                className="absolute -right-5 top-4 z-25 select-none"
+              >
+                {currentVillain.id === "phoneSnatcher" && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src="/assets/characters/phoneSnatcher/hand.svg" alt="Phone" className="w-8 h-8" />
+                )}
+                {currentVillain.id === "pickpocket" && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src="/assets/characters/pickpocket/hand.svg" alt="Wallet" className="w-8 h-8" />
+                )}
+                {currentVillain.id === "cableChor" && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src="/assets/characters/cableChor/prop_cutter.svg" alt="Cutter" className="w-9 h-9" />
+                )}
+                {currentVillain.id === "manholeChor" && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src="/assets/characters/manholeChor/prop_manhole_cover.svg" alt="Cover" className="w-12 h-12" />
+                )}
+                {currentVillain.id === "eidMarketChor" && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src="/assets/characters/eidMarketChor/prop_shopping_bags.svg" alt="Bags" className="w-10 h-10" />
+                )}
+                {currentVillain.id === "chickenChor" && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src="/assets/characters/chickenChor/prop_chicken.svg" alt="Chicken" className="w-11 h-11" />
+                )}
+                {currentVillain.id === "chorSardar" && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src="/assets/characters/chorSardar/prop_briefcase.svg" alt="Briefcase" className="w-10 h-9" />
+                )}
+              </motion.div>
+            </div>
+
+            {/* Front Arm (Swinging forward) */}
+            <motion.div
+              animate={{ rotate: [-25, 25, -25] }}
+              transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
+              className="absolute -right-3 top-1 origin-top z-20"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/assets/characters/${currentVillain.id}/arm_upper.svg`}
+                alt="Front Arm"
+                className="h-9 w-6 object-contain"
+              />
             </motion.div>
           </div>
 
-          {/* Running Legs */}
-          <div className="flex gap-3 -mt-1">
-            <motion.div
-              animate={{ rotate: [-28, 28, -28] }}
-              transition={{
-                repeat: Infinity,
-                duration: 0.5,
-                ease: "easeInOut",
-              }}
-              className="relative h-11 w-3.5 origin-top rounded-b-sm border-2 border-black flex flex-col justify-end"
-              style={{
-                backgroundColor: `#${currentVillain.pantColor.toString(16).padStart(6, "0")}`,
-              }}
-            >
-              <div className="h-3 w-5 -ml-1 rounded-sm bg-red-600 border border-black border-b-2 border-b-white" />
-            </motion.div>
+          {/* Running Jointed Legs with Shoes */}
+          <div className="flex gap-2 -mt-2 z-10">
+            {/* Back Leg */}
             <motion.div
               animate={{ rotate: [28, -28, 28] }}
               transition={{
@@ -242,25 +252,64 @@ export function VillainPreview() {
                 duration: 0.5,
                 ease: "easeInOut",
               }}
-              className="relative h-11 w-3.5 origin-top rounded-b-sm border-2 border-black flex flex-col justify-end"
-              style={{
-                backgroundColor: `#${currentVillain.pantColor.toString(16).padStart(6, "0")}`,
-              }}
+              className="origin-top flex flex-col items-center"
             >
-              <div className="h-3 w-5 -ml-1 rounded-sm bg-red-600 border border-black border-b-2 border-b-white" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/assets/characters/${currentVillain.id}/thigh.svg`}
+                alt="Thigh"
+                className="h-8 w-6 object-contain"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/assets/characters/${currentVillain.id}/foot.svg`}
+                alt="Shoe"
+                className="h-5 w-8 -mt-1 object-contain"
+              />
+            </motion.div>
+
+            {/* Front Leg */}
+            <motion.div
+              animate={{ rotate: [-28, 28, -28] }}
+              transition={{
+                repeat: Infinity,
+                duration: 0.5,
+                ease: "easeInOut",
+              }}
+              className="origin-top flex flex-col items-center"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/assets/characters/${currentVillain.id}/thigh.svg`}
+                alt="Thigh"
+                className="h-8 w-6 object-contain"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/assets/characters/${currentVillain.id}/foot.svg`}
+                alt="Shoe"
+                className="h-5 w-8 -mt-1 object-contain"
+              />
             </motion.div>
           </div>
 
-          {/* Ground Shadow */}
+          {/* Soft Ground Shadow with Squash & Stretch */}
           <motion.div
-            animate={{ scale: [1, 0.85, 1], opacity: [0.6, 0.3, 0.6] }}
+            animate={{ scale: [1, 0.82, 1], opacity: [0.7, 0.4, 0.7] }}
             transition={{
               repeat: Infinity,
               duration: 0.5,
               ease: "easeInOut",
             }}
-            className="mt-1 h-3 w-16 rounded-full bg-black/60 blur-xs"
-          />
+            className="mt-0.5"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/characters/shared/shadow.svg"
+              alt="Soft Ground Shadow"
+              className="h-5 w-24 object-contain"
+            />
+          </motion.div>
         </motion.div>
       </div>
 
