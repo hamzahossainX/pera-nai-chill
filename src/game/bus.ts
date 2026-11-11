@@ -11,6 +11,7 @@ export type GameEventTypes = {
   "debug:spawnObstacle": void;
   "debug:spawnPickup": { type?: string };
   "debug:timeScale": { scale: number };
+  "player:taunt": void;
 
   // Game -> UI
   "hit": {
@@ -19,6 +20,7 @@ export type GameEventTypes = {
     isCrit: boolean;
     position: { x: number; y: number };
   };
+  "combat:hit": void;
   "combo": { count: number; multiplier: number };
   "villain:dead": { score: number };
   "villain:damaged": { hp: number; maxHp: number };

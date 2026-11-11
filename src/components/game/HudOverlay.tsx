@@ -22,7 +22,13 @@ import { EventBanner } from "@/components/game/EventBanner";
 import { BribeButton } from "@/components/game/BribeButton";
 import { CRIMES } from "@/config/crimes";
 import { MAP_SCENARIOS } from "@/config/maps";
-import { Droplets, ShieldCheck, MapPin } from "lucide-react";
+import {
+  Droplets,
+  ShieldCheck,
+  MapPin,
+  Megaphone,
+} from "lucide-react";
+import { COMBO_NAMES, COMMENTATOR_TICKER, ComboTier } from "@/config/dialogue";
 
 export function HudOverlay() {
   const {
@@ -30,6 +36,7 @@ export function HudOverlay() {
     targetFaceUrl,
     villainHp,
     villainMaxHp,
+    villainMorale,
     rage,
     combo,
     taka,
@@ -41,6 +48,10 @@ export function HudOverlay() {
     setStamina,
     setScreen,
     startGame,
+    drainMorale,
+    restoreMorale,
+    addTaka,
+    incrementCombo,
     settings,
     updateSettings,
     setDebugOpen,
@@ -55,6 +66,65 @@ export function HudOverlay() {
   const [lagHp, setLagHp] = useState(villainHp);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const tapCountRef = React.useRef(0);
+
+  const [tauntCooldown, setTauntCooldown] = useState(0);
+  const [tickerIndex, setTickerIndex] = useState(0);
+  const [activeComboBanner, setActiveComboBanner] = useState<{
+    tier: ComboTier;
+    key: number;
+  } | null>(null);
+
+  // Taunt cooldown ticker
+  useEffect(() => {
+    if (tauntCooldown > 0) {
+      const timer = setTimeout(() => setTauntCooldown((prev) => prev - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [tauntCooldown]);
+
+  const handleTaunt = () => {
+    if (tauntCooldown > 0) return;
+    audioService.play("click");
+    drainMorale(35);
+    incrementCombo();
+    addTaka(25);
+    setTauntCooldown(8);
+    gameBus.emit("player:taunt");
+  };
+
+  // Morale slow regeneration
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!isPaused && villainMorale < 100) {
+        restoreMorale(1);
+      }
+    }, 300);
+    return () => clearInterval(timer);
+  }, [villainMorale, isPaused, restoreMorale]);
+
+  // Commentator News Ticker cycling every 6.5s
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTickerIndex((prev) => (prev + 1) % COMMENTATOR_TICKER.length);
+    }, 6500);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Combo tier title flash
+  useEffect(() => {
+    const tier = COMBO_NAMES.find((c) => c.threshold === combo);
+    if (!tier) return;
+    const showTimer = setTimeout(() => {
+      setActiveComboBanner({ tier, key: Date.now() });
+    }, 10);
+    const hideTimer = setTimeout(() => {
+      setActiveComboBanner(null);
+    }, 1600);
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
+  }, [combo]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -194,6 +264,24 @@ export function HudOverlay() {
                 <span className="font-bangla text-[10px] font-bold text-yellow-200 truncate">
                   {currentCrime.icon} {currentCrime.title.bn}
                 </span>
+              </div>
+
+              {/* Villain Morale Bar (P2-10) */}
+              <div className="flex items-center gap-1 mt-0.5">
+                <span className="font-comic text-[8px] font-bold text-purple-300 uppercase shrink-0">
+                  MORALE
+                </span>
+                <div className="relative h-1.5 flex-1 overflow-hidden rounded-full border border-black/60 bg-slate-950">
+                  <div
+                    className="h-full bg-gradient-to-r from-purple-500 to-indigo-400 transition-all duration-200"
+                    style={{ width: `${villainMorale}%` }}
+                  />
+                </div>
+                {villainMorale < 40 && (
+                  <span className="font-bangla text-[8px] font-bold text-rose-400 animate-pulse shrink-0">
+                    বিচলিত!
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -388,6 +476,77 @@ export function HudOverlay() {
               style={{ width: `${stamina}%` }}
             />
           </div>
+        </div>
+      </div>
+
+      {/* Combo Tier Title Flash (P2-10) */}
+      <AnimatePresence>
+        {activeComboBanner && (
+          <motion.div
+            key={activeComboBanner.key}
+            initial={{ scale: 0.3, y: 30, opacity: 0 }}
+            animate={{ scale: [1, 1.25, 1], y: 0, opacity: 1 }}
+            exit={{ scale: 1.15, opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "backOut" }}
+            className="pointer-events-none fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center drop-shadow-[0_6px_24px_rgba(0,0,0,0.9)] text-center px-4"
+          >
+            <span
+              className="font-comic text-4xl sm:text-6xl font-black uppercase tracking-wider"
+              style={{
+                color: activeComboBanner.tier.color,
+                WebkitTextStroke: "2.5px black",
+              }}
+            >
+              {activeComboBanner.tier.title.bn}
+            </span>
+            <span className="font-comic text-sm sm:text-lg font-bold text-white bg-black/80 px-4 py-1 rounded-full border-2 border-yellow-400 mt-1 shadow-lg">
+              {activeComboBanner.tier.title.en} ({activeComboBanner.tier.threshold}x)
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Taunt Button (P2-10) */}
+      <div className="pointer-events-auto absolute bottom-24 right-4 sm:bottom-28 sm:right-6 flex flex-col items-center z-40">
+        <button
+          onClick={handleTaunt}
+          disabled={tauntCooldown > 0}
+          className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border-2 border-black font-comic font-bold text-xs shadow-lg transition-transform active:scale-95 ${
+            tauntCooldown > 0
+              ? "bg-slate-800 text-slate-400 cursor-not-allowed border-slate-700"
+              : "bg-gradient-to-r from-yellow-400 via-amber-400 to-amber-500 text-slate-950 hover:brightness-110 shadow-yellow-500/30"
+          }`}
+          title="Taunt the thief to lower morale and gain Taka bonus!"
+        >
+          <Megaphone className="h-4 w-4" />
+          <span>{tauntCooldown > 0 ? `${tauntCooldown}s` : "তাচ্ছিল্য / TAUNT"}</span>
+        </button>
+      </div>
+
+      {/* Dhaka TV Style Commentator Breaking News Ticker (P2-10) */}
+      <div className="pointer-events-auto fixed bottom-0 left-0 right-0 z-40 flex items-center bg-slate-950/95 border-t-2 border-yellow-400 shadow-2xl backdrop-blur-md h-7 sm:h-8 px-2 overflow-hidden">
+        {/* Red Breaking Badge */}
+        <div className="flex items-center gap-1 bg-red-600 px-2 py-0.5 rounded-md font-comic text-[10px] sm:text-xs font-black text-white shrink-0 shadow animate-pulse">
+          <span className="h-1.5 w-1.5 rounded-full bg-white" />
+          <span>ব্রেকিং NEWS</span>
+        </div>
+        {/* Ticker Text */}
+        <div className="flex-1 overflow-hidden px-2">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={tickerIndex}
+              initial={{ y: 15, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -15, opacity: 0 }}
+              transition={{ duration: 0.35 }}
+              className="flex items-center gap-2 truncate font-bangla text-xs sm:text-sm font-bold text-yellow-300"
+            >
+              <span>{COMMENTATOR_TICKER[tickerIndex].bn}</span>
+              <span className="text-slate-400 text-[10px] hidden md:inline">
+                ({COMMENTATOR_TICKER[tickerIndex].en})
+              </span>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 

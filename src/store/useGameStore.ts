@@ -47,6 +47,7 @@ export interface GameState {
   // Combat status
   villainHp: number;
   villainMaxHp: number;
+  villainMorale: number; // 0..100
   rageScore: number;
   rage: number; // 0..100
   combo: number;
@@ -83,6 +84,8 @@ export interface GameState {
   resetRage: () => void;
   fillRage: () => void;
   killVillain: () => void;
+  drainMorale: (amount: number) => void;
+  restoreMorale: (amount: number) => void;
   incrementCombo: () => void;
   resetCombo: () => void;
   addTaka: (amount: number) => void;
@@ -122,6 +125,7 @@ export const useGameStore = create<GameState>()(
 
     villainHp: BALANCE.INITIAL_VILLAIN_HP,
     villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
+    villainMorale: 100,
     rageScore: 0,
     rage: 0,
     combo: 0,
@@ -202,6 +206,7 @@ export const useGameStore = create<GameState>()(
         screen: "PLAYING",
         villainHp: BALANCE.INITIAL_VILLAIN_HP,
         villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
+        villainMorale: 100,
         rage: 0,
         combo: 0,
         stamina: BALANCE.INITIAL_STAMINA,
@@ -240,6 +245,16 @@ export const useGameStore = create<GameState>()(
       if (hp > 0) {
         get().inflictDamage(hp);
       }
+    },
+
+    drainMorale: (amount) => {
+      const current = get().villainMorale;
+      set({ villainMorale: Math.max(0, current - amount) });
+    },
+
+    restoreMorale: (amount) => {
+      const current = get().villainMorale;
+      set({ villainMorale: Math.min(100, current + amount) });
     },
 
     incrementCombo: () => {

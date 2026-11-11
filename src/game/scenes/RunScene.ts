@@ -7,6 +7,7 @@ import { Chaser } from "@/game/entities/Chaser";
 import { FxSystem } from "@/game/systems/FxSystem";
 import { CombatSystem } from "@/game/systems/CombatSystem";
 import { SpawnSystem } from "@/game/systems/SpawnSystem";
+import { DialogueSystem } from "@/game/systems/DialogueSystem";
 import { EventSystem } from "@/game/systems/EventSystem";
 import { DifficultySystem } from "@/game/systems/DifficultySystem";
 import { BALANCE } from "@/config/balance";
@@ -23,6 +24,7 @@ export class RunScene extends Phaser.Scene {
   public combatSystem!: CombatSystem;
   public spawnSystem!: SpawnSystem;
   public eventSystem!: EventSystem;
+  public dialogueSystem!: DialogueSystem;
   public difficultySystem!: DifficultySystem;
 
   private isPaused = false;
@@ -65,6 +67,7 @@ export class RunScene extends Phaser.Scene {
       this.spawnSystem,
       this.timeOfDaySystem
     );
+    this.dialogueSystem = new DialogueSystem(this, this.villain, this.chaser);
 
     // 4. Camera Configuration
     this.cameras.main.setBounds(0, 0, BALANCE.LOGICAL_WIDTH, BALANCE.LOGICAL_HEIGHT);
@@ -87,6 +90,7 @@ export class RunScene extends Phaser.Scene {
       this.timeOfDaySystem.destroy();
       this.weatherSystem.destroy();
       this.eventSystem.destroy();
+      this.dialogueSystem.destroy();
       this.spawnSystem.clearAll();
       this.difficultySystem.reset();
     });
@@ -158,6 +162,7 @@ export class RunScene extends Phaser.Scene {
     this.combatSystem.update(time, delta);
     this.spawnSystem.update(time, delta, effectiveSpeed);
     this.eventSystem.update(time, delta);
+    this.dialogueSystem.update(time, delta);
     this.timeOfDaySystem.update(time, delta);
     this.weatherSystem.update(time, delta);
 
