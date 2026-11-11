@@ -1,3 +1,5 @@
+export type TimeOfDay = "noon" | "sunset" | "night" | "dawn";
+
 export interface MapScenario {
   id: "mirpur" | "farmgate" | "newmarket";
   name: {
@@ -14,6 +16,7 @@ export interface MapScenario {
   skyKey: string;
   nearKey: string;
   roadKey: string;
+  timeOfDay?: TimeOfDay;
   ambientEvent: string;
   hazards: {
     primary: string;
@@ -44,6 +47,7 @@ export const MAP_SCENARIOS: MapScenario[] = [
     skyKey: "bg-sky-mirpur",
     nearKey: "bg-near-mirpur",
     roadKey: "bg-road",
+    timeOfDay: "noon",
     ambientEvent: "ধূলাবালি ও ম্যানহোল",
     hazards: {
       primary: "ভাঙা রাস্তা ও গর্ত",
@@ -75,6 +79,7 @@ export const MAP_SCENARIOS: MapScenario[] = [
     skyKey: "bg-sky-farmgate",
     nearKey: "bg-near-farmgate",
     roadKey: "bg-road",
+    timeOfDay: "sunset",
     ambientEvent: "বাসের হর্ন ও জ্যাম",
     hazards: {
       primary: "চলন্ত হলুদ বাস ও লেগুনা",
@@ -106,6 +111,7 @@ export const MAP_SCENARIOS: MapScenario[] = [
     skyKey: "bg-sky-newmarket",
     nearKey: "bg-near-newmarket",
     roadKey: "bg-road",
+    timeOfDay: "night",
     ambientEvent: "১০০ টাকা সেল ও ফুচকা",
     hazards: {
       primary: "ফুচকা-চটপটি ভ্যান",

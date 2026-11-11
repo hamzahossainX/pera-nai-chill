@@ -115,12 +115,12 @@ export class BootScene extends Phaser.Scene {
       this.textures.addCanvas("bg-near-buildings", canvas);
     }
 
-    // 4. Dhaka 3-Lane Asphalt Road (1280 x 280)
+    // 4. Dhaka 3-Lane Asphalt Road (1280 x 370)
     if (!this.textures.exists("bg-road")) {
       const g = this.make.graphics({ x: 0, y: 0 });
       // Asphalt
       g.fillStyle(0x0f172a, 1);
-      g.fillRect(0, 0, BALANCE.LOGICAL_WIDTH, 280);
+      g.fillRect(0, 0, BALANCE.LOGICAL_WIDTH, 370);
 
       // Top curb / sidewalk (Rickshaw art colors: red-green-yellow stripe)
       g.fillStyle(0x059669, 1);
@@ -133,10 +133,10 @@ export class BootScene extends Phaser.Scene {
       // Lane dividers (dashed yellow & white lines)
       g.fillStyle(0xfacc15, 0.9);
       for (let x = 0; x < BALANCE.LOGICAL_WIDTH; x += 70) {
-        g.fillRect(x, 90, 40, 5); // Lane 1-2 divider
-        g.fillRect(x, 180, 40, 5); // Lane 2-3 divider
+        g.fillRect(x, 107, 40, 5); // Lane 0-1 divider
+        g.fillRect(x, 162, 40, 5); // Lane 1-2 divider
       }
-      g.generateTexture("bg-road", BALANCE.LOGICAL_WIDTH, 280);
+      g.generateTexture("bg-road", BALANCE.LOGICAL_WIDTH, 370);
       g.destroy();
     }
 

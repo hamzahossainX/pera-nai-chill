@@ -156,11 +156,10 @@ export const useGameStore = create<GameState>()(
         if (partial.overall === undefined) {
           const weights = {
             fontsReady: 10,
-            engineReady: 15,
+            engineReady: 20,
             assetsProgress: 35,
             audioReady: 20,
             faceModelReady: 15,
-            procedural: 5,
           };
           let calculated = 0;
           if (next.fontsReady) calculated += weights.fontsReady;

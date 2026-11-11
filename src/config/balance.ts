@@ -12,7 +12,7 @@ export const BALANCE = {
   // World & Camera
   LOGICAL_WIDTH: 1280,
   LOGICAL_HEIGHT: 720,
-  LANES_Y: [520, 580, 640] as const,
+  LANES_Y: [430, 485, 540] as const,
   LANE_SCALES: [0.9, 1.0, 1.1] as const,
   BASE_RUN_SPEED: 320,
   TARGET_FPS: 60,

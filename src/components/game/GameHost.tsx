@@ -36,7 +36,7 @@ export function GameHost() {
       <div
         ref={containerRef}
         id="phaser-container"
-        className="relative aspect-video h-full w-full max-h-full max-w-full overflow-hidden shadow-2xl flex items-center justify-center"
+        className="relative aspect-video max-h-full max-w-full overflow-hidden shadow-2xl"
       />
     </div>
   );

@@ -3,6 +3,7 @@ import { BALANCE } from "@/config/balance";
 import { useGameStore } from "@/store/useGameStore";
 import { STREET_PROPS, StreetPropDefinition } from "@/config/props";
 import { audioService } from "@/services/audio";
+import { MAP_SCENARIOS, TimeOfDay } from "@/config/maps";
 
 interface ActiveStreetObject {
   sprite: Phaser.GameObjects.Sprite;
@@ -44,6 +45,7 @@ export class ParallaxSystem {
   private initLayers() {
     const W = BALANCE.LOGICAL_WIDTH;
     const mapId = useGameStore.getState().currentMapId || "mirpur";
+    const mapScenario = MAP_SCENARIOS.find((m) => m.id === mapId);
 
     const skyKey =
       mapId === "farmgate"
@@ -59,22 +61,22 @@ export class ParallaxSystem {
         ? "bg-near-newmarket"
         : "bg-near-buildings";
 
-    // Layer 1: Sky
+    // Layer 1: Sky (speed 0.1)
     this.skyTile = this.scene.add
       .tileSprite(0, 0, W, 500, this.scene.textures.exists(skyKey) ? skyKey : "bg-sky")
       .setOrigin(0, 0)
       .setDepth(0);
 
-    // Layer 2: Far Skyline Silhouettes
+    // Layer 2: Far Skyline Silhouettes (speed 0.3)
     this.farBuildingsTile = this.scene.add
-      .tileSprite(0, 180, W, 300, "bg-far-buildings")
+      .tileSprite(0, 140, W, 300, "bg-far-buildings")
       .setOrigin(0, 0)
       .setDepth(1);
 
     // Layer 2.5: Elevated Metro Track
     if (this.scene.textures.exists("prop-metro-track")) {
       this.metroTrackTile = this.scene.add
-        .tileSprite(0, 130, W, 50, "prop-metro-track")
+        .tileSprite(0, 100, W, 50, "prop-metro-track")
         .setOrigin(0, 0)
         .setDepth(1.4);
     }
@@ -82,20 +84,20 @@ export class ParallaxSystem {
     // Metro Train MRT-6
     if (this.scene.textures.exists("prop-metro-train")) {
       this.metroTrainSprite = this.scene.add
-        .sprite(W + 400, 142, "prop-metro-train")
+        .sprite(W + 400, 112, "prop-metro-train")
         .setOrigin(0, 0.5)
         .setDepth(1.5);
     }
 
-    // Layer 3: Near Buildings with colorful Dhaka signage
+    // Layer 3: Near Buildings with colorful Dhaka signage (speed 0.6)
     this.nearBuildingsTile = this.scene.add
-      .tileSprite(0, 150, W, 360, this.scene.textures.exists(nearKey) ? nearKey : "bg-near-buildings")
+      .tileSprite(0, 110, W, 360, this.scene.textures.exists(nearKey) ? nearKey : "bg-near-buildings")
       .setOrigin(0, 0)
       .setDepth(2);
 
-    // Layer 4: Asphalt Road (3 Lanes)
+    // Layer 4: Asphalt Road (3 Lanes - speed 1.0)
     this.roadTile = this.scene.add
-      .tileSprite(0, 440, W, 280, "bg-road")
+      .tileSprite(0, 350, W, 370, "bg-road")
       .setOrigin(0, 0)
       .setDepth(3);
 
@@ -104,6 +106,10 @@ export class ParallaxSystem {
       .tileSprite(0, 0, W, 150, "bg-wires")
       .setOrigin(0, 0)
       .setDepth(100);
+
+    // Apply time of day tint
+    const timeOfDay = mapScenario?.timeOfDay || "noon";
+    this.applyTimeOfDay(timeOfDay);
 
     // Animated Life: Crows on wires
     if (this.scene.textures.exists("anim-crow")) {
@@ -152,15 +158,15 @@ export class ParallaxSystem {
     const dt = delta * 0.001;
     const effectiveSpeed = currentBaseSpeed * this.speedMultiplier;
 
-    // 1. Update tilePositionX for smooth infinite scrolling
-    this.skyTile.tilePositionX += effectiveSpeed * 0.03 * dt;
-    this.farBuildingsTile.tilePositionX += effectiveSpeed * 0.15 * dt;
+    // 1. Update tilePositionX for smooth distinct speeds (0.1, 0.3, 0.6, 1.0)
+    this.skyTile.tilePositionX += effectiveSpeed * 0.1 * dt;
+    this.farBuildingsTile.tilePositionX += effectiveSpeed * 0.3 * dt;
     if (this.metroTrackTile) {
-      this.metroTrackTile.tilePositionX += effectiveSpeed * 0.3 * dt;
+      this.metroTrackTile.tilePositionX += effectiveSpeed * 0.35 * dt;
     }
-    this.nearBuildingsTile.tilePositionX += effectiveSpeed * 0.45 * dt;
+    this.nearBuildingsTile.tilePositionX += effectiveSpeed * 0.6 * dt;
     this.roadTile.tilePositionX += effectiveSpeed * 1.0 * dt;
-    this.wiresTile.tilePositionX += effectiveSpeed * 1.25 * dt;
+    this.wiresTile.tilePositionX += effectiveSpeed * 1.15 * dt;
 
     // 2. Metro Train periodic transit
     if (this.metroTrainSprite) {
@@ -246,6 +252,28 @@ export class ParallaxSystem {
         this.propPool.push(obj.sprite);
         this.activeObjects.splice(i, 1);
       }
+    }
+  }
+
+  public applyTimeOfDay(timeOfDay: TimeOfDay) {
+    switch (timeOfDay) {
+      case "sunset":
+        this.setSkyTint(0xffd1a4);
+        this.setAmbientTint(0xffc285);
+        break;
+      case "night":
+        this.setSkyTint(0x3b4261);
+        this.setAmbientTint(0x6b7280);
+        break;
+      case "dawn":
+        this.setSkyTint(0xffe4e6);
+        this.setAmbientTint(0xfecdd3);
+        break;
+      case "noon":
+      default:
+        this.setSkyTint(0xffffff);
+        this.setAmbientTint(0xffffff);
+        break;
     }
   }
 
