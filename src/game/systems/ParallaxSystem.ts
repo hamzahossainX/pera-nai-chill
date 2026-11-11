@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { BALANCE } from "@/config/balance";
 import { useGameStore } from "@/store/useGameStore";
 import { STREET_PROPS, StreetPropDefinition } from "@/config/props";
+import { audioService } from "@/services/audio";
 
 interface ActiveStreetObject {
   sprite: Phaser.GameObjects.Sprite;
@@ -221,6 +222,15 @@ export class ParallaxSystem {
       const chosen = vehicles[Math.floor(Math.random() * vehicles.length)];
       if (chosen) {
         this.spawnStreetProp(chosen);
+        if (chosen.id === "prop-rickshaw") {
+          audioService.playSpatial("vehicle-rickshaw", 0.6);
+        } else if (chosen.id === "prop-cng") {
+          audioService.playSpatial("vehicle-cng", 0.6);
+        } else if (chosen.id === "prop-bus") {
+          audioService.playSpatial("vehicle-bus", 0.7);
+        } else if (chosen.id === "prop-motorbike") {
+          audioService.playSpatial("vehicle-bike", 0.6);
+        }
       }
     }
 

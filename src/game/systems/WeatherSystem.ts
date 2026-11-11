@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { BALANCE } from "@/config/balance";
 import { useGameStore, WeatherType } from "@/store/useGameStore";
 import { ParallaxSystem } from "@/game/systems/ParallaxSystem";
+import { audioService } from "@/services/audio";
 
 export class WeatherSystem {
   private scene: Phaser.Scene;
@@ -33,6 +34,7 @@ export class WeatherSystem {
   public setWeather(type: WeatherType) {
     this.clearWeather();
     this.activeWeather = type;
+    audioService.setWeather(type);
 
     const W = BALANCE.LOGICAL_WIDTH;
     const H = BALANCE.LOGICAL_HEIGHT;
@@ -213,5 +215,6 @@ export class WeatherSystem {
 
   public destroy() {
     this.clearWeather();
+    audioService.setWeather("clear");
   }
 }

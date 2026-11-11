@@ -228,6 +228,8 @@ export class CombatSystem {
 
     store.resetRage();
     audioService.play(ULTIMATE_WEAPON.soundKey);
+    audioService.duckBgm(true);
+    this.scene.time.delayedCall(1200, () => audioService.duckBgm(false));
 
     // 1. Slow-Mo
     this.scene.time.timeScale = 0.4;
@@ -285,6 +287,7 @@ export class CombatSystem {
       params.x,
       params.y
     );
+    audioService.play(`${this.villain.archetype.id}-grunt`, { volume: 0.8 });
 
     // 2. Visual & Sound FX
     this.fxSystem.triggerHitFx(

@@ -91,7 +91,10 @@ export class RunScene extends Phaser.Scene {
     // 4. Camera Configuration
     this.cameras.main.setBounds(0, 0, BALANCE.LOGICAL_WIDTH, BALANCE.LOGICAL_HEIGHT);
 
-    // 5. Setup Event Listeners from React UI Bus
+    // 5. Start dynamic procedural BGM
+    audioService.playBgm();
+
+    // 6. Setup Event Listeners from React UI Bus
     gameBus.on("game:pause", this.handlePause);
     gameBus.on("game:restart", this.handleRestart);
     gameBus.on("debug:spawnObstacle", this.handleDebugSpawnObstacle);
@@ -100,6 +103,8 @@ export class RunScene extends Phaser.Scene {
 
     // Clean up bus listeners on scene shutdown
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      audioService.stopBgm();
+      audioService.stopAmbience();
       gameBus.off("game:pause", this.handlePause);
       gameBus.off("game:restart", this.handleRestart);
       gameBus.off("debug:spawnObstacle", this.handleDebugSpawnObstacle);
@@ -223,6 +228,7 @@ export class RunScene extends Phaser.Scene {
 
   private handlePause = (data: { paused: boolean }) => {
     this.isPaused = data.paused;
+    audioService.setBgmFilter(data.paused ? "muffled" : "normal");
     if (data.paused) {
       this.physics.pause();
     } else {

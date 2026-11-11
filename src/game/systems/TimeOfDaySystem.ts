@@ -3,6 +3,7 @@ import { BALANCE } from "@/config/balance";
 import { TIME_OF_DAY_CONFIGS, TimeOfDayPhaseConfig } from "@/config/timeOfDay";
 import { ParallaxSystem } from "@/game/systems/ParallaxSystem";
 import { useGameStore, TimeOfDay } from "@/store/useGameStore";
+import { audioService } from "@/services/audio";
 
 export class TimeOfDaySystem {
   private scene: Phaser.Scene;
@@ -114,6 +115,7 @@ export class TimeOfDaySystem {
   public applyPhase(phaseId: TimeOfDay, durationMs: number = 8000) {
     const config = TIME_OF_DAY_CONFIGS[phaseId] || TIME_OF_DAY_CONFIGS.noon;
     this.currentPhaseId = phaseId;
+    audioService.setTimeOfDay(phaseId);
 
     if (durationMs <= 0) {
       // Instant set (boot / lobby pick)
