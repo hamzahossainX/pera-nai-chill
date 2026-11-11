@@ -228,8 +228,5 @@ export class DialogueSystem {
     }
   }
 
-  public destroy() {
-    this.clearBubble("villain");
-    this.clearBubble("chaser");
-  }
+
 }
