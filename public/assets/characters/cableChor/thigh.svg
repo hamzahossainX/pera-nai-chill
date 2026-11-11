@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 46" width="30" height="46">
+  <!-- Tucked lungi folds -->
+  <rect x="4" y="4" width="22" height="38" rx="6" fill="#0284c7" stroke="#000000" stroke-width="2.5"/>
+  <line x1="8" y1="12" x2="22" y2="12" stroke="#ffffff" stroke-width="1.5"/>
+  <line x1="8" y1="26" x2="22" y2="26" stroke="#ffffff" stroke-width="1.5"/>
+</svg>

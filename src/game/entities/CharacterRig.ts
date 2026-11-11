@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { OutfitDefinition, OUTFITS } from "@/config/outfits";
 import { VillainArchetype } from "@/config/villains";
+import { SecondaryMotion } from "@/game/systems/SecondaryMotion";
 
 export interface RigOptions {
   scene: Phaser.Scene;
@@ -72,6 +73,9 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   // Mask slip state
   public maskSlipped = false;
   public maskFallen = false;
+
+  // Secondary Motion Physics
+  private secondaryMotion = new SecondaryMotion();
 
   // State
   public stateName: "RUN" | "HIT_STUN" | "DEAD" | "ATTACK" | "TRIPPED" = "RUN";
@@ -297,6 +301,36 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     } else if (!this.outfit) {
       this.applyOutfitColors(outfitColor, pantColor);
     }
+
+    // Initialize Secondary Motion for props and cloth
+    if (this.handPropSprite) {
+      const isChicken = this.outfit?.id === "chickenChor";
+      const isBags = this.outfit?.id === "eidMarketChor";
+      this.secondaryMotion.register(this.handPropSprite, {
+        stiffness: isChicken ? 0.35 : 0.18,
+        damping: isChicken ? 0.6 : 0.82,
+        oscillationFreq: isChicken ? 14 : isBags ? 7 : 8,
+        oscillationAmp: isChicken ? 0.28 : isBags ? 0.18 : 0.08,
+      });
+    }
+
+    if (this.backPropSprite) {
+      this.secondaryMotion.register(this.backPropSprite, {
+        stiffness: 0.14,
+        damping: 0.78,
+        oscillationFreq: 6,
+        oscillationAmp: 0.1,
+      });
+    }
+
+    if (this.maskLowerSprite) {
+      this.secondaryMotion.register(this.maskLowerSprite, {
+        stiffness: 0.22,
+        damping: 0.85,
+        oscillationFreq: 9,
+        oscillationAmp: 0.05,
+      });
+    }
   }
 
   public updateHealth(hpPercent: number) {
@@ -428,6 +462,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
 
     // Knockback
     const targetX = this.x + knockbackX;
+    this.secondaryMotion.applyImpulse(knockbackX * 0.4, -18, isCrit ? 0.35 : 0.15);
     this.scene.tweens.add({
       targets: this,
       x: targetX,
@@ -566,5 +601,8 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     // Head wobble & secondary motion lag
     this.headGroup.rotation = hunch + Math.sin(t * 2) * 0.08;
     this.headGroup.y = -90 + (this.torsoSprite.y + 55) + Math.sin(t * 2 + 0.5) * 2;
+
+    // Update Secondary Motion (cloth fluttering & prop spring bounce)
+    this.secondaryMotion.update(time, delta, this.runSpeedFactor * 120);
   }
 }

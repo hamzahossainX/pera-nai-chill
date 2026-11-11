@@ -1161,6 +1161,100 @@ export class BootScene extends Phaser.Scene {
       ctx.fillRect(4, 5, 16, 26);
       this.textures.addCanvas("snatcher-prop-phone", canvas);
     }
+
+    // Archetype props fallbacks
+    if (!this.textures.exists("pickpocket-prop-wallet")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 36;
+      canvas.height = 30;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#78350f";
+      ctx.fillRect(4, 8, 28, 20);
+      ctx.fillStyle = "#15803d";
+      ctx.fillRect(8, 2, 20, 6);
+      this.textures.addCanvas("pickpocket-prop-wallet", canvas);
+    }
+
+    if (!this.textures.exists("cableChor-prop-cutter")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 34;
+      canvas.height = 46;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(8, 16, 18, 26);
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillRect(10, 4, 14, 12);
+      this.textures.addCanvas("cableChor-prop-cutter", canvas);
+    }
+
+    if (!this.textures.exists("cableChor-prop-wire-coil")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 48;
+      canvas.height = 48;
+      const ctx = canvas.getContext("2d")!;
+      ctx.strokeStyle = "#b45309";
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(24, 24, 18, 0, Math.PI * 2);
+      ctx.stroke();
+      this.textures.addCanvas("cableChor-prop-wire-coil", canvas);
+    }
+
+    if (!this.textures.exists("manholeChor-prop-manhole-cover")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 54;
+      canvas.height = 54;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#334155";
+      ctx.beginPath();
+      ctx.arc(27, 27, 24, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      this.textures.addCanvas("manholeChor-prop-manhole-cover", canvas);
+    }
+
+    if (!this.textures.exists("eidMarketChor-prop-shopping-bags")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 42;
+      canvas.height = 46;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#e11d48";
+      ctx.fillRect(4, 14, 24, 28);
+      ctx.fillStyle = "#0284c7";
+      ctx.fillRect(16, 18, 22, 26);
+      this.textures.addCanvas("eidMarketChor-prop-shopping-bags", canvas);
+    }
+
+    if (!this.textures.exists("chickenChor-prop-chicken")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 46;
+      canvas.height = 44;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#ea580c";
+      ctx.beginPath();
+      ctx.ellipse(22, 24, 16, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#dc2626";
+      ctx.beginPath();
+      ctx.arc(34, 14, 8, 0, Math.PI * 2);
+      ctx.fill();
+      this.textures.addCanvas("chickenChor-prop-chicken", canvas);
+    }
+
+    if (!this.textures.exists("chorSardar-prop-briefcase")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 44;
+      canvas.height = 34;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#18181b";
+      ctx.fillRect(4, 8, 36, 24);
+      ctx.fillStyle = "#fbbf24";
+      ctx.fillRect(12, 14, 4, 6);
+      ctx.fillRect(28, 14, 4, 6);
+      this.textures.addCanvas("chorSardar-prop-briefcase", canvas);
+    }
   }
 
   private generateNearBuildingsTexture(

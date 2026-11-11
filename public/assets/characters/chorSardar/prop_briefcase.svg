@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 34" width="44" height="34">
+  <!-- Black VIP leather briefcase with gold latches -->
+  <rect x="4" y="8" width="36" height="24" rx="4" fill="#18181b" stroke="#000000" stroke-width="2.5"/>
+  <rect x="12" y="14" width="4" height="6" fill="#fbbf24"/>
+  <rect x="28" y="14" width="4" height="6" fill="#fbbf24"/>
+  <path d="M 18 8 Q 22 2 26 8" fill="none" stroke="#71717a" stroke-width="2.5"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 78" width="70" height="78">
+  <!-- Boss Crimson Blazer with thick Gold Chain necklace -->
+  <path d="M 12 10 Q 35 4 58 10 L 62 70 Q 35 76 8 70 Z" fill="#4c0519" stroke="#000000" stroke-width="3"/>
+  <!-- Lapel -->
+  <path d="M 22 10 L 35 34 L 18 36 Z" fill="#881337" stroke="#000000" stroke-width="2"/>
+  <path d="M 48 10 L 35 34 L 52 36 Z" fill="#881337" stroke="#000000" stroke-width="2"/>
+  <!-- Gold chain -->
+  <path d="M 26 14 Q 35 24 44 14" stroke="#f59e0b" stroke-width="3" fill="none"/>
+  <!-- Golden medallion -->
+  <circle cx="35" cy="24" r="3.5" fill="#f59e0b" stroke="#78350f" stroke-width="1"/>
+</svg>

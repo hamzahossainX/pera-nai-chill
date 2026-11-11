@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Stolen copper cable coil on back -->
+  <circle cx="24" cy="24" r="20" fill="none" stroke="#b45309" stroke-width="6"/>
+  <circle cx="24" cy="24" r="14" fill="none" stroke="#0f172a" stroke-width="5"/>
+  <circle cx="24" cy="24" r="8" fill="none" stroke="#f59e0b" stroke-width="4"/>
+  <!-- Dangling copper loose wire ends -->
+  <path d="M 38 32 Q 44 40 40 46" stroke="#f59e0b" stroke-width="3" fill="none"/>
+</svg>
