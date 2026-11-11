@@ -1368,6 +1368,404 @@ export class BootScene extends Phaser.Scene {
       ctx.fillRect(28, 14, 4, 6);
       this.textures.addCanvas("chorSardar-prop-briefcase", canvas);
     }
+
+    // Street Kit-bash props and vehicles (P2-06)
+    this.generateStreetKitBashTextures();
+  }
+
+  private generateStreetKitBashTextures() {
+    // 1. Elevated Metro Rail Track (1280 x 50)
+    if (!this.textures.exists("prop-metro-track")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = BALANCE.LOGICAL_WIDTH;
+      canvas.height = 50;
+      const ctx = canvas.getContext("2d")!;
+      // Rail horizontal beam
+      ctx.fillStyle = "#64748b";
+      ctx.fillRect(0, 10, BALANCE.LOGICAL_WIDTH, 18);
+      ctx.fillStyle = "#475569";
+      ctx.fillRect(0, 28, BALANCE.LOGICAL_WIDTH, 6);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(0, 10, BALANCE.LOGICAL_WIDTH, 24);
+      // Concrete pillars every 160 px
+      for (let x = 40; x < BALANCE.LOGICAL_WIDTH; x += 160) {
+        ctx.fillStyle = "#94a3b8";
+        ctx.fillRect(x, 28, 28, 22);
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, 28, 28, 22);
+      }
+      this.textures.addCanvas("prop-metro-track", canvas);
+    }
+
+    // 2. Metro Train MRT-6 (320 x 42)
+    if (!this.textures.exists("prop-metro-train")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 320;
+      canvas.height = 42;
+      const ctx = canvas.getContext("2d")!;
+      // Streamlined body (White / Silver)
+      ctx.fillStyle = "#f8fafc";
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 312, 34, [16, 6, 6, 16]);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      // Green and red stripe (Bangladesh flag / MRT colors)
+      ctx.fillStyle = "#15803d";
+      ctx.fillRect(10, 20, 302, 6);
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(10, 26, 302, 3);
+      // Tinted passenger windows
+      ctx.fillStyle = "#0284c7";
+      for (let wx = 50; wx < 300; wx += 32) {
+        ctx.fillRect(wx, 8, 24, 10);
+      }
+      // Cockpit windshield
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.roundRect(14, 8, 24, 10, [10, 2, 2, 2]);
+      ctx.fill();
+      this.textures.addCanvas("prop-metro-train", canvas);
+    }
+
+    // 3. Tong Tea Stall (110 x 70)
+    if (!this.textures.exists("prop-tea-stall")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 110;
+      canvas.height = 70;
+      const ctx = canvas.getContext("2d")!;
+      // Red tarpaulin awning
+      ctx.fillStyle = "#dc2626";
+      ctx.beginPath();
+      ctx.moveTo(10, 10);
+      ctx.lineTo(100, 10);
+      ctx.lineTo(105, 26);
+      ctx.lineTo(5, 26);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Counter table
+      ctx.fillStyle = "#78350f";
+      ctx.fillRect(15, 26, 80, 34);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(15, 26, 80, 34);
+      // Big yellow metal tea kettle
+      ctx.fillStyle = "#facc15";
+      ctx.beginPath();
+      ctx.arc(40, 22, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      // Red & blue plastic stools
+      ctx.fillStyle = "#ef4444";
+      ctx.fillRect(5, 48, 14, 18);
+      ctx.strokeRect(5, 48, 14, 18);
+      ctx.fillStyle = "#3b82f6";
+      ctx.fillRect(92, 48, 14, 18);
+      ctx.strokeRect(92, 48, 14, 18);
+      // Bangla sign
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 9px 'Hind Siliguri', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("রং চা ৫৳", 55, 44);
+      this.textures.addCanvas("prop-tea-stall", canvas);
+    }
+
+    // 4. Jhalmuri Hawker Cart (90 x 65)
+    if (!this.textures.exists("prop-hawker-cart")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 90;
+      canvas.height = 65;
+      const ctx = canvas.getContext("2d")!;
+      // Colorful Dhaka umbrella
+      ctx.fillStyle = "#f59e0b";
+      ctx.beginPath();
+      ctx.arc(45, 18, 30, Math.PI, 0);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Umbrella pole
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(43, 18, 4, 30);
+      // Wooden cart box
+      ctx.fillStyle = "#a16207";
+      ctx.fillRect(12, 34, 66, 18);
+      ctx.strokeRect(12, 34, 66, 18);
+      // Wheels
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.arc(26, 52, 10, 0, Math.PI * 2);
+      ctx.arc(64, 52, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      this.textures.addCanvas("prop-hawker-cart", canvas);
+    }
+
+    // 5. Dhaka Footbridge (220 x 130)
+    if (!this.textures.exists("prop-footbridge")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 220;
+      canvas.height = 130;
+      const ctx = canvas.getContext("2d")!;
+      // Green steel bridge overhead arch
+      ctx.fillStyle = "#047857";
+      ctx.fillRect(20, 20, 180, 26);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(20, 20, 180, 26);
+      // Support pillars / stairs
+      ctx.fillStyle = "#065f46";
+      ctx.fillRect(20, 46, 24, 76);
+      ctx.strokeRect(20, 46, 24, 76);
+      ctx.fillRect(176, 46, 24, 76);
+      ctx.strokeRect(176, 46, 24, 76);
+      // Civic awareness banner
+      ctx.fillStyle = "#facc15";
+      ctx.fillRect(48, 24, 124, 18);
+      ctx.strokeRect(48, 24, 124, 18);
+      ctx.fillStyle = "#000000";
+      ctx.font = "bold 9px 'Hind Siliguri', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("পাদচারী সেতু ব্যবহার করুন", 110, 36);
+      this.textures.addCanvas("prop-footbridge", canvas);
+    }
+
+    // 6. Deshi Street Dog (50 x 30)
+    if (!this.textures.exists("prop-street-dog")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 50;
+      canvas.height = 30;
+      const ctx = canvas.getContext("2d")!;
+      // Curled body
+      ctx.fillStyle = "#b45309";
+      ctx.beginPath();
+      ctx.ellipse(24, 18, 16, 9, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Head
+      ctx.beginPath();
+      ctx.arc(36, 14, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      // Snout & ear
+      ctx.fillStyle = "#78350f";
+      ctx.beginPath();
+      ctx.arc(41, 16, 4, 0, Math.PI * 2);
+      ctx.fill();
+      this.textures.addCanvas("prop-street-dog", canvas);
+    }
+
+    // 7. Iconic Dhaka Rickshaw (90 x 65)
+    if (!this.textures.exists("vehicle-rickshaw")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 90;
+      canvas.height = 65;
+      const ctx = canvas.getContext("2d")!;
+      // Passenger Hood (Blue / Yellow folds)
+      ctx.fillStyle = "#0284c7";
+      ctx.beginPath();
+      ctx.roundRect(14, 10, 44, 28, [18, 18, 4, 4]);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      // Painted rickshaw art backboard (Red with floral pattern)
+      ctx.fillStyle = "#ef4444";
+      ctx.fillRect(8, 26, 12, 18);
+      ctx.strokeRect(8, 26, 12, 18);
+      ctx.fillStyle = "#facc15";
+      ctx.beginPath();
+      ctx.arc(14, 35, 4, 0, Math.PI * 2);
+      ctx.fill();
+      // Frame & handlebar
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(40, 36);
+      ctx.lineTo(72, 36);
+      ctx.lineTo(78, 22);
+      ctx.stroke();
+      // Two big wheels
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(26, 48, 13, 0, Math.PI * 2);
+      ctx.arc(74, 48, 13, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      // Spokes
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(26, 35); ctx.lineTo(26, 61);
+      ctx.moveTo(13, 48); ctx.lineTo(39, 48);
+      ctx.moveTo(74, 35); ctx.lineTo(74, 61);
+      ctx.moveTo(61, 48); ctx.lineTo(87, 48);
+      ctx.stroke();
+      this.textures.addCanvas("vehicle-rickshaw", canvas);
+    }
+
+    // 8. Green CNG Auto (95 x 60)
+    if (!this.textures.exists("vehicle-cng")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 95;
+      canvas.height = 60;
+      const ctx = canvas.getContext("2d")!;
+      // Green body
+      ctx.fillStyle = "#15803d";
+      ctx.beginPath();
+      ctx.roundRect(8, 8, 78, 38, [12, 12, 6, 6]);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      // Yellow rooftop canvas
+      ctx.fillStyle = "#facc15";
+      ctx.beginPath();
+      ctx.roundRect(14, 4, 66, 12, [6, 6, 2, 2]);
+      ctx.fill();
+      ctx.stroke();
+      // Metal wire grill mesh on sides (Classic Dhaka CNG)
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 1.5;
+      for (let gx = 22; gx < 65; gx += 8) {
+        ctx.beginPath();
+        ctx.moveTo(gx, 18);
+        ctx.lineTo(gx, 34);
+        ctx.stroke();
+      }
+      // Wheels
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.arc(28, 48, 10, 0, Math.PI * 2);
+      ctx.arc(70, 48, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      this.textures.addCanvas("vehicle-cng", canvas);
+    }
+
+    // 9. Murir Tin Local Bus (180 x 95)
+    if (!this.textures.exists("vehicle-local-bus")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 180;
+      canvas.height = 95;
+      const ctx = canvas.getContext("2d")!;
+      // Dented Bus Body (Blue / Yellow / Red livery)
+      ctx.fillStyle = "#2563eb";
+      ctx.beginPath();
+      ctx.roundRect(8, 8, 164, 62, [14, 6, 4, 8]);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      // Lower red stripe
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(8, 50, 164, 12);
+      ctx.strokeRect(8, 50, 164, 12);
+      // Windows with passenger silhouettes
+      ctx.fillStyle = "#e0f2fe";
+      for (let wx = 20; wx < 155; wx += 24) {
+        ctx.fillRect(wx, 16, 18, 18);
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(wx, 16, 18, 18);
+        // Passenger head silhouette
+        ctx.fillStyle = "#0f172a";
+        ctx.beginPath();
+        ctx.arc(wx + 9, 28, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#e0f2fe";
+      }
+      // Humorous Bumper Slogan
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 8px 'Hind Siliguri', sans-serif";
+      ctx.fillText("দূরত্ব বজায় রাখুন", 90, 60);
+      // Heavy wheels
+      ctx.fillStyle = "#0f172a";
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(42, 74, 14, 0, Math.PI * 2);
+      ctx.arc(136, 74, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      this.textures.addCanvas("vehicle-local-bus", canvas);
+    }
+
+    // 10. Horn Please Highway Truck (190 x 100)
+    if (!this.textures.exists("vehicle-truck")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 190;
+      canvas.height = 100;
+      const ctx = canvas.getContext("2d")!;
+      // Cabin (Red)
+      ctx.fillStyle = "#b91c1c";
+      ctx.beginPath();
+      ctx.roundRect(110, 16, 68, 56, [14, 4, 4, 4]);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      // Wooden cargo bed (Yellow & green planks)
+      ctx.fillStyle = "#eab308";
+      ctx.fillRect(8, 20, 102, 52);
+      ctx.strokeRect(8, 20, 102, 52);
+      // Painted text
+      ctx.fillStyle = "#b91c1c";
+      ctx.font = "bold 10px 'Luckiest Guy', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("HORN PLEASE", 58, 48);
+      // Large truck wheels
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.arc(40, 78, 16, 0, Math.PI * 2);
+      ctx.arc(80, 78, 16, 0, Math.PI * 2);
+      ctx.arc(150, 78, 16, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      this.textures.addCanvas("vehicle-truck", canvas);
+    }
+
+    // 11. Cartoon Dhaka Crow (32 x 28)
+    if (!this.textures.exists("anim-crow")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 32;
+      canvas.height = 28;
+      const ctx = canvas.getContext("2d")!;
+      // Black body
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.ellipse(14, 16, 10, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Head
+      ctx.beginPath();
+      ctx.arc(22, 10, 6, 0, Math.PI * 2);
+      ctx.fill();
+      // Eye
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(24, 9, 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(24, 9, 1, 1);
+      // Yellow beak
+      ctx.fillStyle = "#facc15";
+      ctx.beginPath();
+      ctx.moveTo(27, 9);
+      ctx.lineTo(32, 11);
+      ctx.lineTo(27, 13);
+      ctx.closePath();
+      ctx.fill();
+      this.textures.addCanvas("anim-crow", canvas);
+    }
   }
 
   private generateNearBuildingsTexture(
