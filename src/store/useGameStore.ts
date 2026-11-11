@@ -1,13 +1,15 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { BALANCE } from "@/config/balance";
-import { DEFAULT_VILLAIN } from "@/config/villains";
+import { VILLAINS, DEFAULT_VILLAIN } from "@/config/villains";
 import { DEFAULT_CRIME } from "@/config/crimes";
 import { DEFAULT_MAP } from "@/config/maps";
 import { WorldEvent } from "@/services/eventService";
 import { gameBus } from "@/game/bus";
 
 export type GameScreen = "BOOT" | "LOBBY" | "PLAYING" | "PAUSED" | "GAME_OVER";
+export type TimeOfDay = "noon" | "goldenHour" | "night" | "dawn";
+export type WeatherType = "clear" | "rain" | "fog" | "heatwave";
 
 export interface LoadingProgress {
   fontsReady: boolean;
@@ -38,6 +40,9 @@ export interface GameState {
   crimeId: string;
   currentMapId: "mirpur" | "farmgate" | "newmarket";
   selectedChappalId: string;
+  timeOfDay: TimeOfDay;
+  weather: WeatherType;
+  unlockedVillainIds: string[];
 
   // Combat status
   villainHp: number;
@@ -67,6 +72,9 @@ export interface GameState {
   setCrimeId: (id: string) => void;
   setMapId: (id: "mirpur" | "farmgate" | "newmarket") => void;
   setSelectedChappalId: (id: string) => void;
+  setTimeOfDay: (tod: TimeOfDay) => void;
+  setWeather: (w: WeatherType) => void;
+  unlockVillain: (id: string) => boolean;
   setCounterBuff: (name: string, durationSec: number) => void;
   clearCounterBuff: () => void;
   startGame: () => void;
@@ -108,6 +116,9 @@ export const useGameStore = create<GameState>()(
     crimeId: DEFAULT_CRIME.id,
     currentMapId: DEFAULT_MAP.id,
     selectedChappalId: "chappal-bata",
+    timeOfDay: "noon",
+    weather: "clear",
+    unlockedVillainIds: ["phoneSnatcher", "chickenChor"],
 
     villainHp: BALANCE.INITIAL_VILLAIN_HP,
     villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
@@ -164,6 +175,19 @@ export const useGameStore = create<GameState>()(
     setCrimeId: (id) => set({ crimeId: id }),
     setMapId: (id) => set({ currentMapId: id }),
     setSelectedChappalId: (id) => set({ selectedChappalId: id }),
+    setTimeOfDay: (tod) => set({ timeOfDay: tod }),
+    setWeather: (w) => set({ weather: w }),
+    unlockVillain: (id) => {
+      const villain = VILLAINS.find((v) => v.id === id);
+      if (!villain) return false;
+      const currentTaka = get().taka;
+      if (currentTaka < villain.unlockCostTaka) return false;
+      set((state) => ({
+        taka: state.taka - villain.unlockCostTaka,
+        unlockedVillainIds: [...state.unlockedVillainIds, id],
+      }));
+      return true;
+    },
     setCounterBuff: (name, durationSec) =>
       set({
         activeCounterBuff: {
