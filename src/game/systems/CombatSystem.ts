@@ -21,6 +21,7 @@ export class CombatSystem {
   private chaser: Chaser;
   private fxSystem: FxSystem;
   private projectiles: Projectile[] = [];
+  private isDestroyed = false;
 
   constructor(
     scene: Phaser.Scene,
@@ -38,12 +39,18 @@ export class CombatSystem {
   }
 
   public destroy() {
+    this.isDestroyed = true;
     gameBus.off("weapon:use", this.handleWeaponUse);
     this.projectiles.forEach((p) => p.destroy());
     this.projectiles = [];
   }
 
   private handleWeaponUse = (data: { weaponId: string }) => {
+    if (this.isDestroyed) return;
+    if (!this.scene?.scene?.isActive()) return;
+    if (!this.chaser?.rig?.scene) return;
+    if (this.villain.isDead) return;
+
     if (data.weaponId === ULTIMATE_WEAPON.id) {
       this.executeUltimate();
       return;

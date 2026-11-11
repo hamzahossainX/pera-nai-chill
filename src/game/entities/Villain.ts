@@ -10,6 +10,7 @@ export class Villain {
   public rig: CharacterRig;
   public archetype: (typeof VILLAINS)[number];
   public currentLane = 1; // 0, 1, or 2 (middle lane default)
+  public isDead = false;
   private laneChangeTimer = 0;
   private isBossPhase2 = false;
 
@@ -44,7 +45,7 @@ export class Villain {
   }
 
   public setLane(laneIndex: number) {
-    if (laneIndex < 0 || laneIndex >= BALANCE.LANES_Y.length) return;
+    if (laneIndex < 0 || laneIndex >= BALANCE.LANES_Y.length || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
     this.currentLane = laneIndex;
 
     const targetY = BALANCE.LANES_Y[laneIndex];
@@ -58,12 +59,15 @@ export class Villain {
       duration: 220,
       ease: "Quad.Out",
       onUpdate: () => {
-        this.rig.setDepth(this.currentLane + 10);
+        if (this.rig && this.rig.scene) {
+          this.rig.setDepth(this.currentLane + 10);
+        }
       },
     });
   }
 
   public hit(damage: number, knockback: number = 35, isCrit: boolean = false) {
+    if (!this.rig || !this.rig.scene) return;
     this.rig.triggerHitStun(knockback, isCrit);
 
     // Update HP percent for mask-slip progression
@@ -76,9 +80,11 @@ export class Villain {
     // Boss Phase 2 Check (Chor-er Sardar enters phase 2 below 50% HP)
     if (this.archetype.id === "chorSardar" && healthPercent <= 0.5 && !this.isBossPhase2) {
       this.isBossPhase2 = true;
-      this.scene.cameras.main.shake(200, 0.008);
+      if (this.scene && this.scene.cameras) {
+        this.scene.cameras.main.shake(200, 0.008);
+      }
       // Spawn sweat drops
-      if (this.scene.textures.exists("fx-splash")) {
+      if (this.scene && this.scene.textures && this.scene.textures.exists("fx-splash") && this.scene.tweens) {
         const sweat = this.scene.add
           .sprite(this.rig.x - 10, this.rig.y - 120, "fx-splash")
           .setDepth(this.rig.depth + 1)
@@ -95,6 +101,7 @@ export class Villain {
   }
 
   public trip(durationMs: number = 1600) {
+    if (!this.rig || !this.rig.scene) return;
     this.rig.triggerTrip(durationMs);
   }
 
@@ -102,7 +109,7 @@ export class Villain {
   public isHiding = false;
 
   public vault() {
-    if (this.isVaulting) return;
+    if (this.isVaulting || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
     this.isVaulting = true;
     const currentY = this.rig.y;
 
@@ -114,15 +121,17 @@ export class Villain {
       yoyo: true,
       ease: "Quad.Out",
       onComplete: () => {
-        this.rig.rotation = 0;
-        this.rig.y = currentY;
+        if (this.rig && this.rig.scene) {
+          this.rig.rotation = 0;
+          this.rig.y = currentY;
+        }
         this.isVaulting = false;
       },
     });
   }
 
   public hideBehindVehicle() {
-    if (this.isHiding) return;
+    if (this.isHiding || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
     this.isHiding = true;
 
     this.scene.tweens.add({
@@ -139,7 +148,10 @@ export class Villain {
   }
 
   public die(onComplete?: () => void) {
-    this.rig.triggerDead(onComplete);
+    this.isDead = true;
+    if (this.rig && this.rig.scene) {
+      this.rig.triggerDead(onComplete);
+    }
   }
 
   public update(time: number, delta: number) {

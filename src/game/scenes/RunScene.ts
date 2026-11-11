@@ -103,8 +103,8 @@ export class RunScene extends Phaser.Scene {
     gameBus.on("debug:timeScale", this.handleDebugTimeScale);
     gameBus.on("villain:dead", this.handleVillainDead);
 
-    // Clean up bus listeners on scene shutdown
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+    // Clean up bus listeners on scene shutdown or destroy
+    const cleanup = () => {
       audioService.stopBgm();
       audioService.stopAmbience();
       gameBus.off("game:pause", this.handlePause);
@@ -120,7 +120,10 @@ export class RunScene extends Phaser.Scene {
       this.dialogueSystem.destroy();
       this.spawnSystem.clearAll();
       this.difficultySystem.reset();
-    });
+    };
+
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, cleanup);
+    this.events.once(Phaser.Scenes.Events.DESTROY, cleanup);
   }
 
   private handleVillainDead = () => {

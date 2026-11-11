@@ -334,7 +334,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   }
 
   public updateHealth(hpPercent: number) {
-    if (this.stateName === "DEAD") return;
+    if (this.stateName === "DEAD" || !this.scene || !this.scene.tweens) return;
 
     // At 66% HP: mask slips down
     if (hpPercent <= 0.66 && !this.maskSlipped && this.maskLowerSprite) {
@@ -413,14 +413,14 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   }
 
   public setFaceTexture(key: string) {
-    if (this.scene.textures.exists(key)) {
+    if (this.scene && this.scene.textures && this.scene.textures.exists(key)) {
       this.faceKey = key;
       this.faceSprite.setTexture(key).setDisplaySize(68, 68);
     }
   }
 
   public triggerHitStun(knockbackX: number = 40, isCrit: boolean = false) {
-    if (this.stateName === "DEAD") return;
+    if (this.stateName === "DEAD" || !this.scene || !this.scene.tweens) return;
 
     this.isHitStunned = true;
     this.stateName = "HIT_STUN";
@@ -436,7 +436,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       this.propShockedEyes.setVisible(true);
       this.propBandAid.setVisible(true);
       this.scene.time.delayedCall(450, () => {
-        if (this.stateName !== "DEAD") {
+        if (this.stateName !== "DEAD" && this.scene) {
           this.propShockedEyes.setVisible(false);
           this.scene.time.delayedCall(1200, () => {
             if (this.stateName !== "DEAD") {
@@ -481,7 +481,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   }
 
   public triggerDead(onComplete?: () => void) {
-    if (this.stateName === "DEAD") return;
+    if (this.stateName === "DEAD" || !this.scene || !this.scene.tweens) return;
     this.stateName = "DEAD";
     this.expressionSprite.setVisible(true);
     this.propShockedEyes.setVisible(true);
@@ -511,7 +511,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   }
 
   public triggerTrip(durationMs: number = 1600) {
-    if (this.stateName === "DEAD" || this.stateName === "TRIPPED") return;
+    if (this.stateName === "DEAD" || this.stateName === "TRIPPED" || !this.scene || !this.scene.tweens) return;
     this.stateName = "TRIPPED";
 
     this.scene.tweens.add({
@@ -541,7 +541,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     });
 
     this.scene.time.delayedCall(durationMs, () => {
-      if (this.stateName === "DEAD") return;
+      if (this.stateName === "DEAD" || !this.scene || !this.scene.tweens) return;
       this.scene.tweens.add({
         targets: this,
         rotation: 0,
@@ -557,6 +557,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   }
 
   public triggerAttack(type: "slap" | "punch" | "kick" | "throw") {
+    if (!this.scene || !this.scene.tweens || !this.scene.time) return;
     this.attackTimer = 280; // ms
 
     if (type === "kick") {
@@ -605,6 +606,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       // Baseball windup throw
       this.frontArmGroup.rotation = 1.4;
       this.scene.time.delayedCall(70, () => {
+        if (!this.scene || !this.scene.tweens) return;
         this.scene.tweens.add({
           targets: this.frontArmGroup,
           rotation: -1.6,

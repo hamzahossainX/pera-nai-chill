@@ -31,6 +31,7 @@ export class Chaser {
   }
 
   public spawnDashDust(x: number, y: number) {
+    if (!this.scene || !this.scene.tweens || !this.scene.textures) return;
     if (this.scene.textures.exists("fx-dash-dust")) {
       const dust = this.scene.add
         .sprite(x, y, "fx-dash-dust")
@@ -54,7 +55,7 @@ export class Chaser {
   }
 
   public followLane(laneIndex: number) {
-    if (this.currentLane === laneIndex) return;
+    if (this.currentLane === laneIndex || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
     this.currentLane = laneIndex;
 
     this.spawnDashDust(this.rig.x - 15, this.rig.y + 10);
@@ -76,6 +77,7 @@ export class Chaser {
   }
 
   public attack(type: "slap" | "punch" | "kick" | "throw") {
+    if (!this.scene || !this.rig || !this.rig.scene) return;
     if (type === "kick") {
       this.spawnDashDust(this.rig.x - 10, this.rig.y + 12);
     }
@@ -83,6 +85,7 @@ export class Chaser {
   }
 
   public stumble() {
+    if (!this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
     this.scene.tweens.add({
       targets: this.rig,
       rotation: 0.18,
@@ -91,7 +94,9 @@ export class Chaser {
       repeat: 1,
       ease: "Quad.InOut",
       onComplete: () => {
-        this.rig.rotation = 0;
+        if (this.rig && this.rig.scene) {
+          this.rig.rotation = 0;
+        }
       },
     });
   }
