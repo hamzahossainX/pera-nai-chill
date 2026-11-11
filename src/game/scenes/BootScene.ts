@@ -453,6 +453,78 @@ export class BootScene extends Phaser.Scene {
       this.textures.addCanvas("fx-moon", canvas);
     }
 
+    // 18. Rain Drop Texture
+    if (!this.textures.exists("fx-raindrop")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0x7dd3fc, 0.85);
+      g.fillRect(0, 0, 2, 18);
+      g.generateTexture("fx-raindrop", 2, 18);
+      g.destroy();
+    }
+
+    // 19. Road Puddle Texture (70 x 24)
+    if (!this.textures.exists("fx-puddle")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 70;
+      canvas.height = 24;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "rgba(14, 116, 144, 0.55)";
+      ctx.beginPath();
+      ctx.ellipse(35, 12, 32, 9, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.7)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      this.textures.addCanvas("fx-puddle", canvas);
+    }
+
+    // 20. Water Splash Particle
+    if (!this.textures.exists("fx-splash")) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0x38bdf8, 0.9);
+      g.fillCircle(4, 4, 4);
+      g.fillStyle(0xffffff, 0.9);
+      g.fillCircle(3, 3, 2);
+      g.generateTexture("fx-splash", 8, 8);
+      g.destroy();
+    }
+
+    // 21. Soft Fog Cloud (256 x 96)
+    if (!this.textures.exists("fx-fog")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 96;
+      const ctx = canvas.getContext("2d")!;
+      const grad = ctx.createLinearGradient(0, 48, 256, 48);
+      grad.addColorStop(0, "rgba(241, 245, 249, 0)");
+      grad.addColorStop(0.3, "rgba(241, 245, 249, 0.45)");
+      grad.addColorStop(0.7, "rgba(241, 245, 249, 0.45)");
+      grad.addColorStop(1, "rgba(241, 245, 249, 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.ellipse(128, 48, 120, 40, 0, 0, Math.PI * 2);
+      ctx.fill();
+      this.textures.addCanvas("fx-fog", canvas);
+    }
+
+    // 22. Stray Floating Slipper (36 x 20)
+    if (!this.textures.exists("fx-floating-slipper")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 36;
+      canvas.height = 20;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#0284c7";
+      ctx.beginPath();
+      ctx.ellipse(18, 10, 16, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = "#ef4444";
+      ctx.fillRect(10, 8, 16, 4);
+      this.textures.addCanvas("fx-floating-slipper", canvas);
+    }
+
     // 12. Rig Torso
     if (!this.textures.exists("rig-torso")) {
       const g = this.make.graphics({ x: 0, y: 0 });

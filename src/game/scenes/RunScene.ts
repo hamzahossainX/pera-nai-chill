@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { ParallaxSystem } from "@/game/systems/ParallaxSystem";
 import { TimeOfDaySystem } from "@/game/systems/TimeOfDaySystem";
+import { WeatherSystem } from "@/game/systems/WeatherSystem";
 import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { FxSystem } from "@/game/systems/FxSystem";
@@ -15,6 +16,7 @@ import { audioService } from "@/services/audio";
 export class RunScene extends Phaser.Scene {
   public parallaxSystem!: ParallaxSystem;
   public timeOfDaySystem!: TimeOfDaySystem;
+  public weatherSystem!: WeatherSystem;
   public villain!: Villain;
   public chaser!: Chaser;
   public fxSystem!: FxSystem;
@@ -31,9 +33,10 @@ export class RunScene extends Phaser.Scene {
   }
 
   create() {
-    // 1. Initialize Parallax Background & Day/Night Lighting
+    // 1. Initialize Parallax Background & Day/Night Lighting & Weather
     this.parallaxSystem = new ParallaxSystem(this);
     this.timeOfDaySystem = new TimeOfDaySystem(this, this.parallaxSystem);
+    this.weatherSystem = new WeatherSystem(this, this.parallaxSystem);
 
     // 2. Spawn Characters
     this.chaser = new Chaser(this);
@@ -81,6 +84,7 @@ export class RunScene extends Phaser.Scene {
       gameBus.off("villain:dead", this.handleVillainDead);
       this.combatSystem.destroy();
       this.timeOfDaySystem.destroy();
+      this.weatherSystem.destroy();
       this.eventSystem.destroy();
       this.spawnSystem.clearAll();
       this.difficultySystem.reset();
@@ -154,6 +158,7 @@ export class RunScene extends Phaser.Scene {
     this.spawnSystem.update(time, delta, effectiveSpeed);
     this.eventSystem.update(time, delta);
     this.timeOfDaySystem.update(time, delta);
+    this.weatherSystem.update(time, delta);
 
     // Keep chaser following villain's lane smoothly
     this.chaser.followLane(this.villain.currentLane);

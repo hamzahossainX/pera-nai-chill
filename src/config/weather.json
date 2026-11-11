@@ -1,0 +1,54 @@
+{
+  "weatherModes": {
+    "clear": {
+      "id": "clear",
+      "name": { "en": "Clear Sky", "bn": "পরিষ্কার আকাশ" },
+      "rainIntensity": 0,
+      "fogAlpha": 0,
+      "lightningEnabled": false,
+      "heatShimmer": false,
+      "puddleCount": 0
+    },
+    "rain": {
+      "id": "rain",
+      "name": { "en": "Monsoon Downpour", "bn": "বর্ষার প্রবল বৃষ্টি" },
+      "rainIntensity": 1.0,
+      "fogAlpha": 0.25,
+      "lightningEnabled": true,
+      "lightningIntervalSec": 12,
+      "heatShimmer": false,
+      "puddleCount": 8,
+      "puddleReflectionAlpha": 0.4
+    },
+    "fog": {
+      "id": "fog",
+      "name": { "en": "Winter Fog", "bn": "শীতের কুয়াশা" },
+      "rainIntensity": 0,
+      "fogAlpha": 0.55,
+      "lightningEnabled": false,
+      "heatShimmer": false,
+      "puddleCount": 0
+    },
+    "heatwave": {
+      "id": "heatwave",
+      "name": { "en": "Severe Heatwave", "bn": "তীব্র দাবদাহ" },
+      "rainIntensity": 0,
+      "fogAlpha": 0.1,
+      "lightningEnabled": false,
+      "heatShimmer": true,
+      "puddleCount": 0
+    },
+    "flood": {
+      "id": "flood",
+      "name": { "en": "Waterlogging Flood", "bn": "রাস্তায় জলাবদ্ধতা" },
+      "rainIntensity": 0.7,
+      "fogAlpha": 0.2,
+      "lightningEnabled": true,
+      "lightningIntervalSec": 16,
+      "heatShimmer": false,
+      "waterLevelHeight": 45,
+      "speedPenalty": 0.25,
+      "puddleCount": 12
+    }
+  }
+}

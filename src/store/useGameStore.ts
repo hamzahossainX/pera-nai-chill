@@ -9,7 +9,7 @@ import { gameBus } from "@/game/bus";
 
 export type GameScreen = "BOOT" | "LOBBY" | "PLAYING" | "PAUSED" | "GAME_OVER";
 export type TimeOfDay = "noon" | "goldenHour" | "night" | "dawn";
-export type WeatherType = "clear" | "rain" | "fog" | "heatwave";
+export type WeatherType = "clear" | "rain" | "fog" | "heatwave" | "flood";
 
 export interface LoadingProgress {
   fontsReady: boolean;
