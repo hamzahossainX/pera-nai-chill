@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Hand gripping smartphone -->
+  <defs>
+    <linearGradient id="phoneGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <!-- Stolen Phone in Hand -->
+  <rect x="12" y="2" width="16" height="26" rx="3" fill="#0f172a" stroke="#000000" stroke-width="2.5"/>
+  <!-- Glowing Screen -->
+  <rect x="14" y="5" width="12" height="18" rx="1.5" fill="url(#phoneGlow)"/>
+  <!-- Comic crack on phone screen -->
+  <path d="M 17 8 L 22 13 L 19 16 L 24 20" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.9"/>
+  <!-- Home button / camera dot -->
+  <circle cx="20" cy="25" r="1" fill="#94a3b8"/>
+  <!-- Gripping Hand Fingers -->
+  <path d="M 4 12 C 4 7 14 7 16 12 L 17 24 C 17 28 6 28 4 24 Z" fill="#fbcfe8" stroke="#000000" stroke-width="2.5"/>
+  <circle cx="15" cy="14" r="3" fill="#f472b6" stroke="#000000" stroke-width="1.5"/>
+  <circle cx="15" cy="19" r="3" fill="#f472b6" stroke="#000000" stroke-width="1.5"/>
+</svg>

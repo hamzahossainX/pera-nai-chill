@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { CharacterRig } from "./CharacterRig";
 import { BALANCE } from "@/config/balance";
 import { VILLAINS } from "@/config/villains";
+import { OUTFITS } from "@/config/outfits";
 import { useGameStore } from "@/store/useGameStore";
 
 export class Villain {
@@ -20,12 +21,16 @@ export class Villain {
       VILLAINS.find((v) => v.id === useGameStore.getState().villainId) ||
       VILLAINS[0];
 
+    const outfit = OUTFITS[villainConfig.outfitId] || OUTFITS.phoneSnatcher;
+
     this.rig = new CharacterRig({
       scene,
       x: 880,
       y: initialY,
       isSilhouette: false,
       faceKey: "target-face",
+      outfit,
+      archetype: villainConfig,
       outfitColor: villainConfig.outfitColor,
       pantColor: villainConfig.pantColor,
       scale: initialScale,
@@ -56,6 +61,12 @@ export class Villain {
 
   public hit(damage: number, knockback: number = 35, isCrit: boolean = false) {
     this.rig.triggerHitStun(knockback, isCrit);
+
+    // Update HP percent for mask-slip progression
+    const store = useGameStore.getState();
+    const remainingHp = Math.max(0, store.villainHp - damage);
+    const maxHp = Math.max(1, store.villainMaxHp);
+    this.rig.updateHealth(remainingHp / maxHp);
   }
 
   public trip(durationMs: number = 1600) {

@@ -34,7 +34,7 @@ export function VillainPreview() {
       </div>
 
       {/* Animated Cartoon Running Puppet */}
-      <div className="relative flex h-52 w-full items-center justify-center overflow-hidden rounded-xl border-2 border-black bg-gradient-to-b from-sky-900 via-indigo-950 to-slate-900 shadow-inner">
+      <div className="relative flex h-56 w-full items-center justify-center overflow-hidden rounded-xl border-2 border-black bg-gradient-to-b from-sky-900 via-indigo-950 to-slate-900 shadow-inner">
         {/* Moving Road Lines in background */}
         <div className="absolute bottom-4 left-0 right-0 h-10 border-t-2 border-dashed border-yellow-400/30 bg-slate-800/60" />
 
@@ -49,59 +49,105 @@ export function VillainPreview() {
           </span>
         </div>
 
-        {/* Running Character Container */}
+        {/* Live Slot-Based Running Character Rig Preview */}
         <motion.div
           animate={{ y: [0, -8, 0] }}
           transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
           className="relative flex flex-col items-center"
         >
-          {/* Target Face Attached to Head */}
-          <motion.div
-            animate={{ rotate: [-3, 3, -3] }}
-            transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
-            className="z-20 -mb-2.5 h-20 w-20 overflow-hidden rounded-full border-4 border-black bg-yellow-200 shadow-lg"
-          >
-            {targetFaceUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={targetFaceUrl}
-                alt="Running Villain Face"
-                className="h-full w-full object-cover"
-              />
-            ) : null}
-          </motion.div>
+          {/* Head & Mask Group */}
+          <div className="relative z-20 flex items-center justify-center -mb-2">
+            {/* Hood Back */}
+            <div className="absolute -inset-1.5 rounded-full bg-slate-950 border-2 border-black" />
 
-          {/* Torso / Panjabi */}
+            {/* Target Face */}
+            <motion.div
+              animate={{ rotate: [-3, 3, -3] }}
+              transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
+              className="relative z-10 h-18 w-18 overflow-hidden rounded-full border-3 border-black bg-yellow-200 shadow-lg"
+            >
+              {targetFaceUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={targetFaceUrl}
+                  alt="Running Villain Face"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center font-comic font-bold text-slate-700 text-xs">
+                  NO FACE
+                </div>
+              )}
+            </motion.div>
+
+            {/* Balaclava Mask Upper Band */}
+            <div className="absolute top-0 z-20 h-4 w-16 rounded-t-full bg-slate-900 border-t-2 border-black" />
+
+            {/* Balaclava Mask Lower Mouth Cover (with ventilation dots) */}
+            <div className="absolute bottom-0 z-20 flex items-center justify-center gap-1 h-5 w-16 rounded-b-xl bg-slate-900 border-b-2 border-black shadow-md">
+              <span className="h-1 w-1 rounded-full bg-slate-700" />
+              <span className="h-1 w-1 rounded-full bg-slate-700" />
+              <span className="h-1 w-1 rounded-full bg-slate-700" />
+            </div>
+
+            {/* Hood Rim Arch Framing Cutout */}
+            <div className="pointer-events-none absolute -inset-2 rounded-full border-[5px] border-slate-900 border-t-slate-800 shadow-md" />
+          </div>
+
+          {/* Torso / Hoodie with Parody Logo & Pocket */}
           <div
-            className="z-10 h-16 w-14 rounded-t-lg rounded-b-md border-2 border-black shadow-md flex items-center justify-center"
+            className="relative z-10 h-16 w-16 rounded-t-xl rounded-b-md border-2 border-black shadow-md flex flex-col items-center justify-between p-1"
             style={{
               backgroundColor: `#${currentVillain.outfitColor.toString(16).padStart(6, "0")}`,
             }}
           >
-            {/* Pocket / Buttons detail */}
-            <div className="h-6 w-1 bg-black/30 rounded-full" />
+            {/* Zipper / Drawstring */}
+            <div className="h-4 w-0.5 bg-yellow-400 rounded-full" />
+            {/* Parody Adidos Logo */}
+            <div className="flex gap-0.5">
+              <div className="h-2 w-1 bg-white/80 -rotate-12 rounded-sm" />
+              <div className="h-3 w-1 bg-white/80 -rotate-12 rounded-sm" />
+              <div className="h-4 w-1 bg-white/80 -rotate-12 rounded-sm" />
+            </div>
+            {/* Kangaroo Pouch */}
+            <div className="w-12 h-4 rounded-t-md bg-black/25 border-t border-black/40" />
+
+            {/* Stolen Smartphone Prop in Hand */}
+            <motion.div
+              animate={{ rotate: [-10, 10, -10], y: [-2, 2, -2] }}
+              transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
+              className="absolute -right-3 top-6 z-25 h-7 w-4.5 rounded border border-black bg-slate-950 p-0.5 shadow-md flex items-center justify-center"
+            >
+              <div className="h-full w-full rounded-xs bg-sky-400 border border-sky-200" />
+            </motion.div>
           </div>
 
-          {/* Running Legs */}
-          <div className="flex gap-2">
+          {/* Running Legs with Sneakers */}
+          <div className="flex gap-3 -mt-1">
             <motion.div
-              animate={{ rotate: [-25, 25, -25] }}
+              animate={{ rotate: [-28, 28, -28] }}
               transition={{
                 repeat: Infinity,
                 duration: 0.5,
                 ease: "easeInOut",
               }}
-              className="h-10 w-3 origin-top rounded-b-md border-2 border-black bg-slate-800"
-            />
+              className="relative h-11 w-3.5 origin-top rounded-b-sm border-2 border-black bg-slate-800 flex flex-col justify-end"
+            >
+              {/* Sneaker */}
+              <div className="h-3 w-5 -ml-1 rounded-sm bg-red-600 border border-black border-b-2 border-b-white" />
+            </motion.div>
             <motion.div
-              animate={{ rotate: [25, -25, 25] }}
+              animate={{ rotate: [28, -28, 28] }}
               transition={{
                 repeat: Infinity,
                 duration: 0.5,
                 ease: "easeInOut",
               }}
-              className="h-10 w-3 origin-top rounded-b-md border-2 border-black bg-slate-800"
-            />
+              className="relative h-11 w-3.5 origin-top rounded-b-sm border-2 border-black bg-slate-800 flex flex-col justify-end"
+            >
+              {/* Sneaker */}
+              <div className="h-3 w-5 -ml-1 rounded-sm bg-red-600 border border-black border-b-2 border-b-white" />
+            </motion.div>
           </div>
 
           {/* Ground Shadow */}
@@ -148,49 +194,44 @@ export function VillainPreview() {
                 }}
                 className={`flex-1 min-w-[90px] rounded-xl border-2 p-2 text-left transition-all ${
                   villainId === v.id
-                    ? "border-yellow-400 bg-yellow-400/20 text-yellow-300"
-                    : "border-black/50 bg-slate-800 text-slate-400 hover:bg-slate-700"
+                    ? "border-yellow-400 bg-yellow-400/20 scale-102"
+                    : "border-slate-700 bg-slate-800/80 hover:border-slate-500"
                 }`}
               >
-                <div className="font-bangla text-xs font-bold">{v.name.bn}</div>
-                <div className="text-[10px] font-mono text-slate-300 truncate">
-                  HP {v.baseHp}
+                <div className="font-comic text-xs font-bold text-white">
+                  {v.name.en}
+                </div>
+                <div className="font-bangla text-xs font-semibold text-slate-300">
+                  {v.name.bn}
                 </div>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Wanted Reason / Crime Tags */}
-        <div className="mt-1">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-mono font-bold text-amber-300">
-              দড়ি ধরে টানার কারণ / WANTED REASON:
-            </label>
-            <span className="text-[10px] font-bold text-rose-400">
-              বাউন্টি: {currentCrime.bountyTaka} ৳
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-1.5 mt-1.5 max-h-36 overflow-y-auto pr-1">
+        {/* Reason / Crime Preset Selector */}
+        <div>
+          <label className="text-xs font-mono font-bold text-slate-300">
+            Crime / অপরাধের কারণ:
+          </label>
+          <div className="grid grid-cols-2 gap-2 mt-1">
             {CRIMES.map((c) => (
               <button
                 key={c.id}
-                type="button"
                 onClick={() => setCrimeId(c.id)}
-                className={`flex items-start gap-1.5 rounded-xl border-2 p-1.5 text-left transition-all ${
+                className={`flex items-center gap-2 rounded-xl border-2 p-2 text-left transition-all ${
                   crimeId === c.id
-                    ? "border-yellow-400 bg-yellow-400/15 shadow-sm"
-                    : "border-black/40 bg-slate-800/80 hover:bg-slate-700/80"
+                    ? "border-rose-400 bg-rose-500/20 scale-101"
+                    : "border-slate-700 bg-slate-800/80 hover:border-slate-500"
                 }`}
               >
-                <span className="text-sm shrink-0">{c.icon}</span>
+                <span className="text-lg">{c.icon}</span>
                 <div className="flex flex-col min-w-0">
-                  <span className="font-bangla text-[11px] font-bold text-yellow-200 leading-tight truncate">
-                    {c.title.bn}
+                  <span className="truncate font-comic text-xs font-bold text-white">
+                    {c.title.en}
                   </span>
-                  <span className="text-[9px] text-slate-400 truncate">
-                    {c.badgeText} &bull; ৳{c.bountyTaka}
+                  <span className="truncate font-bangla text-[11px] text-slate-300">
+                    {c.title.bn}
                   </span>
                 </div>
               </button>

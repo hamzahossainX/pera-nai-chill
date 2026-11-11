@@ -22,6 +22,7 @@ export class Chaser {
       pantColor: 0x1e3a8a, // Denim Jeans
       faceKey: "hero-face",
       scale: initialScale,
+      isChaser: true,
     });
 
     this.rig.setDepth(this.currentLane + 9);

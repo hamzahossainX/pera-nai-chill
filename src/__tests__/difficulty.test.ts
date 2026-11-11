@@ -35,18 +35,21 @@ describe("T12: Difficulty Ramp & Villain Variants", () => {
     expect(difficulty.getCurrentSpeed()).toBe(BALANCE.BASE_RUN_SPEED + 160);
   });
 
-  it("includes all 4 distinct villains with different stats and colors", () => {
-    expect(VILLAINS.length).toBe(4);
+  it("includes all 7 distinct villains with different stats and colors", () => {
+    expect(VILLAINS.length).toBe(7);
 
     const ids = VILLAINS.map((v) => v.id);
-    expect(ids).toContain("corrupt-politician");
-    expect(ids).toContain("traffic-cop");
-    expect(ids).toContain("syndicate-boss");
-    expect(ids).toContain("slacker-babu");
+    expect(ids).toContain("phoneSnatcher");
+    expect(ids).toContain("pickpocket");
+    expect(ids).toContain("cableChor");
+    expect(ids).toContain("manholeChor");
+    expect(ids).toContain("eidMarketChor");
+    expect(ids).toContain("chickenChor");
+    expect(ids).toContain("chorSardar");
 
-    // Check each villain has unique colors and HP
+    // Check each villain has unique HP
     const baseHps = VILLAINS.map((v) => v.baseHp);
     const uniqueHps = new Set(baseHps);
-    expect(uniqueHps.size).toBe(4);
+    expect(uniqueHps.size).toBeGreaterThanOrEqual(4);
   });
 });

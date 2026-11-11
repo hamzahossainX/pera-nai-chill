@@ -14,6 +14,30 @@ export class PreloadScene extends Phaser.Scene {
         task: "Preloading assets...",
       });
     });
+
+    this.load.on("loaderror", (file: { key?: string }) => {
+      console.warn("Asset load error, falling back to procedural texture:", file?.key);
+    });
+
+    // 2x rasterized SVG character parts
+    const svgAssets = [
+      { key: "snatcher-torso", url: "/assets/characters/phoneSnatcher/torso.svg" },
+      { key: "snatcher-arm-upper", url: "/assets/characters/phoneSnatcher/arm_upper.svg" },
+      { key: "snatcher-arm-lower", url: "/assets/characters/phoneSnatcher/arm_lower.svg" },
+      { key: "snatcher-hand", url: "/assets/characters/phoneSnatcher/hand.svg" },
+      { key: "snatcher-thigh", url: "/assets/characters/phoneSnatcher/thigh.svg" },
+      { key: "snatcher-shin", url: "/assets/characters/phoneSnatcher/shin.svg" },
+      { key: "snatcher-foot", url: "/assets/characters/phoneSnatcher/foot.svg" },
+      { key: "snatcher-hood-back", url: "/assets/characters/phoneSnatcher/hood_back.svg" },
+      { key: "snatcher-hood-front", url: "/assets/characters/phoneSnatcher/hood_front.svg" },
+      { key: "snatcher-mask-upper", url: "/assets/characters/phoneSnatcher/mask_upper.svg" },
+      { key: "snatcher-mask-lower", url: "/assets/characters/phoneSnatcher/mask_lower.svg" },
+      { key: "snatcher-prop-phone", url: "/assets/characters/phoneSnatcher/prop_phone.svg" },
+    ];
+
+    for (const asset of svgAssets) {
+      this.load.svg(asset.key, asset.url, { scale: 2 });
+    }
   }
 
   create() {

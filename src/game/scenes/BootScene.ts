@@ -924,6 +924,243 @@ export class BootScene extends Phaser.Scene {
 
       this.textures.addCanvas("obstacle-pothole", canvas);
     }
+
+    // 31. Archetype Procedural Fallback Textures (Phone Snatcher reference)
+    if (!this.textures.exists("snatcher-torso")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 56;
+      canvas.height = 68;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 48, 60, [8, 8, 4, 4]);
+      ctx.fill();
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      // Pouch
+      ctx.fillStyle = "#1e293b";
+      ctx.fillRect(12, 38, 32, 20);
+      ctx.strokeRect(12, 38, 32, 20);
+      // Zipper & drawstrings
+      ctx.strokeStyle = "#475569";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(28, 8);
+      ctx.lineTo(28, 64);
+      ctx.stroke();
+      this.textures.addCanvas("snatcher-torso", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-arm-upper")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 24;
+      canvas.height = 38;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#1e293b";
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 16, 30, 6);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      ctx.strokeStyle = "#f8fafc";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(8, 8);
+      ctx.lineTo(8, 32);
+      ctx.stroke();
+      this.textures.addCanvas("snatcher-arm-upper", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-arm-lower")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 22;
+      canvas.height = 36;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#1e293b";
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 14, 28, 5);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      // Wrist cuff
+      ctx.fillStyle = "#020617";
+      ctx.fillRect(5, 26, 12, 6);
+      ctx.strokeRect(5, 26, 12, 6);
+      this.textures.addCanvas("snatcher-arm-lower", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-hand")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 32;
+      canvas.height = 32;
+      const ctx = canvas.getContext("2d")!;
+      // Glowing Phone in hand
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(12, 2, 16, 26);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(12, 2, 16, 26);
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(14, 5, 12, 18);
+      // Hand
+      ctx.fillStyle = "#fbcfe8";
+      ctx.beginPath();
+      ctx.arc(10, 18, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      this.textures.addCanvas("snatcher-hand", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-thigh")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 26;
+      canvas.height = 42;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 18, 34, 6);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      ctx.strokeStyle = "#f8fafc";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(8, 6);
+      ctx.lineTo(8, 36);
+      ctx.stroke();
+      this.textures.addCanvas("snatcher-thigh", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-shin")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 24;
+      canvas.height = 40;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 16, 32, 5);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      ctx.fillStyle = "#020617";
+      ctx.fillRect(6, 32, 12, 6);
+      ctx.strokeRect(6, 32, 12, 6);
+      this.textures.addCanvas("snatcher-shin", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-foot")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 38;
+      canvas.height = 22;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#dc2626";
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 30, 12, [4, 6, 2, 2]);
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      // White sole
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(2, 14, 34, 6);
+      ctx.strokeRect(2, 14, 34, 6);
+      this.textures.addCanvas("snatcher-foot", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-hood-back")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 86;
+      canvas.height = 86;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#090d16";
+      ctx.beginPath();
+      ctx.arc(43, 43, 40, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      this.textures.addCanvas("snatcher-hood-back", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-hood-front")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 88;
+      canvas.height = 88;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#1e293b";
+      ctx.beginPath();
+      ctx.arc(44, 44, 42, 0, Math.PI * 2);
+      ctx.fill();
+      // Cutout face hole
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(44, 48, 30, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      this.textures.addCanvas("snatcher-hood-front", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-mask-upper")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 74;
+      canvas.height = 34;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.roundRect(6, 6, 62, 22, [6, 6, 2, 2]);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      this.textures.addCanvas("snatcher-mask-upper", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-mask-lower")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 74;
+      canvas.height = 44;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#1e293b";
+      ctx.beginPath();
+      ctx.roundRect(6, 8, 62, 30, [4, 4, 12, 12]);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      // Ventilation dots
+      ctx.fillStyle = "#475569";
+      ctx.beginPath();
+      ctx.arc(31, 24, 2, 0, Math.PI * 2);
+      ctx.arc(37, 24, 2, 0, Math.PI * 2);
+      ctx.arc(43, 24, 2, 0, Math.PI * 2);
+      ctx.fill();
+      this.textures.addCanvas("snatcher-mask-lower", canvas);
+    }
+
+    if (!this.textures.exists("snatcher-prop-phone")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 24;
+      canvas.height = 38;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(2, 2, 20, 34);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(2, 2, 20, 34);
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(4, 5, 16, 26);
+      this.textures.addCanvas("snatcher-prop-phone", canvas);
+    }
   }
 
   private generateNearBuildingsTexture(
