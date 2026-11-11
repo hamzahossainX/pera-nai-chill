@@ -239,6 +239,19 @@ export class ParallaxSystem {
     }
   }
 
+  public setAmbientTint(tint: number) {
+    this.farBuildingsTile.setTint(tint);
+    this.nearBuildingsTile.setTint(tint);
+    this.roadTile.setTint(tint);
+    if (this.metroTrackTile) {
+      this.metroTrackTile.setTint(tint);
+    }
+  }
+
+  public setSkyTint(tint: number) {
+    this.skyTile.setTint(tint);
+  }
+
   public destroy() {
     for (const obj of this.activeObjects) {
       obj.sprite.destroy();

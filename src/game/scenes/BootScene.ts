@@ -411,6 +411,48 @@ export class BootScene extends Phaser.Scene {
       g.destroy();
     }
 
+    // 16. Street Lamp Additive Glow (64 x 64)
+    if (!this.textures.exists("fx-glow-lamp")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext("2d")!;
+      const grad = ctx.createRadialGradient(32, 32, 4, 32, 32, 32);
+      grad.addColorStop(0, "rgba(254, 240, 138, 0.95)");
+      grad.addColorStop(0.4, "rgba(251, 191, 36, 0.5)");
+      grad.addColorStop(1, "rgba(251, 191, 36, 0.0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(32, 32, 32, 0, Math.PI * 2);
+      ctx.fill();
+      this.textures.addCanvas("fx-glow-lamp", canvas);
+    }
+
+    // 17. Glowing Night Moon (60 x 60)
+    if (!this.textures.exists("fx-moon")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 60;
+      canvas.height = 60;
+      const ctx = canvas.getContext("2d")!;
+      // Outer halo
+      const grad = ctx.createRadialGradient(30, 30, 12, 30, 30, 30);
+      grad.addColorStop(0, "rgba(224, 242, 254, 0.8)");
+      grad.addColorStop(0.5, "rgba(56, 189, 248, 0.25)");
+      grad.addColorStop(1, "rgba(56, 189, 248, 0.0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 60, 60);
+      // Crescent Moon
+      ctx.fillStyle = "#fef08a";
+      ctx.beginPath();
+      ctx.arc(30, 30, 15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(36, 26, 14, 0, Math.PI * 2);
+      ctx.fill();
+      this.textures.addCanvas("fx-moon", canvas);
+    }
+
     // 12. Rig Torso
     if (!this.textures.exists("rig-torso")) {
       const g = this.make.graphics({ x: 0, y: 0 });
