@@ -5,6 +5,7 @@ import { WeatherSystem } from "@/game/systems/WeatherSystem";
 import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { FxSystem } from "@/game/systems/FxSystem";
+import { GapSystem } from "@/game/systems/GapSystem";
 import { CombatSystem } from "@/game/systems/CombatSystem";
 import { SpawnSystem } from "@/game/systems/SpawnSystem";
 import { DialogueSystem } from "@/game/systems/DialogueSystem";
@@ -24,6 +25,7 @@ export class RunScene extends Phaser.Scene {
   public villain!: Villain;
   public chaser!: Chaser;
   public fxSystem!: FxSystem;
+  public gapSystem!: GapSystem;
   public combatSystem!: CombatSystem;
   public spawnSystem!: SpawnSystem;
   public eventSystem!: EventSystem;
@@ -69,9 +71,10 @@ export class RunScene extends Phaser.Scene {
     this.chaser = new Chaser(this);
     this.villain = new Villain(this);
 
-    // 3. Initialize FX, Combat, Spawn, Event & Difficulty Systems
+    // 3. Initialize FX, Gap, Combat, Spawn, Event & Difficulty Systems
     this.fxSystem = new FxSystem(this);
     this.difficultySystem = new DifficultySystem();
+    this.gapSystem = new GapSystem(this, this.villain, this.chaser);
     this.spawnSystem = new SpawnSystem(
       this,
       this.villain,
@@ -82,7 +85,8 @@ export class RunScene extends Phaser.Scene {
       this,
       this.villain,
       this.chaser,
-      this.fxSystem
+      this.fxSystem,
+      this.gapSystem
     );
     this.eventSystem = new EventSystem(
       this,
@@ -110,6 +114,23 @@ export class RunScene extends Phaser.Scene {
     // 7. Setup Player Control Source (A11 abstraction)
     this.setControlSource(new KeyboardTouchSource(this));
 
+    // 8. Register test hook state providers & debug controls if test hook installed
+    if (typeof window !== "undefined" && window.__game) {
+      window.__game.registerState("gap", () => this.gapSystem.getGap());
+      window.__game.registerState("patience", () => useGameStore.getState().patience);
+      window.__game.debug.register("setGap", (g: unknown) => {
+        if (typeof g === "number") this.gapSystem.setGap(g);
+      });
+      window.__game.debug.register("drainPatience", (n: unknown) => {
+        if (typeof n === "number") useGameStore.getState().drainPatience(n);
+      });
+      window.__game.debug.register("slowChaser", (mult: unknown, sec: unknown) => {
+        if (typeof mult === "number" && typeof sec === "number") {
+          this.gapSystem.slowChaser(mult, sec);
+        }
+      });
+    }
+
     // Clean up bus listeners on scene shutdown or destroy
     const cleanup = () => {
       audioService.stopBgm();
@@ -122,6 +143,7 @@ export class RunScene extends Phaser.Scene {
       this.unbindControlSource?.();
       this.controlSource?.destroy();
       this.combatSystem.destroy();
+      this.gapSystem.destroy();
       this.fxSystem.destroy();
       this.timeOfDaySystem.destroy();
       this.weatherSystem.destroy();
@@ -268,7 +290,9 @@ export class RunScene extends Phaser.Scene {
         this.chaser.jump();
         break;
       case "DASH":
-        this.chaser.dash();
+        if (this.chaser.dash()) {
+          this.gapSystem.reduceGap(160);
+        }
         break;
       case "ATTACK":
         if (cmd.weaponId) {
@@ -328,6 +352,7 @@ export class RunScene extends Phaser.Scene {
     // Update villain, chaser, and combat projectiles
     this.villain.update(time, clampedDelta);
     this.chaser.update(time, clampedDelta);
+    this.gapSystem.update(time, clampedDelta);
     this.combatSystem.update(time, clampedDelta);
     this.spawnSystem.update(time, clampedDelta, effectiveSpeed);
     this.eventSystem.update(time, clampedDelta);

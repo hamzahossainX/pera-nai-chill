@@ -102,4 +102,22 @@ TOUCH:
 - `e2e/fail-states.spec.ts` [NEW]
 - `docs/overnight/evidence/V2-04.md`
 
+| 2026-11-14T00:20:00+06:00 | 1.3h | V2-04 | done | tsc ✅ · lint ✅ · test ✅ (66/66) · build ✅ · playwright ✅ (22/22) · pattern:check ✅ · spec:verify ✅ | Completed V2-04. Tagged v2-04-done. Next: V2-05.
+
+### V2-05 → started 2026-11-14T00:21:00+06:00
+Plan:
+1. Wire archetype stats (`baseHp`, `speedMultiplier`, `dodgeRate`) from `src/config/villains.ts` into `Villain.ts` and `CombatSystem.ts` (dodge rate triggers animated side-step roll + "ডজ!" comic text, negating one attack with 150ms wiggle telegraph).
+2. Wire telegraphed hazards in `SpawnSystem.ts` / `Obstacle.ts`: 700ms warning arrow/shadow indicator, explicit counter (jump for potholes/puddles/barricades, lane-change, or kick for breakables), and cost (patience -8..-15 + slowChaser).
+3. Implement villain counter-moves per archetype (G-04/C-05 table in PLAN §4.3):
+   - Phone Snatcher: zig-zags every 2s (high dodge)
+   - Pickpocket: drops fake wallet bait (patience -8 if collided)
+   - Cable Chor: swings wire coil hazard in his lane
+   - Manhole Chor: raises manhole cover shield (blocks one chappal)
+   - Eid-Market Chor: tosses shopping bags (slows chaser)
+   - Chicken Chor: chicken flies out, obscuring view for 1s
+   - Chor-er Sardar: boss stage encounter with 2 goon spawns and phase 2 speed doubling.
+4. Remove hidden boss override on 3rd run from `RunScene.ts` (`runCount % 3 === 0`); boss becomes explicit selectable stage encounter.
+5. Unit tests + Playwright e2e verification.
+6. Run all gates, write evidence `V2-05.md`, commit and tag `v2-05-done`.
+
 

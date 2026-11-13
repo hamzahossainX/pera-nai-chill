@@ -53,6 +53,11 @@ export interface GameState {
   combo: number;
   taka: number;
   stamina: number; // 0..100
+  patience: number; // 0..100
+  chaserSpeedMultiplier: number;
+  gap: number;
+  gapZone: "CLOSE" | "MID" | "FAR" | "ESCAPE";
+  failReason: "escaped" | "patience_zero" | null;
   activeCounterBuff: { name: string; expiry: number } | null;
 
   // Event runtime
@@ -91,6 +96,11 @@ export interface GameState {
   addTaka: (amount: number) => void;
   spendTaka: (amount: number) => boolean;
   setStamina: (val: number) => void;
+  drainPatience: (amount: number) => void;
+  restorePatience: (amount: number) => void;
+  slowChaser: (mult: number, durationSec: number) => void;
+  setGap: (gap: number, zone?: "CLOSE" | "MID" | "FAR" | "ESCAPE") => void;
+  triggerLose: (reason: "escaped" | "patience_zero") => void;
   setEvent: (event: WorldEvent | null, duration?: number) => void;
   clearEvent: () => void;
   decrementEventTimer: (delta: number) => void;
@@ -131,6 +141,11 @@ export const useGameStore = create<GameState>()(
     combo: 0,
     taka: BALANCE.INITIAL_TAKA,
     stamina: BALANCE.INITIAL_STAMINA,
+    patience: 100,
+    chaserSpeedMultiplier: 1.0,
+    gap: 560,
+    gapZone: "MID",
+    failReason: null,
     activeCounterBuff: null,
 
     activeEvent: null,
@@ -206,6 +221,11 @@ export const useGameStore = create<GameState>()(
         villainHp: BALANCE.INITIAL_VILLAIN_HP,
         villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
         villainMorale: 100,
+        patience: 100,
+        chaserSpeedMultiplier: 1.0,
+        gap: 560,
+        gapZone: "MID",
+        failReason: null,
         rage: 0,
         combo: 0,
         stamina: BALANCE.INITIAL_STAMINA,
@@ -278,6 +298,42 @@ export const useGameStore = create<GameState>()(
     setStamina: (val) =>
       set({ stamina: Math.max(0, Math.min(BALANCE.INITIAL_STAMINA, val)) }),
 
+    drainPatience: (amount) => {
+      const current = get().patience;
+      const next = Math.max(0, current - amount);
+      set({ patience: next });
+      if (next === 0 && get().screen === "PLAYING") {
+        get().triggerLose("patience_zero");
+      }
+    },
+
+    restorePatience: (amount) => {
+      const current = get().patience;
+      set({ patience: Math.min(100, Math.max(0, current + amount)) });
+    },
+
+    slowChaser: (mult, durationSec) => {
+      set({ chaserSpeedMultiplier: mult });
+      setTimeout(() => {
+        if (get().chaserSpeedMultiplier === mult) {
+          set({ chaserSpeedMultiplier: 1.0 });
+        }
+      }, durationSec * 1000);
+    },
+
+    setGap: (gap, zone) => {
+      const computedZone =
+        zone ??
+        (gap < 220 ? "CLOSE" : gap <= 560 ? "MID" : gap < 900 ? "FAR" : "ESCAPE");
+      set({ gap, gapZone: computedZone });
+    },
+
+    triggerLose: (reason) => {
+      if (get().screen !== "PLAYING") return;
+      set({ screen: "GAME_OVER", failReason: reason });
+      gameBus.emit("game:lose", { reason });
+    },
+
     setEvent: (event, duration) =>
       set({
         activeEvent: event,
@@ -300,6 +356,11 @@ export const useGameStore = create<GameState>()(
       set({
         screen: "LOBBY",
         villainHp: BALANCE.INITIAL_VILLAIN_HP,
+        patience: 100,
+        chaserSpeedMultiplier: 1.0,
+        gap: 560,
+        gapZone: "MID",
+        failReason: null,
         rageScore: 0,
         rage: 0,
         combo: 0,

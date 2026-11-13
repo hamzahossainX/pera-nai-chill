@@ -16,11 +16,13 @@ export function GameOverScreen() {
     rageScore,
     combo,
     taka,
+    failReason,
     startGame,
     resetRun,
   } = useGameStore();
 
   const isWin = villainHp === 0;
+  const isPatienceFail = !isWin && failReason === "patience_zero";
 
   const rankTitle = isWin
     ? "মহাচোর দমনকারী (Master Hunter)"
@@ -49,24 +51,38 @@ export function GameOverScreen() {
         {/* Result Header Badge */}
         <div
           className={`rounded-full px-5 py-1.5 font-comic text-sm tracking-wider uppercase shadow-md ${
-            isWin ? "bg-emerald-500 text-black" : "bg-rose-500 text-white"
+            isWin
+              ? "bg-emerald-500 text-black"
+              : isPatienceFail
+              ? "bg-amber-500 text-black"
+              : "bg-rose-500 text-white"
           }`}
         >
-          {isWin ? "MISSION ACCOMPLISHED!" : "TARGET ESCAPED!"}
+          {isWin
+            ? "MISSION ACCOMPLISHED!"
+            : isPatienceFail
+            ? "OUT OF PATIENCE!"
+            : "TARGET ESCAPED!"}
         </div>
 
         {/* Big Bengali Headline */}
         <div>
           <h2
             className={`font-comic text-4xl sm:text-5xl tracking-wide drop-shadow-md ${
-              isWin ? "text-yellow-300" : "text-rose-400"
+              isWin
+                ? "text-yellow-300"
+                : isPatienceFail
+                ? "text-amber-400"
+                : "text-rose-400"
             }`}
           >
-            {isWin ? "ধরা খাইছে!" : "পালাইছে!"}
+            {isWin ? "ধরা খাইছে!" : isPatienceFail ? "হাল ছেড়ে দিলে?!" : "পালাইছে!"}
           </h2>
           <p className="font-bangla mt-1 text-sm font-semibold text-slate-300">
             {isWin
               ? `${targetName}-কে উচিৎ শিক্ষা দেওয়া হয়েছে!`
+              : isPatienceFail
+              ? `${targetName}-কে ধরার ধৈর্য শেষ হয়ে গেছে!`
               : `${targetName} টাকা নিয়ে চম্পট দিয়েছে!`}
           </p>
         </div>

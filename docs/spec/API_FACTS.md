@@ -33,6 +33,8 @@
 - `combo` → `{ count: number; multiplier: number }`
 - `villain:dead` → `{ score: number }`
 - `villain:damaged` → `{ hp: number; maxHp: number }`  ⚠ **declared but NEVER emitted in src/** (do not rely on it)
+- `game:lose` → `{ reason: "escaped" | "patience_zero" }`
+- `gap:zoneChange` → `{ zone: "CLOSE" | "MID" | "FAR" | "ESCAPE"; gap: number }`
 - `event:started` → `{ eventId: string; duration: number }`
 - `event:ended` → `{ eventId: string }`
 - `loader:progress` → `{ progress: number; task: string }`
@@ -61,6 +63,11 @@
 - `combo: number`
 - `taka: number`
 - `stamina: number`
+- `patience: number`
+- `chaserSpeedMultiplier: number`
+- `gap: number`
+- `gapZone: "CLOSE" | "MID" | "FAR" | "ESCAPE"`
+- `failReason: "escaped" | "patience_zero" | null`
 - `activeCounterBuff: { name: string; expiry: number } | null`
 - `activeEvent: WorldEvent | null`
 - `eventTimeLeft: number`
@@ -95,6 +102,11 @@
 - `addTaka: (amount: number) => void`
 - `spendTaka: (amount: number) => boolean`
 - `setStamina: (val: number) => void`
+- `drainPatience: (amount: number) => void`
+- `restorePatience: (amount: number) => void`
+- `slowChaser: (mult: number, durationSec: number) => void`
+- `setGap: (gap: number, zone?: "CLOSE" | "MID" | "FAR" | "ESCAPE") => void`
+- `triggerLose: (reason: "escaped" | "patience_zero") => void`
 - `setEvent: (event: WorldEvent | null, duration?: number) => void`
 - `clearEvent: () => void`
 - `decrementEventTimer: (delta: number) => void`
@@ -151,6 +163,7 @@
 - `src/game/systems/DifficultySystem.ts` — **DifficultySystem**: `getCurrentSpeed()`, `getDifficultyMultiplier()`, `getElapsedSeconds()`, `reset()`, `update(_time: number, delta: number)`
 - `src/game/systems/EventSystem.ts` — **EventSystem**: `clearCurrentEvent()`, `destroy()`, `startEvent(event: WorldEvent)`, `update(_time: number, delta: number)`
 - `src/game/systems/FxSystem.ts` — **FxSystem**: `destroy()`, `spawnFloatingText( x: number, y: number, text: string, color: string = "#fbbf2)`, `spawnHitParticles(x: number, y: number, count: number = 8, textureKey: string )`, `triggerArchetypeDefeatReaction(archetypeId: string, x: number, y: number)`, `triggerArchetypeHitReaction(archetypeId: string, x: number, y: number)`, `triggerCameraShake(durationMs: number = 120, intensity: number = 0.01)`, `triggerHitFx( x: number, y: number, comicWord: string, damage: number, is)`, `triggerHitStop(durationMs: number = 80)`
+- `src/game/systems/GapSystem.ts` — **GapSystem**: `destroy()`, `getGap()`, `getZone()`, `isMeleeInRange()`, `reduceGap(amount: number)`, `setGap(gap: number)`, `slowChaser(mult: number, durationSec: number)`, `update(_time: number, delta: number)`, `widenGap(amount: number)`
 - `src/game/systems/ParallaxSystem.ts` — **ParallaxSystem**: `applyTimeOfDay(timeOfDay: TimeOfDay)`, `destroy()`, `setAmbientTint(tint: number)`, `setSkyTint(tint: number)`, `update(time: number, delta: number, currentBaseSpeed: number = BALA)`
 - `src/game/systems/SecondaryMotion.ts` — **SecondaryMotion**: `applyImpulse(xImpulse: number, yImpulse: number, rotImpulse: number = 0)`, `clear()`, `register( target: Phaser.GameObjects.Sprite | Phaser.GameObjects.Cont)`, `update(time: number, delta: number, parentVelocityX: number = 0)`
 - `src/game/systems/SpawnSystem.ts` — **SpawnSystem**: `clearAll()`, `setChaser(chaser: Chaser)`, `setStrikeActive(active: boolean)`, `spawnObstacle(lane?: number, type?: ObstacleType)`, `spawnPickup(lane?: number, type?: PickupType)`, `update(_time: number, delta: number, speed: number = BALANCE.BASE_R)`
@@ -197,19 +210,19 @@
 - `src/components/game/DemoRunner.tsx` (44)
 - `src/components/game/EventBanner.tsx` (61)
 - `src/components/game/GameHost.tsx` (44)
-- `src/components/game/HudOverlay.tsx` (588)
+- `src/components/game/HudOverlay.tsx` (628)
 - `src/components/game/ShopModal.tsx` (219)
 - `src/components/game/TouchControls.tsx` (65)
 - `src/components/game/WantedPosterModal.tsx` (223)
 - `src/components/game/WeaponDock.tsx` (243)
-- `src/components/gameover/GameOverScreen.tsx` (161)
+- `src/components/gameover/GameOverScreen.tsx` (177)
 - `src/components/loading/LoadingScreen.tsx` (285)
 - `src/components/lobby/FaceUploader.tsx` (277)
 - `src/components/lobby/MapSelector.tsx` (83)
 - `src/components/lobby/SettingsSheet.tsx` (136)
 - `src/components/lobby/VillainPreview.tsx` (519)
 - `src/components/lobby/WeaponSelector.tsx` (133)
-- `src/components/shell/AppShell.tsx` (213)
+- `src/components/shell/AppShell.tsx` (211)
 - `src/components/shell/OrientationGuard.tsx` (51)
 - `src/components/shell/ServiceWorkerRegister.tsx` (22)
 - `src/config/achievements.ts` (60)
@@ -229,7 +242,7 @@
 - `src/config/villains.ts` (229)
 - `src/config/weapons.ts` (191)
 - `src/config/weather.json` (55)
-- `src/game/bus.ts` (37)
+- `src/game/bus.ts` (39)
 - `src/game/createGame.ts` (59)
 - `src/game/entities/CharacterRig.ts` (763)
 - `src/game/entities/Chaser.ts` (169)
@@ -244,18 +257,19 @@
 - `src/game/motion/EntityMotion.ts` (168)
 - `src/game/scenes/BootScene.ts` (2211)
 - `src/game/scenes/PreloadScene.ts` (137)
-- `src/game/scenes/RunScene.ts` (345)
-- `src/game/systems/CombatSystem.ts` (341)
+- `src/game/scenes/RunScene.ts` (370)
+- `src/game/systems/CombatSystem.ts` (385)
 - `src/game/systems/DialogueSystem.ts` (234)
 - `src/game/systems/DifficultySystem.ts` (34)
 - `src/game/systems/EventSystem.ts` (266)
 - `src/game/systems/FxSystem.ts` (271)
+- `src/game/systems/GapSystem.ts` (191)
 - `src/game/systems/ParallaxSystem.ts` (304)
 - `src/game/systems/SecondaryMotion.ts` (100)
 - `src/game/systems/SpawnSystem.ts` (262)
 - `src/game/systems/TimeOfDaySystem.ts` (216)
 - `src/game/systems/WeatherSystem.ts` (221)
-- `src/game/testHook.ts` (187)
+- `src/game/testHook.ts` (189)
 - `src/lib/device.ts` (2)
 - `src/lib/math.ts` (2)
 - `src/lib/rng.ts` (119)
@@ -264,7 +278,7 @@
 - `src/services/eventService.ts` (73)
 - `src/services/faceService.ts` (276)
 - `src/services/haptics.ts` (2)
-- `src/store/useGameStore.ts` (321)
+- `src/store/useGameStore.ts` (382)
 
 ## 10. Gates
 

@@ -14,6 +14,7 @@
 | V2-01 | done | tag: v2-01-done | docs/overnight/evidence/V2-01.md | tsc ✅ · lint ✅ · test ✅ (47) · build ✅ · playwright ✅ (14) | n/a | none |
 | V2-02 | done | tag: v2-02-done | docs/overnight/evidence/V2-02.md | tsc ✅ · lint ✅ · test ✅ (50) · build ✅ · playwright ✅ (16) | n/a | none |
 | V2-03 | done | tag: v2-03-done | docs/overnight/evidence/V2-03.md | tsc ✅ · lint ✅ · test ✅ (56) · build ✅ · playwright ✅ (18) | n/a | none |
+| V2-04 | done | tag: v2-04-done | docs/overnight/evidence/V2-04.md | tsc ✅ · lint ✅ · test ✅ (66) · build ✅ · playwright ✅ (22) | n/a | none |
 
 ## 3. Audit findings status (proof required)
 | Finding | ✅ fixed / ❌ open / ⚠ partial | Proving artefact (test name / command / screenshot) |
@@ -21,7 +22,9 @@
 | M-01 lobby unreachable map picker | ✅ fixed | `e2e/lobby-scroll.spec.ts` + screenshots `docs/screens/v2/00/*` |
 | C-01 villain knockback drift | ✅ fixed | `src/__tests__/entity_motion.test.ts` + `e2e/knockback-drift.spec.ts` |
 | G-02 player has no movement | ✅ fixed | `src/__tests__/player_controls.test.ts` + `e2e/player-controls.spec.ts` |
-| G-01..G-06 loop gaps | ⚠ partial | G-02 fixed in V2-03; G-01/G-03 in progress in V2-04 |
+| G-01 no fail state | ✅ fixed | `src/__tests__/gap_and_patience.test.ts` + `e2e/fail-states.spec.ts` |
+| G-03 chaser has no stamina / stakes | ✅ fixed | `src/store/useGameStore.ts` + `HudOverlay.tsx` (sweat-drop bar) |
+| G-04..G-06 villain stats / hazards / boss | ⚠ partial | in progress in V2-05 |
 
 ## 4. Gates snapshot (paste last lines)
 `tsc` · `lint` · `test` (N passed) · `build` · `playwright` · `pattern:check` (counts vs baseline) · `spec:verify`
