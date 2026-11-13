@@ -27,9 +27,12 @@ test.describe("V2-01 Test Hook Contract & Deterministic State", () => {
     await startRunBtn.waitFor({ state: "visible", timeout: 10000 });
     await startRunBtn.click({ force: true });
 
-    // Wait for canvas
+    // Wait for canvas and scene initialization
     await expect(page.locator("#phaser-container canvas")).toBeVisible({ timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForFunction(() => {
+      const g = (window as unknown as { __game?: GameTestHook }).__game;
+      return g !== undefined && g.getState().chaser !== null && g.getState().villain !== null;
+    }, { timeout: 10000 });
 
     // Verify window.__game contract
     const hookResult = await page.evaluate(() => {

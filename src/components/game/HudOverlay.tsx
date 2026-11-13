@@ -41,6 +41,9 @@ export function HudOverlay() {
     combo,
     taka,
     stamina,
+    patience,
+    gap,
+    gapZone,
     crimeId,
     currentMapId,
     activeCounterBuff,
@@ -477,6 +480,43 @@ export function HudOverlay() {
             />
           </div>
         </div>
+
+        {/* Patience (ধৈর্য) Bar */}
+        <div className="flex flex-col gap-0.5 rounded-xl border border-black/80 bg-slate-900/85 px-2.5 py-1.5 shadow-md backdrop-blur-md">
+          <div className="flex items-center justify-between text-[10px] font-mono text-slate-300">
+            <span className="flex items-center gap-1">
+              <Droplets className="h-2.5 w-2.5 text-sky-400" />
+              PATIENCE (ধৈর্য)
+            </span>
+            <span className={patience <= 25 ? "text-rose-400 font-bold animate-pulse" : "text-sky-300"}>
+              {Math.round(patience)}%
+            </span>
+          </div>
+          <div className="relative h-2 w-full overflow-hidden rounded-full border border-black bg-slate-950">
+            <div
+              className={`h-full transition-all duration-150 ${
+                patience > 50
+                  ? "bg-gradient-to-r from-sky-500 to-cyan-400"
+                  : patience > 25
+                  ? "bg-gradient-to-r from-amber-500 to-yellow-400"
+                  : "bg-gradient-to-r from-rose-600 to-red-500"
+              }`}
+              style={{ width: `${patience}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Gap Zone Alerts */}
+        {gapZone === "FAR" && (
+          <div className="flex items-center gap-1 rounded-lg bg-amber-500/20 border border-amber-400/40 px-2 py-0.5 text-[10px] font-comic font-bold text-amber-300 animate-pulse">
+            <span>⚠ চোর দূরে ({Math.round(gap)}px)! ধাওয়া দিন!</span>
+          </div>
+        )}
+        {gapZone === "ESCAPE" && (
+          <div className="flex items-center gap-1 rounded-lg bg-rose-500/20 border border-rose-500/50 px-2 py-0.5 text-[10px] font-comic font-bold text-rose-400 animate-pulse">
+            <span>🚨 পালাচ্ছে ({Math.round(gap)}px)! দ্রুত ধরুন!</span>
+          </div>
+        )}
       </div>
 
       {/* Combo Tier Title Flash (P2-10) */}

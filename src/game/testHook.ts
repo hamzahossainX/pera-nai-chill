@@ -44,6 +44,8 @@ declare global {
 
 export function installTestHook(game: Phaser.Game, seed: string): GameTestHook {
   const stateProviders = new Map<string, () => unknown>();
+  stateProviders.set("gap", () => useGameStore.getState().gap);
+  stateProviders.set("patience", () => useGameStore.getState().patience);
   const debugRegistry = new Map<string, (...args: unknown[]) => unknown>();
   let simulatedTime = performance.now();
 

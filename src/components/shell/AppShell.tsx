@@ -77,19 +77,17 @@ export function AppShell() {
 
       {screen === "BOOT" && <LoadingScreen />}
 
-      {(screen === "PLAYING" || screen === "PAUSED") && (
+      {(screen === "PLAYING" || screen === "PAUSED" || screen === "GAME_OVER") && (
         <div className="relative h-screen w-screen overflow-hidden bg-black select-none">
           <GameHost />
-          <HudOverlay />
-          <WeaponDock />
-          <TouchControls />
-        </div>
-      )}
-
-      {screen === "GAME_OVER" && (
-        <div className="relative h-screen w-screen overflow-hidden bg-black select-none">
-          <GameHost />
-          <GameOverScreen />
+          {(screen === "PLAYING" || screen === "PAUSED") && (
+            <>
+              <HudOverlay />
+              <WeaponDock />
+              <TouchControls />
+            </>
+          )}
+          {screen === "GAME_OVER" && <GameOverScreen />}
         </div>
       )}
 

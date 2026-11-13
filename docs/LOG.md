@@ -1,5 +1,19 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-13 — V2-04: Gap, Patience & fail states (G-01, G-03)
+- Created `src/game/systems/GapSystem.ts` [NEW] tracking `gap = villain.rig.x - chaser.rig.x`, zones (`CLOSE < 220`, `MID 220-560`, `FAR 560-900`, `ESCAPE >= 900`), and dynamic entity positioning sliding within arena window `[120, 1160]`.
+- Implemented melee range rule: melee attacks only hit when `gap <= 220` and `laneDelta <= 1`.
+- Added mashing miss penalty: missed melee attacks drain 4 patience and reset combo, ensuring a mindless mashing player runs out of patience and loses.
+- Added close-zone melee bonus: +25% damage, camera shake, and patience restoration on in-range hits.
+- Added Zustand store API: `patience`, `drainPatience`, `restorePatience`, `slowChaser(mult, sec)`, `setGap`, and `triggerLose(reason)` supporting fail states (`"patience_zero"`, `"escaped"`).
+- Extended HUD with color-coded sweat-drop Patience bar (`💧 PATIENCE (ধৈর্য) XX%`) and live gap warning banners.
+- Extended `GameOverScreen.tsx` handling `"OUT OF PATIENCE!"` (`"হাল ছেড়ে দিলে?!"`) and `"TARGET ESCAPED!"` (`"পালাইছে!"`).
+- Unified `AppShell.tsx` rendering to keep `GameHost` continuously mounted across `PLAYING`, `PAUSED`, and `GAME_OVER` without destroying the Phaser WebGL context.
+- Registered test hook providers `getState().gap` and `getState().patience` and debug methods (`setGap`, `drainPatience`, `slowChaser`).
+- Unit tests: `src/__tests__/gap_and_patience.test.ts` (10 tests passing).
+- E2E tests: `e2e/fail-states.spec.ts` (4 tests passing across Desktop and Mobile viewports).
+- All gates green (tsc, lint, vitest 66/66, pattern:check, spec:verify, next build, playwright 22/22).
+
 ## 2026-11-13 — V2-03: Player controls, dash, jump & ControlSource abstraction (G-02)
 - Created `src/game/input/ControlSource.ts` [NEW] defining input command contract (`LANE_UP`, `LANE_DOWN`, `JUMP`, `DASH`, `ATTACK`, `ULTIMATE`, `TAUNT`) and `ControlSource` interface (V3 forward-compat constraint #1).
 - Created `src/game/input/KeyboardTouchSource.ts` [NEW] handling keyboard bindings (W/S, Arrows, Space, Shift, 1-4, E, T), canvas touch swipe gestures, and UI bus commands.
