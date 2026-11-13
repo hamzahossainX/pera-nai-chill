@@ -14,6 +14,7 @@ import { DifficultySystem } from "@/game/systems/DifficultySystem";
 import { BALANCE } from "@/config/balance";
 import { gameBus } from "@/game/bus";
 import { audioService } from "@/services/audio";
+import { STAGE_CONFIG } from "@/config/rules";
 import { useGameStore } from "@/store/useGameStore";
 import { ControlSource, InputCommand } from "@/game/input/ControlSource";
 import { KeyboardTouchSource } from "@/game/input/KeyboardTouchSource";
@@ -331,6 +332,10 @@ export class RunScene extends Phaser.Scene {
 
     // Update parallax scenery
     this.parallaxSystem.update(time, clampedDelta, baseRampedSpeed);
+
+    // Update stage distance progress
+    const distanceDelta = effectiveSpeed * (clampedDelta * 0.001) * STAGE_CONFIG.METERS_PER_PIXEL;
+    useGameStore.getState().addDistance(distanceDelta);
 
     // Update villain, chaser, and combat projectiles
     this.villain.update(time, clampedDelta, (lane, type, x) =>

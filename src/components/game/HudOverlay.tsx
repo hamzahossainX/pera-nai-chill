@@ -44,6 +44,8 @@ export function HudOverlay() {
     patience,
     gap,
     gapZone,
+    distanceMeters,
+    stageProgress,
     crimeId,
     currentMapId,
     activeCounterBuff,
@@ -305,8 +307,27 @@ export function HudOverlay() {
           </div>
         </div>
 
-        {/* Top-Center: World Event Banner */}
-        <div className="flex justify-center flex-1 px-2">
+        {/* Top-Center: Stage Distance Bar & World Event Banner */}
+        <div className="flex flex-col items-center justify-center flex-1 px-2 max-w-xs sm:max-w-sm">
+          {/* Distance Bar to Safehouse */}
+          <div className="flex flex-col items-center gap-1 w-full rounded-xl border border-black/60 bg-slate-900/80 p-1.5 shadow-md backdrop-blur-md">
+            <div className="flex items-center justify-between w-full text-[10px] sm:text-xs font-mono font-bold text-yellow-300">
+              <span className="flex items-center gap-1">
+                🏃 <span className="hidden sm:inline">দূরত্ব:</span> {Math.round(distanceMeters)}m
+              </span>
+              <span className="flex items-center gap-1 text-slate-300">
+                🏠 <span className="hidden sm:inline">আস্তানা:</span> 1000m
+              </span>
+            </div>
+            <div className="relative h-2 sm:h-2.5 w-full overflow-hidden rounded-full border border-black/80 bg-slate-950 shadow-inner">
+              <motion.div
+                className="h-full bg-gradient-to-r from-emerald-500 via-yellow-400 to-rose-500"
+                style={{ width: `${stageProgress}%` }}
+                transition={{ ease: "linear", duration: 0.1 }}
+              />
+            </div>
+          </div>
+
           <EventBanner />
         </div>
 

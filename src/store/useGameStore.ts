@@ -6,6 +6,14 @@ import { DEFAULT_CRIME } from "@/config/crimes";
 import { DEFAULT_MAP } from "@/config/maps";
 import { WorldEvent } from "@/services/eventService";
 import { gameBus } from "@/game/bus";
+import {
+  RunRules,
+  DEFAULT_STAGE_RULES,
+  STAGE_CONFIG,
+  calculateStars,
+  StarResult,
+} from "@/config/rules";
+import { recordMapStars } from "@/services/storage";
 
 export type GameScreen = "BOOT" | "LOBBY" | "PLAYING" | "PAUSED" | "GAME_OVER";
 export type TimeOfDay = "noon" | "goldenHour" | "night" | "dawn";
@@ -44,6 +52,11 @@ export interface GameState {
   weather: WeatherType;
   unlockedVillainIds: string[];
   isBossStage: boolean;
+  runRules: RunRules;
+  distanceMeters: number;
+  stageProgress: number; // 0..100 %
+  bestCombo: number;
+  starsResult: StarResult | null;
 
   // Combat status
   villainHp: number;
@@ -83,6 +96,8 @@ export interface GameState {
   setWeather: (w: WeatherType) => void;
   unlockVillain: (id: string) => boolean;
   setIsBossStage: (isBoss: boolean) => void;
+  setRunRules: (rules: RunRules) => void;
+  addDistance: (deltaMeters: number) => void;
   setCounterBuff: (name: string, durationSec: number) => void;
   clearCounterBuff: () => void;
   startGame: () => void;
@@ -135,6 +150,11 @@ export const useGameStore = create<GameState>()(
     weather: "clear",
     unlockedVillainIds: ["phoneSnatcher", "chickenChor"],
     isBossStage: false,
+    runRules: DEFAULT_STAGE_RULES,
+    distanceMeters: 0,
+    stageProgress: 0,
+    bestCombo: 0,
+    starsResult: null,
 
     villainHp: BALANCE.INITIAL_VILLAIN_HP,
     villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
@@ -219,6 +239,21 @@ export const useGameStore = create<GameState>()(
     clearCounterBuff: () => set({ activeCounterBuff: null }),
 
     setIsBossStage: (isBoss) => set({ isBossStage: isBoss }),
+    setRunRules: (rules) => set({ runRules: rules }),
+
+    addDistance: (deltaMeters) => {
+      if (get().screen !== "PLAYING" || get().villainHp <= 0) return;
+      const current = get().distanceMeters;
+      const target = STAGE_CONFIG.TARGET_DISTANCE_METERS;
+      const nextDistance = Math.min(target, current + deltaMeters);
+      const progress = Math.min(100, Math.round((nextDistance / target) * 100));
+
+      set({ distanceMeters: nextDistance, stageProgress: progress });
+
+      if (nextDistance >= target && get().villainHp > 0) {
+        get().triggerLose("escaped");
+      }
+    },
 
     startGame: () => {
       const villainConfig =
@@ -239,6 +274,10 @@ export const useGameStore = create<GameState>()(
         gapZone: "MID",
         failReason: null,
         isBossStage: false,
+        distanceMeters: 0,
+        stageProgress: 0,
+        bestCombo: 0,
+        starsResult: null,
         rage: 0,
         combo: 0,
         stamina: BALANCE.INITIAL_STAMINA,
@@ -259,6 +298,13 @@ export const useGameStore = create<GameState>()(
       });
 
       if (isDead) {
+        const starRes = calculateStars({
+          isWin: true,
+          patienceRemaining: get().patience,
+          bestCombo: get().bestCombo,
+        });
+        set({ starsResult: starRes });
+        recordMapStars(get().currentMapId, starRes.stars);
         gameBus.emit("villain:dead", { score: get().rageScore });
         setTimeout(() => {
           set({ screen: "GAME_OVER" });
@@ -292,7 +338,8 @@ export const useGameStore = create<GameState>()(
 
     incrementCombo: () => {
       const next = get().combo + 1;
-      set({ combo: next });
+      const best = Math.max(get().bestCombo, next);
+      set({ combo: next, bestCombo: best });
     },
 
     resetCombo: () => set({ combo: 0 }),
@@ -376,6 +423,10 @@ export const useGameStore = create<GameState>()(
         gapZone: "MID",
         failReason: null,
         isBossStage: false,
+        distanceMeters: 0,
+        stageProgress: 0,
+        bestCombo: 0,
+        starsResult: null,
         rageScore: 0,
         rage: 0,
         combo: 0,
