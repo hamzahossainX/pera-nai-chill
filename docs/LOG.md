@@ -1,5 +1,16 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-14 — V2-06: Run structure, distance bar, stars, persistence v1 & Result screen (G-07, G-08)
+- Created `src/config/rules.ts` [NEW] with `RunRules` interface and `DEFAULT_STAGE_RULES` (`mode: "stage"`, `timeLimitSec: null`, `lives: 1`, `winCondition: "catch_villain"`), fulfilling V3 forward-compat constraints.
+- Implemented `calculateStars()` for 1-3 star progression (★ caught villain, ★ patience > 50%, ★ combo >= 10).
+- Created `src/services/storage.ts` [NEW] providing versioned `SaveDataV1` with automatic migration from legacy unversioned keys, sequential map unlock logic (`recordMapStars`), and `try/catch` guards (P10).
+- Fixed daily reward outlier in `src/config/dailyChallenge.ts` from 5000 to 150 Taka (G-08).
+- Updated `useGameStore.ts` and `RunScene.ts`: Added dynamic distance tracking (`distanceMeters`, `stageProgress`), best combo recording, and safehouse escape trigger at 1000m.
+- Extended `HudOverlay.tsx` with top-center Distance Progress Bar (`🏃 দূরত্ব: XXm` / `🏠 আস্তানা: 1000m`).
+- Extended `GameOverScreen.tsx` with stage victory stars breakdown (★ ★ ★) and "পরবর্তী স্টেজ / NEXT STAGE" CTA button.
+- Added unit tests in `src/__tests__/run_structure_and_persistence.test.ts` (14 tests passing). Total suite: 92/92 passing.
+- All gates green (tsc, lint, vitest 92/92, pattern:check, spec:verify, next build, playwright).
+
 ## 2026-11-14 — V2-05: Telegraphed hazards, villain counter-moves & stats wiring (G-04, G-05, G-06)
 - Extended `Obstacle.ts`: 700ms warning telegraph banner prior to arrival at chaser (`"⚠ লাফ দিন! (JUMP)"` for low hazards or `"⚠ লেন বদলান! (LANE)"` for solid barriers), `isLowHazard()`, `getPatienceCost()` (8, 12, 15), `getSlowMultiplier()` (0.8, 0.7, 0.65), `getSlowDurationSec()` (1.2, 1.5, 1.8).
 - Updated `SpawnSystem.ts`: Fixed G-06 villain auto-trip bug; villain vaults by default and only trips if stunned or lured (`HIT_STUN`/`TRIPPED`). Jump counters low hazards (potholes, bricks, fake-wallets). Uncountered hazards drain patience, slow chaser, and trigger stumble.

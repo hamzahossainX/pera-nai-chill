@@ -134,5 +134,31 @@ Touched files:
 
 | 2026-11-14T02:15:00+06:00 | 1.9h | V2-05 | done | tsc ✅ · lint ✅ · test ✅ (78/78) · build ✅ · playwright ✅ (22/22) · pattern:check ✅ · spec:verify ✅ | Completed V2-05. Tagged v2-05-done. Next: V2-06.
 
+### V2-06 → started 2026-11-14T02:20:00+06:00
+Plan:
+1. Create `src/config/rules.ts` [NEW] with `RunRules` interface and `DEFAULT_STAGE_RULES` (`mode: "stage"`, `timeLimitSec: null`, `lives: 1`, `winCondition: "catch_villain"`), fulfilling V3 forward-compat constraints.
+2. Implemented `calculateStars()` for 1-3 star progression (★ caught villain, ★ patience > 50%, ★ combo >= 10).
+3. Create `src/services/storage.ts` [NEW] providing versioned `SaveDataV1` with automatic migration from legacy unversioned keys, sequential map unlock logic (`recordMapStars`), and `try/catch` guards (P10).
+4. Fix daily reward outlier in `src/config/dailyChallenge.ts` from 5000 to 150 Taka (G-08).
+5. Update `useGameStore.ts` and `RunScene.ts`: Add dynamic distance tracking (`distanceMeters`, `stageProgress`), best combo recording, and safehouse escape trigger at 1000m.
+6. Extend `HudOverlay.tsx` with top-center Distance Progress Bar (`🏃 দূরত্ব: XXm` / `🏠 আস্তানা: 1000m`).
+7. Extend `GameOverScreen.tsx` with stage victory stars breakdown (★ ★ ★) and "পরবর্তী স্টেজ / NEXT STAGE" CTA button.
+8. Unit tests in `src/__tests__/run_structure_and_persistence.test.ts`.
+9. Gates verification, evidence `V2-06.md`, commit and tag `v2-06-done`.
+
+Touched files:
+- `src/config/rules.ts` [NEW]
+- `src/services/storage.ts` [NEW]
+- `src/config/dailyChallenge.ts`
+- `src/store/useGameStore.ts`
+- `src/game/scenes/RunScene.ts`
+- `src/components/game/HudOverlay.tsx`
+- `src/components/gameover/GameOverScreen.tsx`
+- `src/__tests__/run_structure_and_persistence.test.ts` [NEW]
+- `docs/overnight/evidence/V2-06.md` [NEW]
+
+| 2026-11-14T03:20:00+06:00 | 1.0h | V2-06 | done | tsc ✅ · lint ✅ · test ✅ (92/92) · build ✅ · playwright ✅ · pattern:check ✅ · spec:verify ✅ | Completed V2-06. Tagged v2-06-done. Next: Pattern Audit #2.
+
+
 
 

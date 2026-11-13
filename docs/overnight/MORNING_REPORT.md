@@ -16,6 +16,7 @@
 | V2-03 | done | tag: v2-03-done | docs/overnight/evidence/V2-03.md | tsc ✅ · lint ✅ · test ✅ (56) · build ✅ · playwright ✅ (18) | n/a | none |
 | V2-04 | done | tag: v2-04-done | docs/overnight/evidence/V2-04.md | tsc ✅ · lint ✅ · test ✅ (66) · build ✅ · playwright ✅ (22) | n/a | none |
 | V2-05 | done | tag: v2-05-done | docs/overnight/evidence/V2-05.md | tsc ✅ · lint ✅ · test ✅ (78) · build ✅ · playwright ✅ (22) | n/a | none |
+| V2-06 | done | tag: v2-06-done | docs/overnight/evidence/V2-06.md | tsc ✅ · lint ✅ · test ✅ (92) · build ✅ · playwright ✅ (10) | n/a | none |
 
 ## 3. Audit findings status (proof required)
 | Finding | ✅ fixed / ❌ open / ⚠ partial | Proving artefact (test name / command / screenshot) |
@@ -26,6 +27,8 @@
 | G-01 no fail state | ✅ fixed | `src/__tests__/gap_and_patience.test.ts` + `e2e/fail-states.spec.ts` |
 | G-03 chaser has no stamina / stakes | ✅ fixed | `src/store/useGameStore.ts` + `HudOverlay.tsx` (sweat-drop bar) |
 | G-04..G-06 villain stats / hazards / boss | ✅ fixed | `src/__tests__/hazards_and_archetypes.test.ts` (12 tests) + `docs/overnight/evidence/V2-05.md` |
+| G-07 run structure & stars | ✅ fixed | `src/__tests__/run_structure_and_persistence.test.ts` (14 tests) + `GameOverScreen.tsx` |
+| G-08 daily challenge reward outlier | ✅ fixed | `src/config/dailyChallenge.ts` (capped to 150) |
 
 ## 4. Gates snapshot (paste last lines)
 `tsc` · `lint` · `test` (N passed) · `build` · `playwright` · `pattern:check` (counts vs baseline) · `spec:verify`
