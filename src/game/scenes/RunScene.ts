@@ -44,24 +44,6 @@ export class RunScene extends Phaser.Scene {
   }
 
   create() {
-    // Boss Check: Every 3rd run triggers Chor-er Sardar Boss Fight
-    let runCount = 1;
-    if (typeof window !== "undefined") {
-      try {
-        runCount = Number(localStorage.getItem("dhaka_runner_run_count") || "0") + 1;
-        localStorage.setItem("dhaka_runner_run_count", String(runCount));
-      } catch {}
-    }
-
-    const isBossRun = runCount % 3 === 0;
-    if (isBossRun) {
-      useGameStore.setState({
-        villainId: "chorSardar",
-        villainHp: 500,
-        villainMaxHp: 500,
-      });
-    }
-
     // 1. Initialize Parallax Background & Day/Night Lighting & Weather
     this.parallaxSystem = new ParallaxSystem(this);
     this.timeOfDaySystem = new TimeOfDaySystem(this, this.parallaxSystem);
@@ -86,7 +68,8 @@ export class RunScene extends Phaser.Scene {
       this.villain,
       this.chaser,
       this.fxSystem,
-      this.gapSystem
+      this.gapSystem,
+      this.spawnSystem
     );
     this.eventSystem = new EventSystem(
       this,
@@ -350,7 +333,9 @@ export class RunScene extends Phaser.Scene {
     this.parallaxSystem.update(time, clampedDelta, baseRampedSpeed);
 
     // Update villain, chaser, and combat projectiles
-    this.villain.update(time, clampedDelta);
+    this.villain.update(time, clampedDelta, (lane, type, x) =>
+      this.spawnSystem.spawnObstacle(lane, type, x)
+    );
     this.chaser.update(time, clampedDelta);
     this.gapSystem.update(time, clampedDelta);
     this.combatSystem.update(time, clampedDelta);

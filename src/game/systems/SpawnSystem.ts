@@ -68,9 +68,19 @@ export class SpawnSystem {
     }
   }
 
-  public spawnObstacle(lane?: number, type?: ObstacleType) {
+  public getObstacleNear(lane: number, x: number, range: number): Obstacle | undefined {
+    return this.pool.find(
+      (o) =>
+        o.isActiveInWorld &&
+        o.lane === lane &&
+        o.x >= x - 20 &&
+        o.x - x <= range
+    );
+  }
+
+  public spawnObstacle(lane?: number, type?: ObstacleType, startX?: number): Obstacle | undefined {
     const free = this.pool.find((o) => !o.isActiveInWorld);
-    if (!free) return;
+    if (!free) return undefined;
 
     const chosenLane = lane ?? rng.between(0, 2);
     const mapId = useGameStore.getState().currentMapId || "mirpur";
@@ -87,7 +97,8 @@ export class SpawnSystem {
     }
 
     const chosenType = type ?? rng.pick(types);
-    free.spawn(chosenLane, chosenType);
+    free.spawn(chosenLane, chosenType, startX);
+    return free;
   }
 
   public spawnPickup(lane?: number, type?: PickupType) {
@@ -133,19 +144,20 @@ export class SpawnSystem {
 
       obs.update(_time, delta, speed);
 
-      // Villain AI interaction (Vault / Shove / Trip)
+      // Villain AI interaction (Fixes G-06: villain vaults by default; only trips if stunned/lured)
       if (obs.lane === this.villain.currentLane) {
         const dist = obs.x - this.villain.rig.x;
-        // Obstacle approaching villain: 50% chance villain vaults
-        if (dist > 35 && dist < 95 && !this.villain.isVaulting) {
-          if (rng.chance(0.5)) {
+        const isStunnedOrTripped =
+          this.villain.rig &&
+          (this.villain.rig.stateName === "HIT_STUN" ||
+            this.villain.rig.stateName === "TRIPPED");
+
+        if (dist > 35 && dist < 110 && !this.villain.isVaulting) {
+          if (!isStunnedOrTripped) {
             this.villain.vault();
-          } else if (obs.obstacleType === "barricade" && rng.chance(0.3)) {
-            // Villain shoves the barricade backwards!
-            obs.x -= 80;
           }
-        } else if (Math.abs(dist) < 40 && !this.villain.isVaulting) {
-          // Villain trips over the barricade/tire/pothole!
+        } else if (Math.abs(dist) < 40 && isStunnedOrTripped) {
+          // Lured/Stunned: Villain trips over the obstacle!
           this.villain.trip(1800);
           this.fxSystem.triggerHitStop(60);
           this.fxSystem.spawnFloatingText(
@@ -162,27 +174,59 @@ export class SpawnSystem {
         }
       }
 
-      // Chaser interaction with obstacles (potholes/puddles stumble)
+      // Chaser interaction with hazards (Telegraph + Counter + Cost per G-06)
       if (
         this.chaser &&
         obs.lane === this.chaser.currentLane &&
         Math.abs(obs.x - this.chaser.rig.x) < 40
       ) {
-        if (obs.obstacleType === "pothole") {
+        // Check Counter: Jump clears low hazards (pothole, brick, fake-wallet)
+        if (obs.isLowHazard() && this.chaser.isJumping) {
+          this.fxSystem.spawnFloatingText(
+            this.chaser.rig.x,
+            this.chaser.rig.y - 80,
+            "লাফিয়ে পার! (CLEARED!)",
+            "#38bdf8", // pattern-ok: comic text styling
+            "20px"
+          );
+          obs.deactivate();
+        } else {
+          // Hazard hits chaser: Apply Cost (Patience drain + Speed slow)
           this.chaser.stumble();
           const store = useGameStore.getState();
-          store.setStamina(Math.max(0, store.stamina - 6));
-          if (this.scene.textures.exists("fx-splash")) {
+          const cost = obs.getPatienceCost();
+          const slowMult = obs.getSlowMultiplier();
+          const slowDuration = obs.getSlowDurationSec();
+
+          store.drainPatience(cost);
+          store.slowChaser(slowMult, slowDuration);
+          audioService.play("sfx-punch");
+
+          const comicLabel = obs.isLowHazard()
+            ? `খানাখন্দে হোঁচট! (-${cost} ধৈর্য)`
+            : `ধাক্কা! (-${cost} ধৈর্য)`;
+
+          this.fxSystem.spawnFloatingText(
+            this.chaser.rig.x,
+            this.chaser.rig.y - 80,
+            comicLabel,
+            "#f43f5e", // pattern-ok: comic text styling
+            "22px"
+          );
+
+          if (this.scene.textures && this.scene.textures.exists("fx-splash")) {
             const splash = this.scene.add
               .sprite(this.chaser.rig.x, this.chaser.rig.y, "fx-splash")
               .setDepth(this.chaser.rig.depth + 1);
-            this.scene.tweens.add({
-              targets: splash,
-              alpha: 0,
-              y: splash.y - 15,
-              duration: 300,
-              onComplete: () => splash.destroy(),
-            });
+            if (this.scene.tweens) {
+              this.scene.tweens.add({
+                targets: splash,
+                alpha: 0,
+                y: splash.y - 15,
+                duration: 300,
+                onComplete: () => splash.destroy(),
+              });
+            }
           }
           obs.deactivate();
         }

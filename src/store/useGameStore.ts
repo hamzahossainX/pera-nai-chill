@@ -43,6 +43,7 @@ export interface GameState {
   timeOfDay: TimeOfDay;
   weather: WeatherType;
   unlockedVillainIds: string[];
+  isBossStage: boolean;
 
   // Combat status
   villainHp: number;
@@ -81,6 +82,7 @@ export interface GameState {
   setTimeOfDay: (tod: TimeOfDay) => void;
   setWeather: (w: WeatherType) => void;
   unlockVillain: (id: string) => boolean;
+  setIsBossStage: (isBoss: boolean) => void;
   setCounterBuff: (name: string, durationSec: number) => void;
   clearCounterBuff: () => void;
   startGame: () => void;
@@ -132,6 +134,7 @@ export const useGameStore = create<GameState>()(
     timeOfDay: "noon",
     weather: "clear",
     unlockedVillainIds: ["phoneSnatcher", "chickenChor"],
+    isBossStage: false,
 
     villainHp: BALANCE.INITIAL_VILLAIN_HP,
     villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
@@ -215,24 +218,35 @@ export const useGameStore = create<GameState>()(
       }),
     clearCounterBuff: () => set({ activeCounterBuff: null }),
 
-    startGame: () =>
+    setIsBossStage: (isBoss) => set({ isBossStage: isBoss }),
+
+    startGame: () => {
+      const villainConfig =
+        VILLAINS.find((v) => v.id === get().villainId) || DEFAULT_VILLAIN;
+      const isBoss = get().isBossStage || villainConfig.id === "chorSardar";
+      const initialHp = isBoss
+        ? Math.round((villainConfig.baseHp ?? 1000) * 1.6)
+        : villainConfig.baseHp ?? 1000;
+
       set({
         screen: "PLAYING",
-        villainHp: BALANCE.INITIAL_VILLAIN_HP,
-        villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
+        villainHp: initialHp,
+        villainMaxHp: initialHp,
         villainMorale: 100,
         patience: 100,
         chaserSpeedMultiplier: 1.0,
         gap: 560,
         gapZone: "MID",
         failReason: null,
+        isBossStage: false,
         rage: 0,
         combo: 0,
         stamina: BALANCE.INITIAL_STAMINA,
         activeCounterBuff: null,
         activeEvent: null,
         eventTimeLeft: 0,
-      }),
+      });
+    },
 
     inflictDamage: (amount) => {
       const current = get().villainHp;
@@ -361,6 +375,7 @@ export const useGameStore = create<GameState>()(
         gap: 560,
         gapZone: "MID",
         failReason: null,
+        isBossStage: false,
         rageScore: 0,
         rage: 0,
         combo: 0,

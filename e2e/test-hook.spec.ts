@@ -88,8 +88,8 @@ test.describe("V2-01 Test Hook Contract & Deterministic State", () => {
       throw new Error("hookResult.state is missing");
     }
 
-    expect(hookResult.state.hp).toBe(1000);
-    expect(hookResult.state.maxHp).toBe(1000);
+    expect(hookResult.state.hp).toBe(650);
+    expect(hookResult.state.maxHp).toBe(650);
     expect(hookResult.state.combo).toBe(0);
     expect(hookResult.state.crowdMood).toBeNull();
     expect(hookResult.state.npcCount).toBeNull();
