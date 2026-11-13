@@ -1,5 +1,16 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-14 — V2-05: Telegraphed hazards, villain counter-moves & stats wiring (G-04, G-05, G-06)
+- Extended `Obstacle.ts`: 700ms warning telegraph banner prior to arrival at chaser (`"⚠ লাফ দিন! (JUMP)"` for low hazards or `"⚠ লেন বদলান! (LANE)"` for solid barriers), `isLowHazard()`, `getPatienceCost()` (8, 12, 15), `getSlowMultiplier()` (0.8, 0.7, 0.65), `getSlowDurationSec()` (1.2, 1.5, 1.8).
+- Updated `SpawnSystem.ts`: Fixed G-06 villain auto-trip bug; villain vaults by default and only trips if stunned or lured (`HIT_STUN`/`TRIPPED`). Jump counters low hazards (potholes, bricks, fake-wallets). Uncountered hazards drain patience, slow chaser, and trigger stumble.
+- Updated `Villain.ts`: Added `isDodging`, `hasShield`, `dodge()`, and `executeCounterMove()`. Implemented archetype counters: Phone Snatcher (zig-zag lane change + dodge), Pickpocket (drops fake wallet trap), Cable Chor (wire coil), Manhole Chor (shield), Eid Market Chor (shopping bag toss), Chicken Chor (dodge roll), Chor Sardar (goon summon).
+- Updated `CombatSystem.ts`: Wired villain dodge rate per archetype. Shield blocks attacks. Added Kick hazard counter (breaks obstacle in front and restores +4 patience).
+- Updated `useGameStore.ts`: Added `isBossStage`, `setIsBossStage`. Scaled boss HP by 1.6x (`villainConfig.baseHp * 1.6` for boss stage or Chor Sardar).
+- Updated `RunScene.ts`: Removed hidden boss override on 3rd run.
+- Added unit tests in `src/__tests__/hazards_and_archetypes.test.ts` (12 tests passing). Total test suite: 78/78 passing.
+- Updated Playwright e2e tests (`e2e/test-hook.spec.ts`, `e2e/lobby-scroll.spec.ts`) for archetype HP and viewport robustness.
+- All gates green (tsc, lint, vitest 78/78, pattern:check, spec:verify, next build, playwright 22/22).
+
 ## 2026-11-13 — V2-04: Gap, Patience & fail states (G-01, G-03)
 - Created `src/game/systems/GapSystem.ts` [NEW] tracking `gap = villain.rig.x - chaser.rig.x`, zones (`CLOSE < 220`, `MID 220-560`, `FAR 560-900`, `ESCAPE >= 900`), and dynamic entity positioning sliding within arena window `[120, 1160]`.
 - Implemented melee range rule: melee attacks only hit when `gap <= 220` and `laneDelta <= 1`.

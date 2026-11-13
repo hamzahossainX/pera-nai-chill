@@ -120,4 +120,19 @@ Plan:
 5. Unit tests + Playwright e2e verification.
 6. Run all gates, write evidence `V2-05.md`, commit and tag `v2-05-done`.
 
+Touched files:
+- `src/game/entities/Obstacle.ts`
+- `src/game/entities/Villain.ts`
+- `src/game/systems/SpawnSystem.ts`
+- `src/game/systems/CombatSystem.ts`
+- `src/store/useGameStore.ts`
+- `src/game/scenes/RunScene.ts`
+- `src/__tests__/hazards_and_archetypes.test.ts` [NEW]
+- `e2e/test-hook.spec.ts`
+- `e2e/lobby-scroll.spec.ts`
+- `docs/overnight/evidence/V2-05.md`
+
+| 2026-11-14T02:15:00+06:00 | 1.9h | V2-05 | done | tsc ✅ · lint ✅ · test ✅ (78/78) · build ✅ · playwright ✅ (22/22) · pattern:check ✅ · spec:verify ✅ | Completed V2-05. Tagged v2-05-done. Next: V2-06.
+
+
 

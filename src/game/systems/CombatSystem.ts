@@ -4,6 +4,7 @@ import { Chaser } from "@/game/entities/Chaser";
 import { Projectile } from "@/game/entities/Projectile";
 import { FxSystem } from "@/game/systems/FxSystem";
 import { GapSystem } from "@/game/systems/GapSystem";
+import type { SpawnSystem } from "@/game/systems/SpawnSystem";
 import {
   WEAPONS,
   ULTIMATE_WEAPON,
@@ -23,6 +24,7 @@ export class CombatSystem {
   private chaser: Chaser;
   private fxSystem: FxSystem;
   public gapSystem: GapSystem;
+  public spawnSystem?: SpawnSystem;
   private projectiles: Projectile[] = [];
   private isDestroyed = false;
 
@@ -31,13 +33,15 @@ export class CombatSystem {
     villain: Villain,
     chaser: Chaser,
     fxSystem: FxSystem,
-    gapSystem: GapSystem
+    gapSystem: GapSystem,
+    spawnSystem?: SpawnSystem
   ) {
     this.scene = scene;
     this.villain = villain;
     this.chaser = chaser;
     this.fxSystem = fxSystem;
     this.gapSystem = gapSystem;
+    this.spawnSystem = spawnSystem;
 
     // Listen to weapon triggers from UI Dock
     gameBus.on("weapon:use", this.handleWeaponUse);
@@ -210,6 +214,27 @@ export class CombatSystem {
 
       this.chaser.attack(attackType);
 
+      // Hazard counter: Kick breaks obstacles directly in front
+      if (attackType === "kick" && this.spawnSystem) {
+        const breakable = this.spawnSystem.getObstacleNear(
+          this.chaser.currentLane,
+          this.chaser.rig.x,
+          140
+        );
+        if (breakable) {
+          breakable.deactivate();
+          this.fxSystem.spawnFloatingText(
+            this.chaser.rig.x + 40,
+            this.chaser.rig.y - 70,
+            "লাথি মেরে ভাঙল! (SMASHED!)",
+            "#22c55e", // pattern-ok: comic text styling
+            "24px"
+          );
+          audioService.play("sfx-punch");
+          store.restorePatience(4);
+        }
+      }
+
       // Check melee range per GAME_PLAN_V2 §2.1, §2.2
       const inRange = this.gapSystem.isMeleeInRange();
       if (!inRange) {
@@ -332,6 +357,42 @@ export class CombatSystem {
     isCrit: boolean;
     knockback: number;
   }) {
+    // Check Manhole Chor shield block
+    if (this.villain.hasShield) {
+      this.villain.hasShield = false;
+      audioService.play("click");
+      this.fxSystem.triggerHitFx(
+        params.x,
+        params.y,
+        "ঢালে ব্লক! (BLOCKED!)",
+        0,
+        false
+      );
+      return;
+    }
+
+    // Check Archetype Dodge Rate (except on ultimate)
+    const isUltimate = params.weapon.id === ULTIMATE_WEAPON.id;
+    if (
+      !isUltimate &&
+      !this.villain.isDead &&
+      this.villain.rig &&
+      this.villain.rig.stateName === "RUN" &&
+      rng.chance(this.villain.archetype.dodgeRate ?? 0.2)
+    ) {
+      this.villain.dodge();
+      audioService.play("whoosh");
+      this.fxSystem.triggerHitFx(
+        params.x,
+        params.y,
+        "ডজ! ফস্কে গেল! (DODGED!)",
+        0,
+        false
+      );
+      useGameStore.getState().resetCombo();
+      return;
+    }
+
     // 1. Villain reactions
     this.villain.hit(params.damage, params.knockback, params.isCrit);
     this.fxSystem.triggerArchetypeHitReaction(

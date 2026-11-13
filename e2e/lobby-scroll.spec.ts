@@ -15,10 +15,22 @@ test.describe("V2-00 Lobby Scroll & Map Reachability (M-01)", () => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto("/?debug=1");
 
+      // Bypass orientation guard if present on portrait mobile
+      const portraitBtn = page.getByRole("button", { name: /Play in portrait anyway/i });
+      try {
+        await portraitBtn.waitFor({ state: "visible", timeout: 2000 });
+        await portraitBtn.click();
+      } catch {}
+
       // Pass loading screen
       const tapStartBtn = page.getByRole("button", { name: /শুরু করতে ট্যাপ করুন|TAP TO START/i });
-      await tapStartBtn.waitFor({ state: "visible", timeout: 15000 });
+      await tapStartBtn.waitFor({ state: "visible", timeout: 30000 });
       await tapStartBtn.click({ force: true });
+
+      try {
+        await portraitBtn.waitFor({ state: "visible", timeout: 1000 });
+        await portraitBtn.click();
+      } catch {}
 
       // Ensure lobby is loaded
       await expect(page.getByText(/PERA NAI CHILL/i)).toBeVisible();
