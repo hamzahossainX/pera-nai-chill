@@ -1,7 +1,9 @@
 import mitt, { Emitter } from "mitt";
+import type { InputCommand } from "@/game/input/ControlSource";
 
 export type GameEventTypes = {
   // UI -> Game
+  "input:command": { command: InputCommand };
   "weapon:use": { weaponId: string; timestamp: number };
   "event:trigger": { eventId: string };
   "event:clear": void;

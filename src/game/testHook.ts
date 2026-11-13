@@ -2,6 +2,7 @@ import type Phaser from "phaser";
 import { useGameStore } from "@/store/useGameStore";
 import type { RunScene } from "@/game/scenes/RunScene";
 import { gameBus } from "@/game/bus";
+import type { InputCommand } from "@/game/input/ControlSource";
 
 export interface GameStateSnapshot {
   fps: number | null;
@@ -10,7 +11,13 @@ export interface GameStateSnapshot {
   maxHp: number | null;
   combo: number | null;
   villain: { x: number; y: number; lane: number } | null;
-  chaser: { x: number; y: number; lane: number } | null;
+  chaser: {
+    x: number;
+    y: number;
+    lane: number;
+    isJumping?: boolean;
+    isDashing?: boolean;
+  } | null;
   gap: number | null;
   patience: number | null;
   npcCount: number | null;
@@ -80,6 +87,8 @@ export function installTestHook(game: Phaser.Game, seed: string): GameTestHook {
               x: Math.round(runScene.chaser.rig.x),
               y: Math.round(runScene.chaser.rig.y),
               lane: runScene.chaser.currentLane,
+              isJumping: runScene.chaser.isJumping,
+              isDashing: runScene.chaser.isDashing,
             }
           : null;
 
@@ -131,6 +140,42 @@ export function installTestHook(game: Phaser.Game, seed: string): GameTestHook {
 
   hook.debug.register("spawnObstacle", () => {
     gameBus.emit("debug:spawnObstacle");
+  });
+
+  hook.debug.register("command", (cmd: unknown) => {
+    let command: InputCommand;
+    if (typeof cmd === "string") {
+      command = { type: cmd as InputCommand["type"] };
+    } else {
+      command = (cmd as InputCommand) ?? { type: "JUMP" };
+    }
+    let runScene: RunScene | null = null;
+    try {
+      runScene = game.scene.getScene("RunScene") as RunScene | null;
+    } catch {
+      runScene = null;
+    }
+    if (runScene && typeof runScene.handleInputCommand === "function") {
+      runScene.handleInputCommand(command);
+    } else {
+      gameBus.emit("input:command", { command });
+    }
+  });
+
+  hook.debug.register("laneUp", () => {
+    hook.debug.call("command", { type: "LANE_UP" });
+  });
+
+  hook.debug.register("laneDown", () => {
+    hook.debug.call("command", { type: "LANE_DOWN" });
+  });
+
+  hook.debug.register("jump", () => {
+    hook.debug.call("command", { type: "JUMP" });
+  });
+
+  hook.debug.register("dash", () => {
+    hook.debug.call("command", { type: "DASH" });
   });
 
   if (typeof window !== "undefined") {
