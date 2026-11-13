@@ -24,3 +24,9 @@ docs/CODEX_QUEUE.md
 .env
 .env.*
 !.env.example
+
+# AI-assistant instruction files & skills — local only (next dev may regenerate AGENTS.md/CLAUDE.md)
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+.claude/skills/
