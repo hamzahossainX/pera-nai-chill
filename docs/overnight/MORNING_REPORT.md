@@ -13,13 +13,15 @@
 | V2-00 | done | tag: v2-00-done | docs/overnight/evidence/V2-00.md | tsc ✅ · lint ✅ · test ✅ (37) · build ✅ · playwright ✅ (8) | n/a | none |
 | V2-01 | done | tag: v2-01-done | docs/overnight/evidence/V2-01.md | tsc ✅ · lint ✅ · test ✅ (47) · build ✅ · playwright ✅ (14) | n/a | none |
 | V2-02 | done | tag: v2-02-done | docs/overnight/evidence/V2-02.md | tsc ✅ · lint ✅ · test ✅ (50) · build ✅ · playwright ✅ (16) | n/a | none |
+| V2-03 | done | tag: v2-03-done | docs/overnight/evidence/V2-03.md | tsc ✅ · lint ✅ · test ✅ (56) · build ✅ · playwright ✅ (18) | n/a | none |
 
 ## 3. Audit findings status (proof required)
 | Finding | ✅ fixed / ❌ open / ⚠ partial | Proving artefact (test name / command / screenshot) |
 |---|---|---|
 | M-01 lobby unreachable map picker | ✅ fixed | `e2e/lobby-scroll.spec.ts` + screenshots `docs/screens/v2/00/*` |
 | C-01 villain knockback drift | ✅ fixed | `src/__tests__/entity_motion.test.ts` + `e2e/knockback-drift.spec.ts` |
-| G-01..G-06 loop gaps | | |
+| G-02 player has no movement | ✅ fixed | `src/__tests__/player_controls.test.ts` + `e2e/player-controls.spec.ts` |
+| G-01..G-06 loop gaps | ⚠ partial | G-02 fixed in V2-03; G-01/G-03 in progress in V2-04 |
 
 ## 4. Gates snapshot (paste last lines)
 `tsc` · `lint` · `test` (N passed) · `build` · `playwright` · `pattern:check` (counts vs baseline) · `spec:verify`

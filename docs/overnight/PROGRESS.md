@@ -79,4 +79,27 @@ TOUCH:
 - `scripts/audit/pattern-baseline.json`
 - `docs/overnight/evidence/V2-02.md`
 | 2026-11-13T17:02:22+06:00 | 1.5h | V2-02 | done | tsc ✅ · lint ✅ · test ✅ (50/50) · build ✅ · playwright ✅ (16/16) · pattern:check ✅ (P02:0) · spec:verify ✅ | Completed V2-02. Tagged v2-02-done. Next: Pattern Audit #1.
+| 2026-11-13T18:36:00+06:00 | 0.2h | Audit #1 | done | 10-point checklist PASS · P01: 43, P02: 0, P03: 0 · committed ff2d97b | Pattern Audit #1 completed.
+| 2026-11-13T18:42:00+06:00 | 1.2h | V2-03 | done | tsc ✅ · lint ✅ · test ✅ (56/56) · build ✅ · playwright ✅ (18/18) · pattern:check ✅ · spec:verify ✅ | Completed V2-03. Tagged v2-03-done. Next: V2-04.
+
+### V2-04 → started 2026-11-13T19:58:00+06:00
+Plan:
+1. Implement `GapSystem` (`CLOSE`, `MID`, `FAR`, `ESCAPE`), melee range check (melee only allowed at `gap <= MELEE_RANGE` and same/adjacent lane).
+2. Wire Chaser "Patience" (sweat-drop bar / 0-100) into store: `patience`, `drainPatience(amount)`, `restorePatience(amount)`, `slowChaser(mult, sec)`.
+3. Wire Fail States:
+   - Escape (gap reaches `ESCAPE_DISTANCE` / 750px) -> Lose result.
+   - Patience exhaustion (patience reaches 0) -> Lose result ("হাল ছেড়ে দিলাম").
+4. Register `getState().gap` and `getState().patience` providers in `testHook.ts`.
+5. Unit tests + Playwright e2e proving mashing-only player loses.
+6. Run all gates, write evidence `V2-04.md`, commit and tag `v2-04-done`.
+TOUCH:
+- `src/game/systems/GapSystem.ts` [NEW]
+- `src/game/scenes/RunScene.ts`
+- `src/game/systems/CombatSystem.ts`
+- `src/store/useGameStore.ts`
+- `src/game/testHook.ts`
+- `src/__tests__/gap_and_patience.test.ts` [NEW]
+- `e2e/fail-states.spec.ts` [NEW]
+- `docs/overnight/evidence/V2-04.md`
+
 

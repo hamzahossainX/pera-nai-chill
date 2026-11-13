@@ -17,6 +17,7 @@
 
 ## 2. Event bus — `src/game/bus.ts` (`gameBus`, mitt)
 
+- `input:command` → `{ command: InputCommand }`
 - `weapon:use` → `{ weaponId: string; timestamp: number }`
 - `event:trigger` → `{ eventId: string }`
 - `event:clear` → `void`
@@ -136,7 +137,7 @@
 ## 6. Public methods of game systems & entities
 
 - `src/game/entities/CharacterRig.ts` — **CharacterRig**: `applyOutfitColors(outfit: number, pants: number)`, `applySilhouette()`, `setDebugSkeleton(show: boolean)`, `setFaceTexture(key: string)`, `triggerAttack(type: "slap" | "punch" | "kick" | "throw")`, `triggerDead(onComplete?: ()`, `triggerHitStun(knockbackX: number = 40, isCrit: boolean = false)`, `triggerTrip(durationMs: number = 1600)`, `update(time: number, delta: number)`, `updateHealth(hpPercent: number)`
-- `src/game/entities/Chaser.ts` — **Chaser**: `attack(type: "slap" | "punch" | "kick" | "throw")`, `followLane(laneIndex: number)`, `spawnDashDust(x: number, y: number)`, `stumble()`, `update(time: number, delta: number)`
+- `src/game/entities/Chaser.ts` — **Chaser**: `attack(type: "slap" | "punch" | "kick" | "throw")`, `dash()`, `followLane(laneIndex: number)`, `jump(height: number = 60, durationMs: number = Chaser.JUMP_DURATI)`, `laneDown()`, `laneUp()`, `setLane(laneIndex: number)`, `spawnDashDust(x: number, y: number)`, `stumble()`, `update(time: number, delta: number)`
 - `src/game/entities/Obstacle.ts` — **Obstacle**: `deactivate()`, `spawn(lane: number, type: ObstacleType, startX: number = BALANCE.L)`, `update(_time: number, delta: number, speed: number)`
 - `src/game/entities/PickupItem.ts` — **PickupItem**: `deactivate()`, `spawn(lane: number, type: PickupType, startX: number = BALANCE.LOG)`, `update(_time: number, delta: number, speed: number)`
 - `src/game/entities/Projectile.ts` — **Projectile**: `update(_time: number, delta: number)`
@@ -144,7 +145,7 @@
 - `src/game/fx/index.ts` — **BlackoutEffect, SmogEffect, WaterloggingEffect**: `activate(alpha: number = 0.45)`, `activate(alpha: number = 0.6)`, `activate(alpha: number = 0.94)`, `deactivate()`, `update()`, `update(_time: number, delta: number)`
 - `src/game/scenes/BootScene.ts` — **BootScene**: —
 - `src/game/scenes/PreloadScene.ts` — **PreloadScene**: —
-- `src/game/scenes/RunScene.ts` — **RunScene**: —
+- `src/game/scenes/RunScene.ts` — **RunScene**: `handleInputCommand(cmd: InputCommand)`, `setControlSource(source: ControlSource)`
 - `src/game/systems/CombatSystem.ts` — **CombatSystem**: `destroy()`, `update(_time: number, delta: number)`
 - `src/game/systems/DialogueSystem.ts` — **DialogueSystem**: `clearBubble(target: "villain" | "chaser")`, `destroy()`, `showBubble(target: "villain" | "chaser", line: DialogueLine)`, `triggerLine( target: "villain" | "chaser", groupKey: keyof typeof DIALOG)`, `update(_time: number, delta: number)`
 - `src/game/systems/DifficultySystem.ts` — **DifficultySystem**: `getCurrentSpeed()`, `getDifficultyMultiplier()`, `getElapsedSeconds()`, `reset()`, `update(_time: number, delta: number)`
@@ -198,6 +199,7 @@
 - `src/components/game/GameHost.tsx` (44)
 - `src/components/game/HudOverlay.tsx` (588)
 - `src/components/game/ShopModal.tsx` (219)
+- `src/components/game/TouchControls.tsx` (65)
 - `src/components/game/WantedPosterModal.tsx` (223)
 - `src/components/game/WeaponDock.tsx` (243)
 - `src/components/gameover/GameOverScreen.tsx` (161)
@@ -207,7 +209,7 @@
 - `src/components/lobby/SettingsSheet.tsx` (136)
 - `src/components/lobby/VillainPreview.tsx` (519)
 - `src/components/lobby/WeaponSelector.tsx` (133)
-- `src/components/shell/AppShell.tsx` (211)
+- `src/components/shell/AppShell.tsx` (213)
 - `src/components/shell/OrientationGuard.tsx` (51)
 - `src/components/shell/ServiceWorkerRegister.tsx` (22)
 - `src/config/achievements.ts` (60)
@@ -227,19 +229,22 @@
 - `src/config/villains.ts` (229)
 - `src/config/weapons.ts` (191)
 - `src/config/weather.json` (55)
-- `src/game/bus.ts` (35)
+- `src/game/bus.ts` (37)
 - `src/game/createGame.ts` (59)
 - `src/game/entities/CharacterRig.ts` (763)
-- `src/game/entities/Chaser.ts` (109)
+- `src/game/entities/Chaser.ts` (169)
 - `src/game/entities/Obstacle.ts` (74)
 - `src/game/entities/PickupItem.ts` (68)
 - `src/game/entities/Projectile.ts` (61)
 - `src/game/entities/Villain.ts` (179)
 - `src/game/fx/index.ts` (521)
+- `src/game/input/BotSource.ts` (54)
+- `src/game/input/ControlSource.ts` (39)
+- `src/game/input/KeyboardTouchSource.ts` (185)
 - `src/game/motion/EntityMotion.ts` (168)
 - `src/game/scenes/BootScene.ts` (2211)
 - `src/game/scenes/PreloadScene.ts` (137)
-- `src/game/scenes/RunScene.ts` (296)
+- `src/game/scenes/RunScene.ts` (345)
 - `src/game/systems/CombatSystem.ts` (341)
 - `src/game/systems/DialogueSystem.ts` (234)
 - `src/game/systems/DifficultySystem.ts` (34)
@@ -250,7 +255,7 @@
 - `src/game/systems/SpawnSystem.ts` (262)
 - `src/game/systems/TimeOfDaySystem.ts` (216)
 - `src/game/systems/WeatherSystem.ts` (221)
-- `src/game/testHook.ts` (142)
+- `src/game/testHook.ts` (187)
 - `src/lib/device.ts` (2)
 - `src/lib/math.ts` (2)
 - `src/lib/rng.ts` (119)

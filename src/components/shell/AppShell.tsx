@@ -15,6 +15,7 @@ import { DailyChallengeCard } from "@/components/game/DailyChallengeCard";
 import { GameHost } from "@/components/game/GameHost";
 import { HudOverlay } from "@/components/game/HudOverlay";
 import { WeaponDock } from "@/components/game/WeaponDock";
+import { TouchControls } from "@/components/game/TouchControls";
 import { GameOverScreen } from "@/components/gameover/GameOverScreen";
 import { DebugBar } from "@/components/game/DebugBar";
 import { DemoRunner } from "@/components/game/DemoRunner";
@@ -81,6 +82,7 @@ export function AppShell() {
           <GameHost />
           <HudOverlay />
           <WeaponDock />
+          <TouchControls />
         </div>
       )}
 

@@ -14,6 +14,8 @@ import { BALANCE } from "@/config/balance";
 import { gameBus } from "@/game/bus";
 import { audioService } from "@/services/audio";
 import { useGameStore } from "@/store/useGameStore";
+import { ControlSource, InputCommand } from "@/game/input/ControlSource";
+import { KeyboardTouchSource } from "@/game/input/KeyboardTouchSource";
 
 export class RunScene extends Phaser.Scene {
   public parallaxSystem!: ParallaxSystem;
@@ -27,6 +29,8 @@ export class RunScene extends Phaser.Scene {
   public eventSystem!: EventSystem;
   public dialogueSystem!: DialogueSystem;
   public difficultySystem!: DifficultySystem;
+  public controlSource!: ControlSource;
+  private unbindControlSource?: () => void;
 
   private isPaused = false;
   private lastFpsReport = 0;
@@ -103,6 +107,9 @@ export class RunScene extends Phaser.Scene {
     gameBus.on("debug:timeScale", this.handleDebugTimeScale);
     gameBus.on("villain:dead", this.handleVillainDead);
 
+    // 7. Setup Player Control Source (A11 abstraction)
+    this.setControlSource(new KeyboardTouchSource(this));
+
     // Clean up bus listeners on scene shutdown or destroy
     const cleanup = () => {
       audioService.stopBgm();
@@ -112,6 +119,8 @@ export class RunScene extends Phaser.Scene {
       gameBus.off("debug:spawnObstacle", this.handleDebugSpawnObstacle);
       gameBus.off("debug:timeScale", this.handleDebugTimeScale);
       gameBus.off("villain:dead", this.handleVillainDead);
+      this.unbindControlSource?.();
+      this.controlSource?.destroy();
       this.combatSystem.destroy();
       this.fxSystem.destroy();
       this.timeOfDaySystem.destroy();
@@ -232,6 +241,49 @@ export class RunScene extends Phaser.Scene {
     this.physics.world.timeScale = Math.max(0.05, Math.min(3.0, data.scale));
   };
 
+  public setControlSource(source: ControlSource): void {
+    if (this.unbindControlSource) {
+      this.unbindControlSource();
+    }
+    if (this.controlSource && this.controlSource !== source) {
+      this.controlSource.destroy();
+    }
+    this.controlSource = source;
+    this.unbindControlSource = this.controlSource.onCommand((cmd) => {
+      this.handleInputCommand(cmd);
+    });
+  }
+
+  public handleInputCommand(cmd: InputCommand): void {
+    if (this.isPaused || !this.chaser) return;
+
+    switch (cmd.type) {
+      case "LANE_UP":
+        this.chaser.laneUp();
+        break;
+      case "LANE_DOWN":
+        this.chaser.laneDown();
+        break;
+      case "JUMP":
+        this.chaser.jump();
+        break;
+      case "DASH":
+        this.chaser.dash();
+        break;
+      case "ATTACK":
+        if (cmd.weaponId) {
+          gameBus.emit("weapon:use", { weaponId: cmd.weaponId, timestamp: Date.now() });
+        }
+        break;
+      case "ULTIMATE":
+        gameBus.emit("weapon:use", { weaponId: "ultimate-chappal-storm", timestamp: Date.now() });
+        break;
+      case "TAUNT":
+        gameBus.emit("player:taunt");
+        break;
+    }
+  }
+
   private handlePause = (data: { paused: boolean }) => {
     this.isPaused = data.paused;
     audioService.setBgmFilter(data.paused ? "muffled" : "normal");
@@ -282,9 +334,6 @@ export class RunScene extends Phaser.Scene {
     this.dialogueSystem.update(time, clampedDelta);
     this.timeOfDaySystem.update(time, clampedDelta);
     this.weatherSystem.update(time, clampedDelta);
-
-    // Keep chaser following villain's lane smoothly
-    this.chaser.followLane(this.villain.currentLane);
 
     // Periodically report actual FPS
     if (time - this.lastFpsReport > 500) {

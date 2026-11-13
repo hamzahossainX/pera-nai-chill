@@ -1,6 +1,17 @@
 # LOG.md — Shipped Work History
 
-## 2026-11-13 — V2-02: EntityMotion position channels & knockback fix (C-01, C-03)
+## 2026-11-13 — V2-03: Player controls, dash, jump & ControlSource abstraction (G-02)
+- Created `src/game/input/ControlSource.ts` [NEW] defining input command contract (`LANE_UP`, `LANE_DOWN`, `JUMP`, `DASH`, `ATTACK`, `ULTIMATE`, `TAUNT`) and `ControlSource` interface (V3 forward-compat constraint #1).
+- Created `src/game/input/KeyboardTouchSource.ts` [NEW] handling keyboard bindings (W/S, Arrows, Space, Shift, 1-4, E, T), canvas touch swipe gestures, and UI bus commands.
+- Created `src/game/input/BotSource.ts` [NEW] providing programmatic command emission, delay queuing, and step updates for bot harness (V2-40a) and headless tests.
+- Created `src/components/game/TouchControls.tsx` [NEW] with responsive thumb clusters (Left: Lane Up/Down; Right: Jump/Dash) mounted in `AppShell.tsx`.
+- Updated `Chaser.ts` with autonomous player movement: `setLane(lane)`, `laneUp()`, `laneDown()` (clamped to 3 lanes [0, 2]), `jump()` (520ms airtime, double-jump lockout), and `dash()` (2500ms cooldown, 25 stamina cost, +90px forward impulse).
+- Decoupled `RunScene.ts` loop: removed `chaser.followLane(villain.currentLane)` (fixed G-02), attached `ControlSource`, and wired command dispatcher.
+- Updated `testHook.ts` with debug command helpers (`command`, `laneUp`, `laneDown`, `jump`, `dash`) and exposed `isJumping`/`isDashing` in `getState().chaser`.
+- Unit tests: `src/__tests__/player_controls.test.ts` (6 tests passing).
+- E2E tests: `e2e/player-controls.spec.ts` (2 tests passing across Desktop and Mobile viewports).
+- All gates green (tsc, lint, vitest 56/56, pattern:check, spec:verify, next build, playwright 18/18).
+
 - Created `src/game/motion/EntityMotion.ts` [NEW] as single owner of entity positions `(x, y)`:
   - Channels: `homeX`, `offsetX` (sub-stepped damped harmonic oscillator spring-back), `laneY` (smooth exponential lerp), `jumpY` (normalized parabolic vertical arc for jumps/vaults), `extraY` (vertical trip/death offset), and bounding clamp to `[minX, maxX] = [60, 1220]`.
 - Integrated `EntityMotion` into `CharacterRig.ts` (`motion` member instantiated in constructor, updated per frame in `update`).
