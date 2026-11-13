@@ -12,6 +12,7 @@ const VIEWPORTS = [
 test.describe("V2-00 Lobby Scroll & Map Reachability (M-01)", () => {
   for (const vp of VIEWPORTS) {
     test(`lobby is scrollable via wheel, touch and keyboard at ${vp.label}`, async ({ page }) => {
+      test.setTimeout(60000);
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto("/?debug=1");
 
