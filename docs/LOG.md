@@ -1,5 +1,12 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-13 — V2 audit & game plan (docs only, no game code changed)
+- **Gamer-eye audit** of baseline `3899745`: `docs/GAME_AUDIT.md` — 40+ findings with IDs and evidence tags. Headline verified facts: lobby cannot scroll so the Map picker (y≈1320) is unreachable at 1280×720 / 1920×1080 / 844×390 (M-01); the 3 maps are palette swaps (M-02); villain knockback is never undone so he drifts off-world (C-01, code-verified); no player movement, no gap, no fail state (G-01..G-03); HUD covers lanes on phones (U-01).
+- **Plan:** `docs/GAME_PLAN_V2.md` (core loop, layout zones, character spec, `MapDefinition` framework, 8 Bangladesh maps, UI rebuild, cleanup list), `docs/DESIGN.md` filled (was an empty template), `docs/ROADMAP.md §V2` tickets V2-00..V2-30.
+- **Handoff:** `docs/HANDOFF_PROMPT.md` (paste into a new session). New local skills: `map-authoring`, `playtest-audit`. Repro scripts in `scripts/audit/`. Evidence in `docs/audit/screens/`. `.claude/launch.json` added for the dev server.
+- **Gates (unchanged code):** tsc clean · lint clean · vitest 37/37.
+- **Caveat:** headless Chromium here runs WebGL at ~1.5 fps (software GL) → runtime Phaser behaviour (combat chains, events, boss) was code-verified, not played.
+
 ## 2026-11-10 — Phase 1.5 Game Design Polish & Feature Expansion
 - **Pre-Game Wanted Reason / Crime Tags (`src/config/crimes.ts`)**:
   - Curated 6 clean, hilarious, highly relatable Dhaka reasons (bKash money borrow & block, sleeping through group project, stealing big mutton roast at wedding, pretending no change at tea stall, trolling boss in company group chat, running away from rickshaw mama).
