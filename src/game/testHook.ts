@@ -1,6 +1,7 @@
 import type Phaser from "phaser";
 import { useGameStore } from "@/store/useGameStore";
 import type { RunScene } from "@/game/scenes/RunScene";
+import { gameBus } from "@/game/bus";
 
 export interface GameStateSnapshot {
   fps: number | null;
@@ -18,7 +19,7 @@ export interface GameStateSnapshot {
 
 export interface GameTestHook {
   seed: string;
-  step(ms: number): void;
+  step(ms: number, stepDt?: number): void;
   getState(): GameStateSnapshot;
   registerState(name: string, fn: () => unknown): void;
   debug: {
@@ -42,8 +43,8 @@ export function installTestHook(game: Phaser.Game, seed: string): GameTestHook {
   const hook: GameTestHook = {
     seed,
 
-    step(ms: number) {
-      const dt = 1000 / 60; // 16.666 ms fixed step
+    step(ms: number, stepDt: number = 33.33) {
+      const dt = Math.max(16.666, Math.min(stepDt, 33.33));
       const steps = Math.max(1, Math.round(ms / dt));
       for (let i = 0; i < steps; i++) {
         simulatedTime += dt;
@@ -117,6 +118,20 @@ export function installTestHook(game: Phaser.Game, seed: string): GameTestHook {
       },
     },
   };
+
+  hook.debug.register("attack", (weaponId?: unknown) => {
+    const id = typeof weaponId === "string" ? weaponId : "chappal";
+    gameBus.emit("weapon:use", { weaponId: id, timestamp: Date.now() });
+  });
+
+  hook.debug.register("setHealth", (hp?: unknown) => {
+    const val = typeof hp === "number" ? hp : 99999;
+    useGameStore.setState({ villainHp: val, villainMaxHp: val });
+  });
+
+  hook.debug.register("spawnObstacle", () => {
+    gameBus.emit("debug:spawnObstacle");
+  });
 
   if (typeof window !== "undefined") {
     window.__game = hook;

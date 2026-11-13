@@ -46,25 +46,24 @@ export class Villain {
   }
 
   public setLane(laneIndex: number) {
-    if (laneIndex < 0 || laneIndex >= getLaneCount() || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
+    if (laneIndex < 0 || laneIndex >= getLaneCount() || !this.rig || !this.rig.scene) return;
     this.currentLane = laneIndex;
 
     const targetY = getLaneY(laneIndex);
     const targetScale = getLaneScale(laneIndex);
 
-    this.scene.tweens.add({
-      targets: this.rig,
-      y: targetY,
-      scaleX: targetScale,
-      scaleY: targetScale,
-      duration: 220,
-      ease: "Quad.Out",
-      onUpdate: () => {
-        if (this.rig && this.rig.scene) {
-          this.rig.setDepth(this.currentLane + 10);
-        }
-      },
-    });
+    this.rig.motion.setLaneY(targetY);
+    this.rig.setDepth(this.currentLane + 10);
+
+    if (this.scene && this.scene.tweens) {
+      this.scene.tweens.add({
+        targets: this.rig,
+        scaleX: targetScale,
+        scaleY: targetScale,
+        duration: 220,
+        ease: "Quad.Out",
+      });
+    }
   }
 
   public hit(damage: number, knockback: number = 35, isCrit: boolean = false) {
@@ -110,25 +109,25 @@ export class Villain {
   public isHiding = false;
 
   public vault() {
-    if (this.isVaulting || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
+    if (this.isVaulting || !this.rig || !this.rig.scene) return;
     this.isVaulting = true;
-    const currentY = this.rig.y;
 
-    this.scene.tweens.add({
-      targets: this.rig,
-      y: currentY - 50,
-      rotation: -0.25,
-      duration: 200,
-      yoyo: true,
-      ease: "Quad.Out",
-      onComplete: () => {
-        if (this.rig && this.rig.scene) {
-          this.rig.rotation = 0;
-          this.rig.y = currentY;
-        }
-        this.isVaulting = false;
-      },
+    this.rig.motion.vault(50, 400, () => {
+      if (this.rig && this.rig.scene) {
+        this.rig.rotation = 0;
+      }
+      this.isVaulting = false;
     });
+
+    if (this.scene && this.scene.tweens) {
+      this.scene.tweens.add({
+        targets: this.rig,
+        rotation: -0.25,
+        duration: 200,
+        yoyo: true,
+        ease: "Quad.Out",
+      });
+    }
   }
 
   public hideBehindVehicle() {

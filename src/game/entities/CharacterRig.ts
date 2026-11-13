@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { OutfitDefinition, OUTFITS } from "@/config/outfits";
 import { VillainArchetype } from "@/config/villains";
 import { SecondaryMotion } from "@/game/systems/SecondaryMotion";
+import { EntityMotion } from "@/game/motion/EntityMotion";
 
 export interface RigOptions {
   scene: Phaser.Scene;
@@ -82,6 +83,9 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   // Secondary Motion Physics
   private secondaryMotion = new SecondaryMotion();
 
+  // Position and Physics Motion Channels (single owner of x/y)
+  public motion: EntityMotion;
+
   // State
   public stateName: "RUN" | "HIT_STUN" | "DEAD" | "ATTACK" | "TRIPPED" = "RUN";
   public runSpeedFactor = 1.0;
@@ -95,6 +99,13 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.outfit = options.outfit;
     this.archetype = options.archetype;
     this.isChaser = options.isChaser ?? false;
+
+    this.motion = new EntityMotion({
+      homeX: options.x,
+      homeY: options.y,
+      minX: 60,
+      maxX: 1220,
+    });
 
     // Default to Phone Snatcher outfit if not specified and not chaser
     if (!this.outfit && !this.isChaser) {
@@ -482,15 +493,9 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       },
     });
 
-    // Knockback
-    const targetX = this.x + knockbackX;
+    // Knockback via EntityMotion spring channel (auto-recovers within 400ms, clamped to [minX, maxX])
     this.secondaryMotion.applyImpulse(knockbackX * 0.4, -18, isCrit ? 0.35 : 0.15);
-    this.scene.tweens.add({
-      targets: this,
-      x: targetX,
-      ease: "Quad.Out",
-      duration: 180,
-    });
+    this.motion.applyImpulse(knockbackX);
 
     // Recover after 160 ms
     this.scene.time.delayedCall(160, () => {
@@ -518,11 +523,14 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       repeat: -1,
     });
 
+    this.motion.extraY = 35;
+    this.motion.setHomeX(Math.min(this.motion.maxX, this.x + 60));
+    this.motion.offsetX = 0;
+    this.motion.applyTo(this);
+
     this.scene.tweens.add({
       targets: this,
       rotation: 1.57,
-      y: this.y + 35,
-      x: this.x + 60,
       alpha: 0.9,
       duration: 600,
       ease: "Bounce.Out",
@@ -536,10 +544,10 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     if (this.stateName === "DEAD" || this.stateName === "TRIPPED" || !this.scene || !this.scene.tweens) return;
     this.stateName = "TRIPPED";
 
+    this.motion.extraY = 20;
     this.scene.tweens.add({
       targets: this,
       rotation: 1.3,
-      y: this.y + 20,
       duration: 150,
       ease: "Quad.Out",
     });
@@ -564,10 +572,10 @@ export class CharacterRig extends Phaser.GameObjects.Container {
 
     this.scene.time.delayedCall(durationMs, () => {
       if (this.stateName === "DEAD" || !this.scene || !this.scene.tweens) return;
+      this.motion.extraY = 0;
       this.scene.tweens.add({
         targets: this,
         rotation: 0,
-        y: this.y - 20,
         duration: 200,
         ease: "Back.Out",
         onComplete: () => {
@@ -641,7 +649,13 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   }
 
   public update(time: number, delta: number) {
-    if (this.stateName === "DEAD" || this.isHitStunned) return;
+    if (this.stateName === "DEAD") return;
+
+    // EntityMotion is the single owner of position channels
+    this.motion.update(delta);
+    this.motion.applyTo(this);
+
+    if (this.isHitStunned) return;
 
     if (this.attackTimer > 0) {
       this.attackTimer -= delta;

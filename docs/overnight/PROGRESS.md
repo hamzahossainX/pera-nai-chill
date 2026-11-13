@@ -55,3 +55,28 @@ DON'T TOUCH:
 - `CharacterRig.ts`, other systems, components
 
 | 2026-11-13T16:55:17+06:00 | 2.5h | V2-01 | done | tsc ✅ · lint ✅ · test ✅ (47/47) · build ✅ · playwright ✅ (14/14) · pattern:check ✅ (P01:43, P03:0) · spec:verify ✅ | Completed V2-01. Tagged v2-01-done. Next: V2-02.
+
+### V2-02 → started 2026-11-13T17:02:22+06:00
+Plan:
+1. Create `src/game/motion/EntityMotion.ts` [NEW] with channels: `homeX`, `offsetX` (damped spring-back), `laneY` (smooth transition), `jumpY` (vault/jump parabolic arc), and clamp to `[minX, maxX] = [60, 1220]`.
+2. Write unit tests in `src/__tests__/entity_motion.test.ts` [NEW] asserting:
+   - 500 random impulses: `x` strictly remains in `[60, 1220]`.
+   - After any impulse: `|offsetX| < 1 px` within 400 ms.
+   - Lane change during jump does not snap back or teleport.
+3. Integrate `EntityMotion` into `CharacterRig.ts` (`motion` member, updated each frame).
+4. Remove direct position tweens and writes in `CharacterRig.ts` (`triggerHitStun`, `triggerDead`), `Villain.ts` (`vault` old Y restore), `Obstacle.ts` (`setX`), and `PickupItem.ts` (`setX`).
+5. Write Playwright test in `e2e/knockback-drift.spec.ts` [NEW] verifying 60s auto-attack keeps villain and chaser within `[0, 1280]`.
+6. Pattern ratchet: P02 drops from 5 to 0. Update baseline in `scripts/audit/pattern-baseline.json`.
+7. Run all gates, generate facts & inventory, write evidence, commit, and tag `v2-02-done`.
+TOUCH:
+- `src/game/motion/EntityMotion.ts` [NEW]
+- `src/game/entities/CharacterRig.ts`
+- `src/game/entities/Villain.ts`
+- `src/game/entities/Obstacle.ts`
+- `src/game/entities/PickupItem.ts`
+- `src/__tests__/entity_motion.test.ts` [NEW]
+- `e2e/knockback-drift.spec.ts` [NEW]
+- `scripts/audit/pattern-baseline.json`
+- `docs/overnight/evidence/V2-02.md`
+| 2026-11-13T17:02:22+06:00 | 1.5h | V2-02 | done | tsc ✅ · lint ✅ · test ✅ (50/50) · build ✅ · playwright ✅ (16/16) · pattern:check ✅ (P02:0) · spec:verify ✅ | Completed V2-02. Tagged v2-02-done. Next: Pattern Audit #1.
+

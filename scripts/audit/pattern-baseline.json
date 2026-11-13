@@ -2,7 +2,7 @@
   "generated": "2026-11-13",
   "counts": {
     "P01_math_random_in_game": 43,
-    "P02_direct_entity_position_write": 5,
+    "P02_direct_entity_position_write": 0,
     "P03_lane_literals_outside_layout": 0,
     "P04_bus_on_without_off": 0,
     "P05_any_type": 0,

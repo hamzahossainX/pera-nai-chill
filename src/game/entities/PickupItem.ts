@@ -58,7 +58,7 @@ export class PickupItem extends Phaser.GameObjects.Sprite {
   public update(_time: number, delta: number, speed: number) {
     if (!this.isActiveInWorld) return;
 
-    this.x -= speed * (delta * 0.001);
+    this.setX(this.x - speed * (delta * 0.001));
 
     if (this.x < -150) {
       this.deactivate();
