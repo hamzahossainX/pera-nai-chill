@@ -55,6 +55,12 @@
 - `timeOfDay: TimeOfDay`
 - `weather: WeatherType`
 - `unlockedVillainIds: string[]`
+- `isBossStage: boolean`
+- `runRules: RunRules`
+- `distanceMeters: number`
+- `stageProgress: number`
+- `bestCombo: number`
+- `starsResult: StarResult | null`
 - `villainHp: number`
 - `villainMaxHp: number`
 - `villainMorale: number`
@@ -87,6 +93,9 @@
 - `setTimeOfDay: (tod: TimeOfDay) => void`
 - `setWeather: (w: WeatherType) => void`
 - `unlockVillain: (id: string) => boolean`
+- `setIsBossStage: (isBoss: boolean) => void`
+- `setRunRules: (rules: RunRules) => void`
+- `addDistance: (deltaMeters: number) => void`
 - `setCounterBuff: (name: string, durationSec: number) => void`
 - `clearCounterBuff: () => void`
 - `startGame: () => void`
@@ -150,10 +159,10 @@
 
 - `src/game/entities/CharacterRig.ts` — **CharacterRig**: `applyOutfitColors(outfit: number, pants: number)`, `applySilhouette()`, `setDebugSkeleton(show: boolean)`, `setFaceTexture(key: string)`, `triggerAttack(type: "slap" | "punch" | "kick" | "throw")`, `triggerDead(onComplete?: ()`, `triggerHitStun(knockbackX: number = 40, isCrit: boolean = false)`, `triggerTrip(durationMs: number = 1600)`, `update(time: number, delta: number)`, `updateHealth(hpPercent: number)`
 - `src/game/entities/Chaser.ts` — **Chaser**: `attack(type: "slap" | "punch" | "kick" | "throw")`, `dash()`, `followLane(laneIndex: number)`, `jump(height: number = 60, durationMs: number = Chaser.JUMP_DURATI)`, `laneDown()`, `laneUp()`, `setLane(laneIndex: number)`, `spawnDashDust(x: number, y: number)`, `stumble()`, `update(time: number, delta: number)`
-- `src/game/entities/Obstacle.ts` — **Obstacle**: `deactivate()`, `spawn(lane: number, type: ObstacleType, startX: number = BALANCE.L)`, `update(_time: number, delta: number, speed: number)`
+- `src/game/entities/Obstacle.ts` — **Obstacle**: `deactivate()`, `getPatienceCost()`, `getSlowDurationSec()`, `getSlowMultiplier()`, `isLowHazard()`, `showTelegraph()`, `spawn(lane: number, type: ObstacleType, startX: number = BALANCE.L)`, `update(_time: number, delta: number, speed: number)`
 - `src/game/entities/PickupItem.ts` — **PickupItem**: `deactivate()`, `spawn(lane: number, type: PickupType, startX: number = BALANCE.LOG)`, `update(_time: number, delta: number, speed: number)`
 - `src/game/entities/Projectile.ts` — **Projectile**: `update(_time: number, delta: number)`
-- `src/game/entities/Villain.ts` — **Villain**: `die(onComplete?: ()`, `hideBehindVehicle()`, `hit(damage: number, knockback: number = 35, isCrit: boolean = fa)`, `setLane(laneIndex: number)`, `trip(durationMs: number = 1600)`, `update(time: number, delta: number)`, `vault()`
+- `src/game/entities/Villain.ts` — **Villain**: `die(onComplete?: ()`, `dodge(onComplete?: ()`, `executeCounterMove(spawnObstacleFn?: (lane: number, type: ObstacleType, x?: num)`, `hideBehindVehicle()`, `hit(damage: number, knockback: number = 35, isCrit: boolean = fa)`, `setLane(laneIndex: number)`, `trip(durationMs: number = 1600)`, `update(time: number, delta: number, spawnObstacleFn?: (lane: number)`, `vault()`
 - `src/game/fx/index.ts` — **BlackoutEffect, SmogEffect, WaterloggingEffect**: `activate(alpha: number = 0.45)`, `activate(alpha: number = 0.6)`, `activate(alpha: number = 0.94)`, `deactivate()`, `update()`, `update(_time: number, delta: number)`
 - `src/game/scenes/BootScene.ts` — **BootScene**: —
 - `src/game/scenes/PreloadScene.ts` — **PreloadScene**: —
@@ -166,7 +175,7 @@
 - `src/game/systems/GapSystem.ts` — **GapSystem**: `destroy()`, `getGap()`, `getZone()`, `isMeleeInRange()`, `reduceGap(amount: number)`, `setGap(gap: number)`, `slowChaser(mult: number, durationSec: number)`, `update(_time: number, delta: number)`, `widenGap(amount: number)`
 - `src/game/systems/ParallaxSystem.ts` — **ParallaxSystem**: `applyTimeOfDay(timeOfDay: TimeOfDay)`, `destroy()`, `setAmbientTint(tint: number)`, `setSkyTint(tint: number)`, `update(time: number, delta: number, currentBaseSpeed: number = BALA)`
 - `src/game/systems/SecondaryMotion.ts` — **SecondaryMotion**: `applyImpulse(xImpulse: number, yImpulse: number, rotImpulse: number = 0)`, `clear()`, `register( target: Phaser.GameObjects.Sprite | Phaser.GameObjects.Cont)`, `update(time: number, delta: number, parentVelocityX: number = 0)`
-- `src/game/systems/SpawnSystem.ts` — **SpawnSystem**: `clearAll()`, `setChaser(chaser: Chaser)`, `setStrikeActive(active: boolean)`, `spawnObstacle(lane?: number, type?: ObstacleType)`, `spawnPickup(lane?: number, type?: PickupType)`, `update(_time: number, delta: number, speed: number = BALANCE.BASE_R)`
+- `src/game/systems/SpawnSystem.ts` — **SpawnSystem**: `clearAll()`, `getObstacleNear(lane: number, x: number, range: number)`, `setChaser(chaser: Chaser)`, `setStrikeActive(active: boolean)`, `spawnObstacle(lane?: number, type?: ObstacleType, startX?: number)`, `spawnPickup(lane?: number, type?: PickupType)`, `update(_time: number, delta: number, speed: number = BALANCE.BASE_R)`
 - `src/game/systems/TimeOfDaySystem.ts` — **TimeOfDaySystem**: `applyPhase(phaseId: TimeOfDay, durationMs: number = 8000)`, `destroy()`, `getCurrentConfig()`, `getCurrentPhase()`, `getStreetLamps()`, `setLampsEnabled(enabled: boolean)`, `update(time: number, delta: number)`
 - `src/game/systems/WeatherSystem.ts` — **WeatherSystem**: `clearWeather()`, `destroy()`, `setWeather(type: WeatherType)`, `triggerLightning()`, `update(time: number, delta: number)`
 
@@ -175,6 +184,7 @@
 - `src/config/achievements.ts`: `ACHIEVEMENTS`, `Achievement`
 - `src/config/assetManifest.ts`: `assetManifest`
 - `src/config/balance.ts`: `BALANCE`, `calculateComboMultiplier`
+- `src/config/balance.v2.ts`: `ASSIST_LADDER`, `AssistLevel`, `BALANCE_V2`, `MAP_BALANCE`, `MapBalanceConfig`, `getAssistLevel`
 - `src/config/crimes.ts`: `CRIMES`, `CrimeTag`, `DEFAULT_CRIME`
 - `src/config/dailyChallenge.ts`: `DailyChallenge`, `getTodayChallenge`
 - `src/config/dialogue.ts`: `COMBO_NAMES`, `COMMENTATOR_TICKER`, `ComboTier`, `DIALOGUE_GROUPS`, `DialogueLine`
@@ -183,6 +193,7 @@
 - `src/config/maps.ts`: `DEFAULT_MAP`, `MAP_SCENARIOS`, `MapScenario`, `TimeOfDay`
 - `src/config/outfits.ts`: `OUTFITS`, `OutfitDefinition`, `RigSlotTextures`
 - `src/config/props.ts`: `PropTag`, `STREET_PROPS`, `StreetPropDefinition`
+- `src/config/rules.ts`: `DEFAULT_STAGE_RULES`, `RunMode`, `RunRules`, `STAGE_CONFIG`, `StarResult`, `calculateStars`
 - `src/config/shop.ts`: `SHOP_ITEMS`, `ShopItem`
 - `src/config/timeOfDay.ts`: `TIME_OF_DAY_CONFIGS`, `TimeOfDayPhaseConfig`
 - `src/config/tips.ts`: `LOADING_TIPS`
@@ -194,7 +205,7 @@
 
 - Villain archetype ids: `cableChor`, `chickenChor`, `chorSardar`, `eidMarketChor`, `manholeChor`, `phoneSnatcher`, `pickpocket`
 - Map ids (currently a closed union of 3): `farmgate`, `mirpur`, `newmarket`
-- Obstacle types: `barricade`, `tire-fire`, `brick`, `crowd`, `rickshaw`, `pothole`
+- Obstacle types: `barricade`, `tire-fire`, `brick`, `crowd`, `rickshaw`, `pothole`, `fake-wallet`, `shopping-bag`, `wire-coil`
 - Dialogue groups (`DIALOGUE_GROUPS`): `villain_taunt`, `villain_hit`, `villain_lowHp`, `villain_dodge`, `chaser_taunt`, `chaser_hit`, `event_loadshedding`, `event_pollution`, `event_strike`, `event_flood`
 
 ## 9. Source tree (lines)
@@ -210,12 +221,12 @@
 - `src/components/game/DemoRunner.tsx` (44)
 - `src/components/game/EventBanner.tsx` (61)
 - `src/components/game/GameHost.tsx` (44)
-- `src/components/game/HudOverlay.tsx` (628)
+- `src/components/game/HudOverlay.tsx` (649)
 - `src/components/game/ShopModal.tsx` (219)
 - `src/components/game/TouchControls.tsx` (65)
 - `src/components/game/WantedPosterModal.tsx` (223)
 - `src/components/game/WeaponDock.tsx` (243)
-- `src/components/gameover/GameOverScreen.tsx` (177)
+- `src/components/gameover/GameOverScreen.tsx` (251)
 - `src/components/loading/LoadingScreen.tsx` (285)
 - `src/components/lobby/FaceUploader.tsx` (277)
 - `src/components/lobby/MapSelector.tsx` (83)
@@ -228,6 +239,7 @@
 - `src/config/achievements.ts` (60)
 - `src/config/assetManifest.ts` (2)
 - `src/config/balance.ts` (34)
+- `src/config/balance.v2.ts` (115)
 - `src/config/crimes.ts` (111)
 - `src/config/dailyChallenge.ts` (54)
 - `src/config/dialogue.ts` (181)
@@ -236,20 +248,22 @@
 - `src/config/maps.ts` (133)
 - `src/config/outfits.ts` (208)
 - `src/config/props.ts` (117)
+- `src/config/rules.ts` (102)
 - `src/config/shop.ts` (92)
 - `src/config/timeOfDay.ts` (59)
 - `src/config/tips.ts` (29)
 - `src/config/villains.ts` (229)
 - `src/config/weapons.ts` (191)
 - `src/config/weather.json` (55)
+- `src/game/bot/BotHarness.ts` (351)
 - `src/game/bus.ts` (39)
 - `src/game/createGame.ts` (59)
 - `src/game/entities/CharacterRig.ts` (763)
 - `src/game/entities/Chaser.ts` (169)
-- `src/game/entities/Obstacle.ts` (74)
+- `src/game/entities/Obstacle.ts` (170)
 - `src/game/entities/PickupItem.ts` (68)
 - `src/game/entities/Projectile.ts` (61)
-- `src/game/entities/Villain.ts` (179)
+- `src/game/entities/Villain.ts` (273)
 - `src/game/fx/index.ts` (521)
 - `src/game/input/BotSource.ts` (54)
 - `src/game/input/ControlSource.ts` (39)
@@ -257,8 +271,8 @@
 - `src/game/motion/EntityMotion.ts` (168)
 - `src/game/scenes/BootScene.ts` (2211)
 - `src/game/scenes/PreloadScene.ts` (137)
-- `src/game/scenes/RunScene.ts` (370)
-- `src/game/systems/CombatSystem.ts` (385)
+- `src/game/scenes/RunScene.ts` (360)
+- `src/game/systems/CombatSystem.ts` (446)
 - `src/game/systems/DialogueSystem.ts` (234)
 - `src/game/systems/DifficultySystem.ts` (34)
 - `src/game/systems/EventSystem.ts` (266)
@@ -266,7 +280,7 @@
 - `src/game/systems/GapSystem.ts` (191)
 - `src/game/systems/ParallaxSystem.ts` (304)
 - `src/game/systems/SecondaryMotion.ts` (100)
-- `src/game/systems/SpawnSystem.ts` (262)
+- `src/game/systems/SpawnSystem.ts` (306)
 - `src/game/systems/TimeOfDaySystem.ts` (216)
 - `src/game/systems/WeatherSystem.ts` (221)
 - `src/game/testHook.ts` (189)
@@ -278,7 +292,8 @@
 - `src/services/eventService.ts` (73)
 - `src/services/faceService.ts` (276)
 - `src/services/haptics.ts` (2)
-- `src/store/useGameStore.ts` (382)
+- `src/services/storage.ts` (176)
+- `src/store/useGameStore.ts` (448)
 
 ## 10. Gates
 

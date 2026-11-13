@@ -37,7 +37,7 @@
 - [ ] V2-37b — Settings UI: voice, subtitles, Calm mode, Friendly toggle [tags:ui]
 - [ ] V2-38 — Localization engine (dialect resolver, per-map mix, subtitle modes, CSV v2, import + release gate) [tags:audio,game,ui][spec:LOCALIZATION_AND_DIALECTS]
 - [ ] V2-39 — Dialect-gap gag `S8_ki_koila` [tags:game,content]
-- [ ] V2-40a — In-engine bot harness (after V2-06) · [ ] V2-40 — Balance port (`src/config/balance.v2.ts`, assist ladder, bands from GDD §7, masher = 0 %, monotonic hazard cadence) [tags:test,game][spec:GDD §9]
+- [x] V2-40a — In-engine bot harness (after V2-06) · [x] V2-40 — Balance port (`src/config/balance.v2.ts`, assist ladder, bands from GDD §7, masher = 0 %, monotonic hazard cadence) [tags:test,game][spec:GDD §9] (tag: v2-40-done)
 - [ ] V2-40c — **Owner/native content task (not AI):** dialect packs phase 1 (Dhakaiya, Chittagonian, Sylheti) via `docs/spec/dialect/translation_sheet.csv`; record clips; fill `docs/audio/ASSET_LEDGER.csv`
 - [ ] V2-41 — Post-launch: phase-2 regions (maps + dialects `mym`,`noa`,`bar`,`rng`,`khl`)
 
