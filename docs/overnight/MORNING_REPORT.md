@@ -25,7 +25,11 @@
 `tsc` · `lint` · `test` (N passed) · `build` · `playwright` · `pattern:check` (counts vs baseline) · `spec:verify`
 
 ## 5. Pattern audits
-Links to `PATTERN_AUDIT_*.md`; ratchet counts before → after: P01 … P10.
+- [PATTERN_AUDIT_1.md](docs/overnight/PATTERN_AUDIT_1.md) (Post-W0 review):
+  - P01 (Math.random in game): 63 → 43 (⬇ -20 migrated)
+  - P02 (Direct entity position writes): 5 → 0 (⬇ zeroed via EntityMotion)
+  - P03 (Lane literals outside layout): 18 → 0 (⬇ zeroed via layout.ts)
+  - All other metrics clean. 10-point checklist PASS.
 
 ## 6. Balance bot results (V2-40a/40)
 | Archetype/map | masher | novice | average | expert | target band |
