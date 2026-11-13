@@ -1,117 +1,125 @@
-id,speaker,pool,bn,en,tone,trigger,maxDurMs,status,clip
-hero_chase_01,hero,chaser_chase,দাঁড়া! আজকে তোরে মাইর দিমু!,Stop! I'll beat you up today!,angry-comic,chase_start,1800,draft,
-hero_chase_02,hero,chaser_chase,"থাম বলতাছি, থাম!","I'm telling you, stop!",angry-comic,chase_idle,1500,draft,
-hero_chase_03,hero,chaser_chase,"কতদূর পালাবি, ব্যাটা?","How far will you run, fellow?",smug,chase_idle,1700,draft,
-hero_chase_04,hero,chaser_chase,আমার টাকা ফেরত দে!,Give me my money back!,angry-comic,chase_idle,1500,draft,
-hero_chase_05,hero,chaser_chase,চপ্পল খুলতে হইলো তো!,Looks like I have to take off my slipper!,dramatic,weapon_chappal,1800,draft,
-hero_hit_01,hero,chaser_hit,এইটা চা-বিস্কুটের দাম!,That's for the tea and biscuits!,smug,hit,1500,draft,
-hero_hit_02,hero,chaser_hit,এইটা বকেয়ার সুদ!,That's interest on the dues!,smug,hit,1400,draft,
-hero_hit_03,hero,chaser_hit,ঠাস! আরেকটা লাগবে?,Slap! Want another one?,smug,hit,1500,draft,
-hero_hit_04,hero,chaser_hit,"খেয়ে দেখো, নতুন চপ্পল!","Try it, brand-new slipper!",smug,hit,1500,draft,
-hero_combo_01,hero,chaser_combo,হ্যাট্রিক! তিনটা পুরা!,Hat-trick! Three clean ones!,excited,combo_3,1600,draft,
-hero_combo_02,hero,chaser_combo,আজকে আর ছাড়াছাড়ি নাই!,No letting go today!,excited,combo_10,1600,draft,
-hero_taunt_01,hero,chaser_taunt,দৌড়া দৌড়া! হাঁপাইয়া যাবি!,Run run! You'll run out of breath!,smug,taunt,1700,draft,
-hero_taunt_02,hero,chaser_taunt,"এই যে ভাই, একটু দাঁড়ান না!","Hey brother, why not stop a bit!",sarcastic,taunt,1700,draft,
-hero_dash_01,hero,chaser_dash,উড়াল দিলাম!,Taking off!,excited,dash,1000,draft,
-hero_hurt_01,hero,chaser_hurt,আউচ! কে রাখছে এইখানে?,Ouch! Who left that here?,pained-comic,hazard_hit,1400,draft,
-hero_hurt_02,hero,chaser_hurt,আমার পা! আমার সুন্দর পা!,My foot! My beautiful foot!,pained-comic,hazard_hit,1500,draft,
-hero_sorry_01,hero,chaser_sorry,সরি মামা! ভুল হইছে!,Sorry uncle! My mistake!,panicked,innocent_hit,1400,draft,
-hero_sorry_02,hero,chaser_sorry,আরে আপনারে না! আপনারে না!,Not you! Not you!,panicked,innocent_hit,1500,draft,
-hero_win_01,hero,chaser_win,ধরা খাইছিস এইবার!,Caught you this time!,triumphant,villain_dead,1500,draft,
-vil_flee_01,villain,villain_flee,আমি কিছু করি নাই ভাই!,"I didn't do anything, brother!",panicked,chase_idle,1500,draft,
-vil_flee_02,villain,villain_flee,ভাই মাফ কইরা দেন!,"Brother, please forgive me!",panicked,chase_idle,1500,draft,
-vil_flee_03,villain,villain_flee,আমারে ধরলে তোমার কী লাভ?,What do you gain by catching me?,cheeky,chase_idle,1700,draft,
-vil_flee_04,villain,villain_flee,আমার ফোনের ব্যাটারি শেষ!,My phone's battery is dead!,panicked,chase_idle,1500,draft,
-vil_hit_01,villain,villain_hit,ও মা গো!,Oh mother!,pained-comic,hit,900,draft,
-vil_hit_02,villain,villain_hit,চপ্পল মারিস না! নতুন কিনছি!,Don't hit me with the slipper! I just bought it!,pained-comic,hit,1700,draft,
-vil_hit_03,villain,villain_hit,এইটা কিন্তু সহ্য করার মতো না!,This is really hard to bear!,pained-comic,hit,1600,draft,
-vil_hit_04,villain,villain_hit,আমার চশমা! আমার চশমা কই?,My glasses! Where are my glasses?,pained-comic,hit,1500,draft,
-vil_taunted_01,villain,villain_taunted,তুই আমার কাছে আসতে পারবি না!,You can't get close to me!,cheeky,taunt_reply,1700,draft,
-vil_taunted_02,villain,villain_taunted,আরে ভাই ঠাট্টা করতেছিলাম!,"Hey brother, I was just joking!",panicked,taunt_reply,1700,draft,
-vil_trip_01,villain,villain_trip,আছাড়! আমার কোমর!,Crash! My back!,pained-comic,trip,1300,draft,
-vil_trip_02,villain,villain_trip,কে রাস্তায় গর্ত খুঁড়ছে?,Who dug a hole in the road?,pained-comic,trip,1500,draft,
-vil_mob_01,villain,villain_mob,পুলিশ ডাকো! পুলিশ ডাকো!,Call the police! Call the police!,panicked,mob,1500,draft,
-vil_mob_02,villain,villain_mob,আমি আজকে প্রথম করছি ভাই!,"It's my first time today, brother!",panicked,mob,1700,draft,
-vil_mob_03,villain,villain_mob,এইটা তো প্র্যাঙ্ক ছিল!,This was just a prank!,panicked,mob,1400,draft,
-vil_dead_01,villain,villain_caught,আমি আর কখনো করব না!,I'll never do it again!,dizzy,villain_dead,1500,draft,
-pro_point_01,bystander_pro,bystander_pro,ওই যে! ওই চোর! ধর ধর!,There! That thief! Catch him!,excited,react_pro,1600,draft,
-pro_point_02,bystander_pro,bystander_pro,ডান দিক দিয়া যান ভাই!,"Go by the right, brother!",helpful,react_pro,1500,draft,
-pro_point_03,bystander_pro,bystander_pro,বাঁ লেনে গেছে! বাঁ লেনে!,He went to the left lane!,helpful,react_pro,1500,draft,
-pro_point_04,bystander_pro,bystander_pro,ধর ধর ধর ধর!,Catch catch catch catch!,excited,react_pro,1400,draft,
-pro_point_05,bystander_pro,bystander_pro,আজকে আর ছাড়াছাড়ি নাই!,No letting him go today!,excited,react_pro,1600,draft,
-pro_point_06,bystander_pro,bystander_pro,আমার চোখের সামনে করছে!,He did it right in front of me!,angry-comic,react_pro,1600,draft,
-pro_cheer_01,bystander_pro,bystander_pro,জিতা রও ভাই!,"Long live, brother!",cheer,hit,1200,draft,
-pro_cheer_02,bystander_pro,bystander_pro,ওয়াও! কী শট!,Wow! What a shot!,cheer,hit,1200,draft,
-phn_film_01,bystander_phone,bystander_phone,ভাই একটু দাঁড়ান! ভিডিও করি!,"Brother, wait a bit! Let me film!",excited,react_neutral,1700,draft,
-phn_film_02,bystander_phone,bystander_phone,ভাইরাল হইবে! ভাইরাল হইবে!,This will go viral!,excited,react_neutral,1500,draft,
-phn_film_03,bystander_phone,bystander_phone,লাইভে আছি গাইজ! চোর ধরা হচ্ছে!,"I'm live, guys! A thief is being chased!",excited,react_neutral,1900,draft,
-phn_film_04,bystander_phone,bystander_phone,ফেসবুকে দিমু! ট্যাগ করেন!,I'll post it on Facebook! Tag me!,excited,react_neutral,1600,draft,
-phn_film_05,bystander_phone,bystander_phone,আরেকবার হইবে? ক্যামেরা ঠিক হয় নাই!,Can you do it once more? The camera wasn't set!,cheeky,combo_3,1900,draft,
-med_calm_01,bystander_mediator,bystander_mediator,আরে ভাই ঠান্ডা হন ঠান্ডা!,"Hey brother, calm down, calm down!",calm,react_against,1600,draft,
-med_calm_02,bystander_mediator,bystander_mediator,কেন মারছেন? আগে কথা শোনেন!,Why are you beating him? Hear him out first!,calm,react_against,1700,draft,
-med_calm_03,bystander_mediator,bystander_mediator,ওনারে ছাইড়া দেন! ভুল মানুষ হইতে পারে!,Let him go! It could be the wrong person!,calm,react_against,1900,draft,
-med_calm_04,bystander_mediator,bystander_mediator,প্রমাণ কই? সিসিটিভি আছে?,Where's the proof? Is there CCTV?,skeptical,dispute,1500,draft,
-med_calm_05,bystander_mediator,bystander_mediator,আইন তো আছে ভাই!,"There is a law, brother!",calm,react_against,1300,draft,
-med_block_01,bystander_mediator,bystander_mediator,থামেন! থামেন! আগে বসেন!,Stop! Stop! Sit down first!,calm,step_block,1500,draft,
-dsp_pro_01,bystander_pro,dispute,ও চোর! আমি নিজের চোখে দেখছি!,He's a thief! I saw it with my own eyes!,angry-comic,dispute,1800,draft,
-dsp_pro_02,bystander_pro,dispute,আপনি কি ওর আত্মীয়?,Are you his relative?,sarcastic,dispute,1500,draft,
-dsp_med_01,bystander_mediator,dispute,"না না, কিন্তু মারা তো ঠিক না!","No no, but hitting isn't right!",calm,dispute,1700,draft,
-dsp_med_02,bystander_mediator,dispute,চপ্পলের দাম কত জানেন?,Do you know how much a slipper costs?,cheeky,dispute,1600,draft,
-wrg_look_01,bystander_pro,wrong_person,এইটাই! এইটাই সে!,This is him! This is the one!,excited,wrong_person,1500,draft,
-wrg_look_02,bystander_mediator,wrong_person,আরে ভাই! এইডা তো না!,Hey brother! That's not him!,panicked,wrong_person,1500,draft,
-wrg_look_03,bystander_pro,wrong_person,সরি ভাই! চেহারা মিলে গেছিল!,Sorry brother! The face matched!,embarrassed,wrong_person,1700,draft,
-aun_shout_01,aunty,aunty_shout,ইশ! কী কাণ্ড! আমার শাকের ঝুড়ি!,Oh my! What a mess! My basket of greens!,shocked,react_any,1800,draft,
-aun_shout_02,aunty,aunty_shout,বাচ্চারা ভিতরে যাও! ভিতরে যাও!,Kids go inside! Go inside!,scolding,react_any,1600,draft,
-aun_shout_03,aunty,aunty_shout,এই ছেলে! আমার ছাদের উপর দিয়ে দৌড়াস কেন?,Hey boy! Why are you running over my roof?,scolding,react_any,1900,draft,
-aun_cheer_01,aunty,aunty_shout,মার বেটা মার! ওর বউ আমার বান্ধবী!,Hit him son! His wife is my friend!,cheer,react_pro,1900,draft,
-rik_warn_01,rickshawala,rickshawala,মামা সাইড দেন! সাইড!,"Uncle, give way! Give way!",urgent,hazard_telegraph,1300,draft,
-rik_warn_02,rickshawala,rickshawala,ওই মিয়া দেইখা চলেন!,"Hey mister, watch where you go!",urgent,hazard_telegraph,1400,draft,
-rik_angry_01,rickshawala,rickshawala,আমার রিকশা ভাঙলে খরচ কে দিবে?,Who'll pay if my rickshaw breaks?,angry-comic,step_block,1700,draft,
-rik_doze_01,rickshawala,rickshawala,জ্যাম? জ্যাম কই? আমি তো ঘুমাইতেছিলাম!,Jam? Where's the jam? I was sleeping!,sleepy,wake,1900,draft,
-hwk_fuchka_01,hawker,hawker_fuchka,ফুচকা ফুচকা! গরম গরম ফুচকা!,Fuchka fuchka! Hot hot fuchka!,sing-song,ambient,1700,draft,
-hwk_jhalmuri_01,hawker,hawker_jhalmuri,ঝালমুড়ি! ঝালমুড়ি! বিশ টাকা!,Jhalmuri! Jhalmuri! Twenty taka!,sing-song,ambient,1700,draft,
-hwk_sale_01,hawker,hawker_sale,একশো টাকা! একশো টাকা! যেকোনো জামা একশো টাকা!,A hundred taka! Any shirt a hundred taka!,sing-song,ambient,2000,draft,
-hwk_daab_01,hawker,hawker_daab,ডাব! ডাবের পানি! ঠান্ডা ডাব!,Daab! Coconut water! Cold coconut!,sing-song,ambient,1600,draft,
-hwk_cha_01,hawker,hawker_cha,চা গরম! চা গরম! টংয়ের দুধ চা!,Hot tea! Hot tea! Stall milk-tea!,sing-song,ambient,1700,draft,
-hwk_book_01,hawker,hawker_book,পুরানা বই! অর্ধেক দামে! পুরানা বই!,Old books! Half price! Old books!,sing-song,ambient,1700,draft,
-hwk_haleem_01,hawker,hawker_haleem,হালিম! গরম হালিম! ইফতারের জন্য!,Haleem! Hot haleem! For iftar!,sing-song,ambient,1700,draft,
-hwk_jhal_beach_01,hawker,hawker_beach,ঝিনুকের মালা! ঝিনুকের মালা! সস্তায়!,Shell necklaces! Cheap!,sing-song,ambient,1700,draft,
-hwk_tea_garden_01,hawker,hawker_tea,সাত রঙের চা! সাত রঙের চা!,Seven-colour tea! Seven-colour tea!,sing-song,ambient,1700,draft,
-hwk_haat_01,hawker,hawker_haat,ইলিশ! তাজা ইলিশ! আজকের ধরা!,Hilsa! Fresh hilsa! Today's catch!,sing-song,ambient,1700,draft,
-jog_huff_01,jogger,jogger_huff,হাঁ হাঁ… হাঁ হাঁ…,Huff huff… huff huff…,breathless,ambient,1100,draft,
-jog_huff_02,jogger,jogger_huff,আজকে দশ কিলো টার্গেট!,Today's target is ten kilometres!,breathless,ambient,1500,draft,
-stu_selfie_01,student,selfie,একটা সেলফি ভাই! একটা সেলফি!,"A selfie, brother! One selfie!",excited,react_neutral,1500,draft,
-stu_phone_01,student,phone_zombie,আরে! খুঁটি! সরি খুঁটি ভাই!,Oh! A pole! Sorry Mr Pole!,embarrassed,pole_bonk,1500,draft,
-kid_play_01,kid,kids_play,আমার গুটি! আমি জিতছি!,My marble! I won!,excited,ambient,1300,draft,
-kid_boys_01,kid,boys_cricket,ছক্কা! ছক্কা! বল গেল কই?,Six! Six! Where did the ball go?,excited,ambient,1500,draft,
-unc_tut_01,uncle,uncle_tut,চ চ চ… আমাদের সময় এমন ছিল না!,Tsk tsk… it wasn't like this in our time!,grumpy,ambient,1900,draft,
-unc_tea_01,uncle,teastall_chat,ভাই আরেক কাপ চা দেন!,"Brother, another cup of tea!",relaxed,ambient,1400,draft,
-unc_tea_02,uncle,teastall_chat,গতকাল আমার ফোনও গেছিল!,My phone was stolen yesterday too!,grumpy,react_pro,1700,draft,
-sng_hum_01,singer,bystander_sing,লা লা লা… আহা রে সন্ধ্যা!,"La la la… ah, the evening!",musical,ambient,2000,draft,
-sng_hum_02,singer,bystander_sing,আমার সোনার বাংলা… গাইতে গাইতে হাঁটি!,My golden Bengal… I walk singing!,musical,ambient,2000,draft,
-gtr_cheer_01,guitarist,guitar_cheer,থামো না ভাই! আরেকটা বাজাও!,Don't stop! Play another one!,cheer,ambient,1600,draft,
-clp_cheer_01,bystander_pro,bystander_pro,বাহ! বাহ! ফাটাফাটি!,Wow! Wow! Fantastic!,cheer,hit,1200,draft,
-mob_run_01,mob,mob_run,ধর ধর ধর! সবাই ধর!,Catch him catch him! Everybody!,excited,mob,1500,draft,
-mob_run_02,mob,mob_run,আমারেও একটা দিতে দে!,Let me have a go too!,excited,mob,1400,draft,
-mob_run_03,mob,mob_run,লাইনে দাঁড়ান ভাই! সবাই পাইবেন!,"Stand in line, brother! Everyone will get a turn!",cheeky,mob,1900,draft,
-mob_run_04,mob,mob_run,আজকে ঢাকা শহর এক হইছে!,Dhaka city is united today!,excited,mob,1700,draft,
-mob_word_01,mob,mob_word,ঠাস! ঠুস! ধুম! ধপাস!,Slap! Thud! Boom! Flop!,onomatopoeia,mob,1500,draft,
-pol_arrive_01,policeman,policeman,সরেন সরেন সবাই! পুলিশ!,Move aside everyone! Police!,authoritative,mob_end,1500,draft,
-pol_law_01,policeman,policeman,আইন নিজের হাতে নিতে নাই! থানায় চল!,You mustn't take the law into your hands! To the station!,deadpan,mob_end,2100,draft,
-pol_law_02,policeman,policeman,সবাই বাড়ি যান! আমি দেখতেছি!,Everyone go home! I'll handle it!,deadpan,mob_end,1700,draft,
-pol_whistle_01,policeman,policeman,পিইইইই!,Peeeeep!,whistle,mob_end,900,draft,
-ann_hit_01,announcer,announcer,এবং চপ্পলটা সোজা গিয়ে লাগলো! কী শট!,And the slipper goes straight to the target! What a shot!,commentary,hit,2200,draft,
-ann_combo_01,announcer,announcer,সাত কম্বো! বাংলাদেশ আজ ফর্মে আছে!,Seven combo! Bangladesh is in form today!,commentary,combo_7,2200,draft,
-ann_combo_02,announcer,announcer,চোর এখন প্যাভিলিয়নের পথে!,The thief is on his way to the pavilion!,commentary,combo_10,2000,draft,
-ann_gap_01,announcer,announcer,গ্যাপ বাড়ছে! চোর এগিয়ে যাচ্ছে!,The gap is growing! The thief is pulling ahead!,commentary,gap_far,2000,draft,
-ann_crowd_01,announcer,announcer,গ্যালারিতে জনতা মাতোয়ারা!,The crowd in the gallery has gone wild!,commentary,mob_start,1800,draft,
-ann_innocent_01,announcer,announcer,ওহ্‌ না! ভুল ব্যাটসম্যানকে আউট!,Oh no! Wrong batsman is out!,commentary,innocent_hit,2000,draft,
-ann_event_01,announcer,announcer,এবং বিদ্যুৎ চলে গেল! খেলা এখন অন্ধকারে!,And the power is gone! The game continues in darkness!,commentary,event_loadshedding,2300,draft,
-cnd_call_01,conductor,conductor_call,ফার্মগেট ফার্মগেট! নামেন নামেন!,"Farmgate Farmgate! Get down, get down!",sing-song,ambient,1700,draft,
-cnd_call_02,conductor,conductor_call,সামনে আগান ভাই! পিছনে জায়গা আছে!,"Move ahead, brother! There's space at the back!",sing-song,ambient,1800,draft,
-clg_grunt_01,coolie,coolie_grunt,সরেন সরেন! ভারী মাল!,Move aside! Heavy load!,urgent,hazard_telegraph,1400,draft,
-clg_grunt_02,coolie,coolie_grunt,আরে আরে! আমার বস্তা!,Hey hey! My sack!,shocked,mob,1300,draft,
-brg_deal_01,bargain,bargain,"ভাই শেষ কথা, আশি টাকা!","Brother, final word: eighty taka!",haggling,ambient,1500,draft,
-brg_deal_02,bargain,bargain,এত দাম? আমি কি নতুন নাকি?,So expensive? Do I look new here?,haggling,ambient,1600,draft,
-reel_dance_01,reel_maker,reel_maker,লাইক শেয়ার সাবস্ক্রাইব করবেন ভাই!,"Like, share, subscribe, brother!",excited,ambient,1800,draft,
-reel_dance_02,reel_maker,reel_maker,আরেক টেক! আরেক টেক!,One more take! One more take!,excited,react_neutral,1400,draft,
+id,speaker,pool,bn,en,tone,trigger,maxDurMs,status,clip,dialect,base_id,priority,group,review
+hero_chase_01,hero,chaser_chase,দাঁড়া! আজকে তোরে মাইর দিমু!,Stop! I'll beat you up today!,angry-comic,chase_start,1800,draft,,std,hero_chase_01,1,hero,none
+hero_chase_02,hero,chaser_chase,"থাম বলতাছি, থাম!","I'm telling you, stop!",angry-comic,chase_idle,1500,draft,,std,hero_chase_02,1,hero,none
+hero_chase_03,hero,chaser_chase,"কতদূর পালাবি, ব্যাটা?","How far will you run, fellow?",smug,chase_idle,1700,draft,,std,hero_chase_03,1,hero,none
+hero_chase_04,hero,chaser_chase,আমার টাকা ফেরত দে!,Give me my money back!,angry-comic,chase_idle,1500,draft,,std,hero_chase_04,1,hero,none
+hero_chase_05,hero,chaser_chase,চপ্পল খুলতে হইলো তো!,Looks like I have to take off my slipper!,dramatic,weapon_chappal,1800,draft,,std,hero_chase_05,1,hero,none
+hero_hit_01,hero,chaser_hit,এইটা চা-বিস্কুটের দাম!,That's for the tea and biscuits!,smug,hit,1500,draft,,std,hero_hit_01,1,hero,none
+hero_hit_02,hero,chaser_hit,এইটা বকেয়ার সুদ!,That's interest on the dues!,smug,hit,1400,draft,,std,hero_hit_02,1,hero,none
+hero_hit_03,hero,chaser_hit,ঠাস! আরেকটা লাগবে?,Slap! Want another one?,smug,hit,1500,draft,,std,hero_hit_03,1,hero,none
+hero_hit_04,hero,chaser_hit,"খেয়ে দেখো, নতুন চপ্পল!","Try it, brand-new slipper!",smug,hit,1500,draft,,std,hero_hit_04,1,hero,none
+hero_combo_01,hero,chaser_combo,হ্যাট্রিক! তিনটা পুরা!,Hat-trick! Three clean ones!,excited,combo_3,1600,draft,,std,hero_combo_01,1,hero,none
+hero_combo_02,hero,chaser_combo,আজকে আর ছাড়াছাড়ি নাই!,No letting go today!,excited,combo_10,1600,draft,,std,hero_combo_02,1,hero,none
+hero_taunt_01,hero,chaser_taunt,দৌড়া দৌড়া! হাঁপাইয়া যাবি!,Run run! You'll run out of breath!,smug,taunt,1700,draft,,std,hero_taunt_01,1,hero,none
+hero_taunt_02,hero,chaser_taunt,"এই যে ভাই, একটু দাঁড়ান না!","Hey brother, why not stop a bit!",sarcastic,taunt,1700,draft,,std,hero_taunt_02,1,hero,none
+hero_dash_01,hero,chaser_dash,উড়াল দিলাম!,Taking off!,excited,dash,1000,draft,,std,hero_dash_01,1,hero,none
+hero_hurt_01,hero,chaser_hurt,আউচ! কে রাখছে এইখানে?,Ouch! Who left that here?,pained-comic,hazard_hit,1400,draft,,std,hero_hurt_01,1,hero,none
+hero_hurt_02,hero,chaser_hurt,আমার পা! আমার সুন্দর পা!,My foot! My beautiful foot!,pained-comic,hazard_hit,1500,draft,,std,hero_hurt_02,1,hero,none
+hero_sorry_01,hero,chaser_sorry,সরি মামা! ভুল হইছে!,Sorry uncle! My mistake!,panicked,innocent_hit,1400,draft,,std,hero_sorry_01,1,hero,none
+hero_sorry_02,hero,chaser_sorry,আরে আপনারে না! আপনারে না!,Not you! Not you!,panicked,innocent_hit,1500,draft,,std,hero_sorry_02,1,hero,none
+hero_win_01,hero,chaser_win,ধরা খাইছিস এইবার!,Caught you this time!,triumphant,villain_dead,1500,draft,,std,hero_win_01,0,hero,none
+vil_flee_01,villain,villain_flee,আমি কিছু করি নাই ভাই!,"I didn't do anything, brother!",panicked,chase_idle,1500,draft,,std,vil_flee_01,1,villain,none
+vil_flee_02,villain,villain_flee,ভাই মাফ কইরা দেন!,"Brother, please forgive me!",panicked,chase_idle,1500,draft,,std,vil_flee_02,1,villain,none
+vil_flee_03,villain,villain_flee,আমারে ধরলে তোমার কী লাভ?,What do you gain by catching me?,cheeky,chase_idle,1700,draft,,std,vil_flee_03,1,villain,none
+vil_flee_04,villain,villain_flee,আমার ফোনের ব্যাটারি শেষ!,My phone's battery is dead!,panicked,chase_idle,1500,draft,,std,vil_flee_04,1,villain,none
+vil_hit_01,villain,villain_hit,ও মা গো!,Oh mother!,pained-comic,hit,900,draft,,std,vil_hit_01,1,villain,none
+vil_hit_02,villain,villain_hit,চপ্পল মারিস না! নতুন কিনছি!,Don't hit me with the slipper! I just bought it!,pained-comic,hit,1700,draft,,std,vil_hit_02,1,villain,none
+vil_hit_03,villain,villain_hit,এইটা কিন্তু সহ্য করার মতো না!,This is really hard to bear!,pained-comic,hit,1600,draft,,std,vil_hit_03,1,villain,none
+vil_hit_04,villain,villain_hit,আমার চশমা! আমার চশমা কই?,My glasses! Where are my glasses?,pained-comic,hit,1500,draft,,std,vil_hit_04,1,villain,none
+vil_taunted_01,villain,villain_taunted,তুই আমার কাছে আসতে পারবি না!,You can't get close to me!,cheeky,taunt_reply,1700,draft,,std,vil_taunted_01,1,villain,none
+vil_taunted_02,villain,villain_taunted,আরে ভাই ঠাট্টা করতেছিলাম!,"Hey brother, I was just joking!",panicked,taunt_reply,1700,draft,,std,vil_taunted_02,1,villain,none
+vil_trip_01,villain,villain_trip,আছাড়! আমার কোমর!,Crash! My back!,pained-comic,trip,1300,draft,,std,vil_trip_01,1,villain,none
+vil_trip_02,villain,villain_trip,কে রাস্তায় গর্ত খুঁড়ছে?,Who dug a hole in the road?,pained-comic,trip,1500,draft,,std,vil_trip_02,1,villain,none
+vil_mob_01,villain,villain_mob,পুলিশ ডাকো! পুলিশ ডাকো!,Call the police! Call the police!,panicked,mob,1500,draft,,std,vil_mob_01,1,villain,none
+vil_mob_02,villain,villain_mob,আমি আজকে প্রথম করছি ভাই!,"It's my first time today, brother!",panicked,mob,1700,draft,,std,vil_mob_02,1,villain,none
+vil_mob_03,villain,villain_mob,এইটা তো প্র্যাঙ্ক ছিল!,This was just a prank!,panicked,mob,1400,draft,,std,vil_mob_03,1,villain,none
+vil_dead_01,villain,villain_caught,আমি আর কখনো করব না!,I'll never do it again!,dizzy,villain_dead,1500,draft,,std,vil_dead_01,0,villain,none
+pro_point_01,bystander_pro,bystander_pro,ওই যে! ওই চোর! ধর ধর!,There! That thief! Catch him!,excited,react_pro,1600,draft,,std,pro_point_01,3,crowd,none
+pro_point_04,bystander_pro,bystander_pro,ধর ধর ধর ধর!,Catch catch catch catch!,excited,react_pro,1400,draft,,std,pro_point_04,3,crowd,none
+pro_point_05,bystander_pro,bystander_pro,আজকে আর ছাড়াছাড়ি নাই!,No letting him go today!,excited,react_pro,1600,draft,,std,pro_point_05,3,crowd,none
+pro_point_06,bystander_pro,bystander_pro,আমার চোখের সামনে করছে!,He did it right in front of me!,angry-comic,react_pro,1600,draft,,std,pro_point_06,3,crowd,none
+pro_cheer_01,bystander_pro,bystander_pro,জিতা রও ভাই!,"Long live, brother!",cheer,hit,1200,draft,,std,pro_cheer_01,3,crowd,none
+pro_cheer_02,bystander_pro,bystander_pro,ওয়াও! কী শট!,Wow! What a shot!,cheer,hit,1200,draft,,std,pro_cheer_02,3,crowd,none
+phn_film_01,bystander_phone,bystander_phone,ভাই একটু দাঁড়ান! ভিডিও করি!,"Brother, wait a bit! Let me film!",excited,react_neutral,1700,draft,,std,phn_film_01,3,crowd,none
+phn_film_02,bystander_phone,bystander_phone,ভাইরাল হইবে! ভাইরাল হইবে!,This will go viral!,excited,react_neutral,1500,draft,,std,phn_film_02,3,crowd,none
+phn_film_03,bystander_phone,bystander_phone,লাইভে আছি গাইজ! চোর ধরা হচ্ছে!,"I'm live, guys! A thief is being chased!",excited,react_neutral,1900,draft,,std,phn_film_03,3,crowd,none
+phn_film_04,bystander_phone,bystander_phone,অনলাইনে দিমু! বন্ধুরা দেখবে!,I'll post it online! Friends will see!,excited,react_neutral,1600,draft,,std,phn_film_04,3,crowd,none
+phn_film_05,bystander_phone,bystander_phone,আরেকবার হইবে? ক্যামেরা ঠিক হয় নাই!,Can you do it once more? The camera wasn't set!,cheeky,combo_3,1900,draft,,std,phn_film_05,3,crowd,none
+med_calm_01,bystander_mediator,bystander_mediator,আরে ভাই ঠান্ডা হন ঠান্ডা!,"Hey brother, calm down, calm down!",calm,react_against,1600,draft,,std,med_calm_01,3,crowd,none
+med_calm_02,bystander_mediator,bystander_mediator,কেন মারছেন? আগে কথা শোনেন!,Why are you beating him? Hear him out first!,calm,react_against,1700,draft,,std,med_calm_02,3,crowd,none
+med_calm_03,bystander_mediator,bystander_mediator,ওনারে ছাইড়া দেন! ভুল মানুষ হইতে পারে!,Let him go! It could be the wrong person!,calm,react_against,1900,draft,,std,med_calm_03,3,crowd,none
+med_calm_04,bystander_mediator,bystander_mediator,প্রমাণ কই? সিসিটিভি আছে?,Where's the proof? Is there CCTV?,skeptical,dispute,1500,draft,,std,med_calm_04,3,crowd,none
+med_calm_05,bystander_mediator,bystander_mediator,আইন তো আছে ভাই!,"There is a law, brother!",calm,react_against,1300,draft,,std,med_calm_05,3,crowd,none
+med_block_01,bystander_mediator,bystander_mediator,থামেন! থামেন! আগে বসেন!,Stop! Stop! Sit down first!,calm,step_block,1500,draft,,std,med_block_01,3,crowd,none
+dsp_pro_01,bystander_pro,dispute,ও চোর! আমি নিজের চোখে দেখছি!,He's a thief! I saw it with my own eyes!,angry-comic,dispute,1800,draft,,std,dsp_pro_01,3,crowd,none
+dsp_pro_02,bystander_pro,dispute,আপনি কি ওর আত্মীয়?,Are you his relative?,sarcastic,dispute,1500,draft,,std,dsp_pro_02,3,crowd,none
+dsp_med_01,bystander_mediator,dispute,"না না, কিন্তু মারা তো ঠিক না!","No no, but hitting isn't right!",calm,dispute,1700,draft,,std,dsp_med_01,3,crowd,none
+dsp_med_02,bystander_mediator,dispute,চপ্পলের দাম কত জানেন?,Do you know how much a slipper costs?,cheeky,dispute,1600,draft,,std,dsp_med_02,3,crowd,none
+wrg_look_01,bystander_pro,wrong_person,এইটাই! এইটাই সে!,This is him! This is the one!,excited,wrong_person,1500,draft,,std,wrg_look_01,3,crowd,none
+wrg_look_02,bystander_mediator,wrong_person,আরে ভাই! এইডা তো না!,Hey brother! That's not him!,panicked,wrong_person,1500,draft,,std,wrg_look_02,3,crowd,none
+wrg_look_03,bystander_pro,wrong_person,সরি ভাই! চেহারা মিলে গেছিল!,Sorry brother! The face matched!,embarrassed,wrong_person,1700,draft,,std,wrg_look_03,3,crowd,none
+aun_shout_01,aunty,aunty_shout,ইশ! কী কাণ্ড! আমার শাকের ঝুড়ি!,Oh my! What a mess! My basket of greens!,shocked,react_any,1800,draft,,std,aun_shout_01,3,crowd,none
+aun_shout_02,aunty,aunty_shout,বাচ্চারা ভিতরে যাও! ভিতরে যাও!,Kids go inside! Go inside!,scolding,react_any,1600,draft,,std,aun_shout_02,3,crowd,none
+aun_shout_03,aunty,aunty_shout,এই ছেলে! আমার ছাদের উপর দিয়ে দৌড়াস কেন?,Hey boy! Why are you running over my roof?,scolding,roof_react,1900,draft,,std,aun_shout_03,3,crowd,none
+aun_cheer_01,aunty,aunty_shout,"এই ছেলে! ফোন ফেরত দে, নইলে আমার চপ্পল আসবে!",Boy! Give the phone back or my slipper is coming!,scolding,react_pro,1900,draft,,std,aun_cheer_01,3,crowd,none
+rik_warn_01,rickshawala,rickshawala,মামা সাইড দেন! সাইড!,"Uncle, give way! Give way!",urgent,hazard_telegraph,1300,draft,,std,rik_warn_01,3,crowd,none
+rik_warn_02,rickshawala,rickshawala,ওই মিয়া দেইখা চলেন!,"Hey mister, watch where you go!",urgent,hazard_telegraph,1400,draft,,std,rik_warn_02,3,crowd,none
+rik_angry_01,rickshawala,rickshawala,আমার রিকশা ভাঙলে খরচ কে দিবে?,Who'll pay if my rickshaw breaks?,angry-comic,step_block,1700,draft,,std,rik_angry_01,3,crowd,none
+rik_doze_01,rickshawala,rickshawala,জ্যাম? জ্যাম কই? আমি তো ঘুমাইতেছিলাম!,Jam? Where's the jam? I was sleeping!,sleepy,wake,1900,draft,,std,rik_doze_01,3,crowd,none
+hwk_fuchka_01,hawker,hawker_fuchka,ফুচকা ফুচকা! গরম গরম ফুচকা!,Fuchka fuchka! Hot hot fuchka!,sing-song,ambient,1700,draft,,std,hwk_fuchka_01,4,crowd,none
+hwk_jhalmuri_01,hawker,hawker_jhalmuri,ঝালমুড়ি! ঝালমুড়ি! বিশ টাকা!,Jhalmuri! Jhalmuri! Twenty taka!,sing-song,ambient,1700,draft,,std,hwk_jhalmuri_01,4,crowd,none
+hwk_sale_01,hawker,hawker_sale,একশো টাকা! একশো টাকা! যেকোনো জামা একশো টাকা!,A hundred taka! Any shirt a hundred taka!,sing-song,ambient,2000,draft,,std,hwk_sale_01,4,crowd,none
+hwk_daab_01,hawker,hawker_daab,ডাব! ডাবের পানি! ঠান্ডা ডাব!,Daab! Coconut water! Cold coconut!,sing-song,ambient,1600,draft,,std,hwk_daab_01,4,crowd,none
+hwk_cha_01,hawker,hawker_cha,চা গরম! চা গরম! টংয়ের দুধ চা!,Hot tea! Hot tea! Stall milk-tea!,sing-song,ambient,1700,draft,,std,hwk_cha_01,4,crowd,none
+hwk_book_01,hawker,hawker_book,পুরানা বই! অর্ধেক দামে! পুরানা বই!,Old books! Half price! Old books!,sing-song,ambient,1700,draft,,std,hwk_book_01,4,crowd,none
+hwk_haleem_01,hawker,hawker_haleem,হালিম! গরম হালিম! ইফতারের জন্য!,Haleem! Hot haleem! For iftar!,sing-song,ambient,1700,draft,,std,hwk_haleem_01,4,crowd,none
+hwk_jhal_beach_01,hawker,hawker_beach,ঝিনুকের মালা! ঝিনুকের মালা! সস্তায়!,Shell necklaces! Cheap!,sing-song,ambient,1700,draft,,std,hwk_jhal_beach_01,4,crowd,none
+hwk_tea_garden_01,hawker,hawker_tea,সাত রঙের চা! সাত রঙের চা!,Seven-colour tea! Seven-colour tea!,sing-song,ambient,1700,draft,,std,hwk_tea_garden_01,4,crowd,none
+hwk_haat_01,hawker,hawker_haat,ইলিশ! তাজা ইলিশ! আজকের ধরা!,Hilsa! Fresh hilsa! Today's catch!,sing-song,ambient,1700,draft,,std,hwk_haat_01,4,crowd,none
+jog_huff_01,jogger,jogger_huff,হাঁ হাঁ… হাঁ হাঁ…,Huff huff… huff huff…,breathless,ambient,1100,draft,,std,jog_huff_01,4,crowd,none
+jog_huff_02,jogger,jogger_huff,আজকে দশ কিলো টার্গেট!,Today's target is ten kilometres!,breathless,ambient,1500,draft,,std,jog_huff_02,4,crowd,none
+stu_selfie_01,student,selfie,একটা সেলফি ভাই! একটা সেলফি!,"A selfie, brother! One selfie!",excited,react_neutral,1500,draft,,std,stu_selfie_01,3,crowd,none
+stu_phone_01,student,phone_zombie,আরে! খুঁটি! সরি খুঁটি ভাই!,Oh! A pole! Sorry Mr Pole!,embarrassed,pole_bonk,1500,draft,,std,stu_phone_01,3,crowd,none
+kid_play_01,kid,kids_play,আমার গুটি! আমি জিতছি!,My marble! I won!,excited,ambient,1300,draft,,std,kid_play_01,4,crowd,none
+kid_boys_01,kid,boys_cricket,ছক্কা! ছক্কা! বল গেল কই?,Six! Six! Where did the ball go?,excited,ambient,1500,draft,,std,kid_boys_01,4,crowd,none
+unc_tut_01,uncle,uncle_tut,চ চ চ… আমাদের সময় এমন ছিল না!,Tsk tsk… it wasn't like this in our time!,grumpy,ambient,1900,draft,,std,unc_tut_01,4,crowd,none
+unc_tea_01,uncle,teastall_chat,ভাই আরেক কাপ চা দেন!,"Brother, another cup of tea!",relaxed,ambient,1400,draft,,std,unc_tea_01,4,crowd,none
+unc_tea_02,uncle,teastall_chat,গতকাল আমার ফোনও গেছিল!,My phone was stolen yesterday too!,grumpy,react_pro,1700,draft,,std,unc_tea_02,3,crowd,none
+sng_hum_01,singer,bystander_sing,লা লা লা… আহা রে সন্ধ্যা!,"La la la… ah, the evening!",musical,ambient,2000,draft,,std,sng_hum_01,4,crowd,none
+sng_hum_02,singer,bystander_sing,লা লা লা… হাঁটতে হাঁটতে গাই আমি!,La la la… I sing as I walk!,musical,ambient,2000,draft,,std,sng_hum_02,4,crowd,none
+gtr_cheer_01,guitarist,guitar_cheer,থামো না ভাই! আরেকটা বাজাও!,Don't stop! Play another one!,cheer,ambient,1600,draft,,std,gtr_cheer_01,4,crowd,none
+clp_cheer_01,bystander_pro,bystander_pro,বাহ! বাহ! ফাটাফাটি!,Wow! Wow! Fantastic!,cheer,hit,1200,draft,,std,clp_cheer_01,3,crowd,none
+mob_run_01,mob,mob_run,ধর ধর ধর! সবাই ধর!,Catch him catch him! Everybody!,excited,mob,1500,draft,,std,mob_run_01,2,mob,none
+mob_run_02,mob,mob_run,সরেন সরেন! ধুলা উড়ে!,Move aside! Dust is flying!,comic-chaos,mob,1400,draft,,std,mob_run_02,2,mob,none
+mob_run_03,mob,mob_run,ওরে বাবা! কিছুই দেখা যায় না!,Oh my! Can't see a thing!,comic-chaos,mob,1900,draft,,std,mob_run_03,2,mob,none
+mob_run_04,mob,mob_run,আরে এত ধুলা কেন! কাশি আসছে!,Why so much dust! I'm coughing!,comic-chaos,mob,1700,draft,,std,mob_run_04,2,mob,none
+mob_word_01,mob,mob_word,ঠাস! ঠুস! ধুম! ধপাস!,Slap! Thud! Boom! Flop!,onomatopoeia,mob,1500,draft,,std,mob_word_01,2,mob,none
+pol_arrive_01,policeman,policeman,সরেন সরেন সবাই! পুলিশ!,Move aside everyone! Police!,authoritative,mob_end,1500,draft,,std,pol_arrive_01,0,police,none
+pol_law_01,policeman,policeman,আইন নিজের হাতে নিতে নাই! থানায় চল!,You mustn't take the law into your hands! To the station!,deadpan,mob_end,2100,draft,,std,pol_law_01,0,police,none
+pol_law_02,policeman,policeman,সবাই বাড়ি যান! আমি দেখতেছি!,Everyone go home! I'll handle it!,deadpan,mob_end,1700,draft,,std,pol_law_02,0,police,none
+pol_whistle_01,policeman,policeman,পিইইইই!,Peeeeep!,whistle,mob_end,900,draft,,std,pol_whistle_01,0,police,none
+ann_hit_01,announcer,announcer,এবং চপ্পলটা সোজা গিয়ে লাগলো! কী শট!,And the slipper goes straight to the target! What a shot!,commentary,hit,2200,draft,,std,ann_hit_01,3,announcer,none
+ann_combo_01,announcer,announcer,সাত কম্বো! বাংলাদেশ আজ ফর্মে আছে!,Seven combo! Bangladesh is in form today!,commentary,combo_7,2200,draft,,std,ann_combo_01,3,announcer,none
+ann_combo_02,announcer,announcer,চোর এখন প্যাভিলিয়নের পথে!,The thief is on his way to the pavilion!,commentary,combo_10,2000,draft,,std,ann_combo_02,3,announcer,none
+ann_gap_01,announcer,announcer,গ্যাপ বাড়ছে! চোর এগিয়ে যাচ্ছে!,The gap is growing! The thief is pulling ahead!,commentary,gap_far,2000,draft,,std,ann_gap_01,3,announcer,none
+ann_crowd_01,announcer,announcer,গ্যালারিতে জনতা মাতোয়ারা!,The crowd in the gallery has gone wild!,commentary,mob_start,1800,draft,,std,ann_crowd_01,3,announcer,none
+ann_innocent_01,announcer,announcer,ওহ্‌ না! ভুল ব্যাটসম্যানকে আউট!,Oh no! Wrong batsman is out!,commentary,innocent_hit,2000,draft,,std,ann_innocent_01,3,announcer,none
+ann_event_01,announcer,announcer,এবং বিদ্যুৎ চলে গেল! খেলা এখন অন্ধকারে!,And the power is gone! The game continues in darkness!,commentary,event_loadshedding,2300,draft,,std,ann_event_01,3,announcer,none
+cnd_call_01,conductor,conductor_call,ফার্মগেট ফার্মগেট! নামেন নামেন!,"Farmgate Farmgate! Get down, get down!",sing-song,ambient,1700,draft,,std,cnd_call_01,4,crowd,none
+cnd_call_02,conductor,conductor_call,সামনে আগান ভাই! পিছনে জায়গা আছে!,"Move ahead, brother! There's space at the back!",sing-song,ambient,1800,draft,,std,cnd_call_02,4,crowd,none
+clg_grunt_01,coolie,coolie_grunt,সরেন সরেন! ভারী মাল!,Move aside! Heavy load!,urgent,hazard_telegraph,1400,draft,,std,clg_grunt_01,3,crowd,none
+clg_grunt_02,coolie,coolie_grunt,আরে আরে! আমার বস্তা!,Hey hey! My sack!,shocked,mob,1300,draft,,std,clg_grunt_02,3,crowd,none
+brg_deal_01,bargain,bargain,"ভাই শেষ কথা, আশি টাকা!","Brother, final word: eighty taka!",haggling,ambient,1500,draft,,std,brg_deal_01,4,crowd,none
+brg_deal_02,bargain,bargain,এত দাম? আমি কি নতুন নাকি?,So expensive? Do I look new here?,haggling,ambient,1600,draft,,std,brg_deal_02,4,crowd,none
+reel_dance_01,reel_maker,reel_maker,লাইক শেয়ার সাবস্ক্রাইব করবেন ভাই!,"Like, share, subscribe, brother!",excited,ambient,1800,draft,,std,reel_dance_01,4,crowd,none
+reel_dance_02,reel_maker,reel_maker,আরেক টেক! আরেক টেক!,One more take! One more take!,excited,react_neutral,1400,draft,,std,reel_dance_02,3,crowd,none
+pro_lane_top,bystander_pro,bystander_pro,উপরের লেনে! উপরের লেনে গেছে!,He went to the top lane!,helpful,lane_tip_top,1500,draft,,std,pro_lane_top,3,crowd,none
+pro_lane_mid,bystander_pro,bystander_pro,মাঝের লেনে! মাঝখান দিয়ে!,Middle lane! Right through the middle!,helpful,lane_tip_mid,1500,draft,,std,pro_lane_mid,3,crowd,none
+pro_lane_bot,bystander_pro,bystander_pro,নিচের লেনে! নিচের লেনে ঘুরছে!,Bottom lane! He's turning to the bottom!,helpful,lane_tip_bot,1500,draft,,std,pro_lane_bot,3,crowd,none
+bmp_bump_01,bystander_mediator,bump,"ওই মিয়া, দেইখা চলেন!","Hey mister, watch where you're going!",urgent,bump,1400,draft,,std,bmp_bump_01,3,crowd,none
+inn_text_01,bystander_mediator,innocent_text,ভুল মানুষ! আমি না!,Wrong person! Not me!,panicked,innocent_hit,1300,draft,,std,inn_text_01,3,crowd,none
+hec_text_01,bystander_mediator,heckle,বেচারারে ধরছো কেন? ছাইড়া দাও!,Why are you chasing the poor fellow? Let him go!,skeptical,heckle,1700,draft,,std,hec_text_01,3,crowd,none
+hero_whatsay_01,hero,hero_whatsay,কী কইলা? বুঝলাম না!,What did you say? I didn't get it!,confused,dialect_gap,1400,draft,,std,hero_whatsay_01,1,hero,none
+hero_whatsay_02,hero,hero_whatsay,ভাই একটু বাংলায় কন!,"Brother, say it in Bangla please!",confused,dialect_gap,1500,draft,,std,hero_whatsay_02,1,hero,none
+btm_call_01,boatman,boatman,মাঝি ভাই! পার করামু! আসেন আসেন!,Boatman here! I'll take you across! Come come!,sing-song,ambient,1700,draft,,std,btm_call_01,4,crowd,none
+btm_warn_01,boatman,boatman,নাও দুলতেছে! সাবধান!,The boat is rocking! Careful!,urgent,hazard_telegraph,1400,draft,,std,btm_warn_01,3,crowd,none

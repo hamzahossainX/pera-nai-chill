@@ -1,5 +1,12 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-13 — GDD, production plan, dialect system, audio sourcing, balance model, spec v1.1 (docs/tooling only)
+- New: `docs/GDD.md`, `docs/PRODUCTION_PLAN.md`, `docs/spec/LOCALIZATION_AND_DIALECTS.md` (+ `dialect/translation_sheet.csv`, 124 rows × 8 dialect columns), `docs/spec/AUDIO_SOURCING.md` (+ `docs/audio/ASSET_LEDGER.csv`), `scripts/balance/{sim,tune,assist}.mjs` (+ `tuned.json`).
+- Voice CSV v2: 124 lines, 22 speakers, columns `dialect, base_id, priority, group, review`; unsafe/unclear lines rewritten (mob chaos lines, lane tips, brand/anthem mentions); copy rows added for bump/innocent/heckle/dialect-gap/boatman.
+- **Spec v1.1** after adversarial review: CROWD (states, single visibility rule, pile-on timeline with HP floor and shared `playArrestFinale`, safety wording), VOICE (mode table, trigger-based selection, ref-counted ducking, loops API, full babble table), TICKET_PACKETS rewritten (owned test-hook, acyclic order, V2-37a before pile-on, V2-33b, V2-38…41), MAP_SCENARIOS, ANTI_HALLUCINATION (rng owner, dead events), REVIEW_LOOP (no-celebrate rule), API_FACTS generator (flags declared-but-never-emitted events; bgm vs play keys; scenes), audit T-07.
+- Balance model result (candidate): masher 0 %, average 82/77/65/21 %, expert 98–100/81 % (beginner/medium/boss); novice needs assist (2 → 40 % across L0→L3). Caveats in GDD §9.
+- No game code changed.
+
 ## 2026-11-13 — Spec pack for crowd, voices & living-street maps (docs/tooling only)
 - `docs/spec/`: README (read order), ANTI_HALLUCINATION (12 rules + preflight + evidence block), CROWD_AND_NPC_SPEC, VOICE_AND_SFX_SPEC (+ `voice/voice_lines.csv`, 116 draft Bangla lines), MAP_SCENARIOS (8 maps as living streets), REVIEW_LOOP (rubric, ≤3 rounds, golden frames), TICKET_PACKETS (V2-31…V2-37), FEATURE_BACKLOG (F-M1…F-20), generated API_FACTS.
 - Tooling: `scripts/audit/gen-api-facts.mjs`, `scripts/audit/verify-spec-refs.mjs` (negative-tested), npm scripts `spec:facts`, `spec:verify`.

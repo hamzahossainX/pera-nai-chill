@@ -26,7 +26,7 @@
 | R7 | **No new dependencies.** Not an npm package, CDN script or font, without asking. (Playwright already provides screenshot diffs; Vitest provides unit tests; Zod validates data.) | `git diff package.json package-lock.json` empty |
 | R8 | **Numbers live in config.** Every tunable (speeds, ranges, cooldowns, counts, volumes) is a named constant in `src/config/*` initialised to the spec's value. If the spec gives no number, choose the simplest, put it in config, and log it in `docs/DECISIONS.md` as a defaulted value. | grep for numeric literals in new systems (review) |
 | R9 | **Words come from data.** Bangla/English UI text, voice lines, ticker and barks come from `src/config/*` or `docs/spec/voice/voice_lines.csv`. Do not write, translate or "improve" Bangla yourself; if a line is missing add a `draft` row to the CSV and flag it for the owner. | `node scripts/voice/validate-voice.mjs` [NEW] |
-| R10 | **Determinism for tests.** All gameplay randomness goes through a seeded RNG `src/lib/rng.ts` [NEW] (seed from `?seed=`; default `Math.random`). Tests never depend on wall-clock FPS (headless GL is ~1.5 fps here). | `?test=1&seed=N` reproduces scenarios |
+| R10 | **Determinism for tests.** Gameplay randomness goes through the seeded `src/lib/rng.ts` [NEW] created by **V2-01** (wraps Phaser's seedable `Phaser.Math.RND`; seed from `?seed=`); V2-01 migrates `Math.random` in SpawnSystem/Villain/DialogueSystem/CombatSystem; purely cosmetic randomness (weather particles) may stay but must be listed in the ticket. Tests never depend on wall-clock FPS (headless GL is ~1.5 fps here). | `?test=1&seed=N` reproduces scenarios |
 | R11 | **Don't touch what isn't yours.** Each ticket lists `TOUCH` and `DON'T TOUCH` paths. Editing outside `TOUCH` needs judge approval. Shared contracts (`layout.ts`, `EntityMotion`, `MapDefinition`, `registry.ts`, `bus.ts` types, `useGameStore` shape) are changed only by their owning ticket. | `git diff --name-only` ⊆ TOUCH |
 | R12 | **Stop-and-ask triggers** (don't guess): spec ambiguity; spec vs code conflict; need for a new dependency/asset/permission; an acceptance criterion you can't test; two failed attempts at the same bug; any thought that starts with "probably/should be/I assume". Post the question in the ticket with 2–3 options and your recommendation. | — |
 
@@ -50,7 +50,8 @@ Then re-read: the ticket packet, `docs/spec/README.md`, the spec section(s) name
 6. `RunScene.handleVillainDead` already does slow-mo, policeman sprite, stamp, coin shower — reuse for the mob finale; don't rebuild.
 7. Headless Chromium here is software-GL (~1.5 fps) — Phaser time-based logic can't be validated wall-clock there; use `?test=1` + fixed-step hook or a GPU Chrome.
 8. `docs/INVENTORY.md` and `docs/spec/API_FACTS.md` are **generated** — never hand-edit.
-9. React 19 StrictMode mounts effects twice in dev: guard Phaser init/teardown (see `GameHost.tsx`) and any new bus subscriptions (`on` ⇄ `off` pairs in destroy).
+9. **Declared-but-never-emitted bus events** (see API_FACTS §2 ⚠): `combat:hit`, `villain:damaged`, `villain:laneChange`, `game:restart`, `debug:spawnPickup` have no emitter. `DialogueSystem` listens to `combat:hit`, so **hit banter currently never fires** — subscribe to the real `hit` event instead (V2-35).
+9b. React 19 StrictMode mounts effects twice in dev: guard Phaser init/teardown (see `GameHost.tsx`) and any new bus subscriptions (`on` ⇄ `off` pairs in destroy).
 10. `localStorage` access must be wrapped in try/catch (existing pattern in `RunScene`).
 
 ## 5. Evidence block (paste at the end of every ticket — judge rejects tickets without it)
@@ -63,7 +64,7 @@ Gates:  tsc ✅/❌ · lint ✅/❌ · test ✅ (N passed) · build ✅/❌ · e
 AC → proof:
   AC1 "<text>" → <command + output | test name | screenshot path>
   AC2 ...
-Screenshots (UI tickets): docs/screens/v2/NN/{1280x720,844x390,1024x768}.png
+Screenshots (UI tickets): docs/screens/v2/NN/round-<n>/{1280x720,844x390,1024x768}.png  (final round copied to docs/screens/v2/NN/final/)
 API facts diff: <paste `git diff --stat docs/spec/API_FACTS.md`>  (only intended additions)
 Not verified: <anything you could not run, and why>
 Spec change requests: <none | list>

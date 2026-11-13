@@ -236,7 +236,8 @@ Ten-minute blind run. Fail if any box is unchecked:
 | **W0 Stabilise** | V2-00 Lobby unscrollable (M-01) · V2-01 `layout.ts` + test hook (T-01) · V2-02 `EntityMotion` + knockback fix (C-01,C-03) | sequential (touch shared files) | Unblocks everything; kills the S0 bugs first |
 | **W1 Core loop** | V2-03 Player controls · V2-04 Gap/Patience/fail states · V2-05 Hazards & villain counter-moves & stats wiring · V2-06 Run structure & stars | sequential (shared systems) | Makes it a game before making it pretty |
 | **W2 Characters** | V2-07 Rig math fix + pose sheet gate · V2-08 Chaser redraw · V2-09…V2-15 villain redraws (one per archetype) | 7 archetype tickets file-disjoint → parallel (cap 5) | Visible quality jump |
-| **W3 Map framework** | V2-16 `MapDefinition` + generic parallax + registry · V2-17 Rework maps 1–3 | framework alone first, then 3 in parallel | Proves the framework |
+| **W3 Map framework** | V2-16 `MapDefinition` (incl. crowd/voice/dialect) + generic parallax + registry · V2-17 Rework maps 1–3 (art + data; one ticket) | framework alone first, then V2-17 | Proves the framework |
+| **W3b Living streets** | V2-34 → V2-31 → V2-32 → V2-37a → V2-33 → V2-33b → V2-35 → V2-36 → V2-37b → V2-38 → V2-39 (+ V2-40a/40 balance, V2-40c owner content) | strictly sequential | crowd, voice, finale, dialects — `docs/spec/TICKET_PACKETS.md` |
 | **W4 New maps** | V2-18…V2-22 maps 4–8 (one folder each) | parallel (cap 5) | Content wave |
 | **W5 UI/UX** | V2-23 Home + stepper + carousel · V2-24 HUD/thumb controls · V2-25 Result + shop + settings | sequential per screen | After mechanics are stable |
 | **W6 QA & polish** | V2-26 Playwright suite (GPU) · V2-27 perf pass · V2-28 repo cleanup · V2-29 a11y/Bangla review · V2-30 final playtest | — | Release gate |

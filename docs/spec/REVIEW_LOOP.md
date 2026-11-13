@@ -31,7 +31,7 @@
 | 4 | **Distinctness** — map/character/NPC clearly different from siblings (64 px greyscale test) | 1.5 | instant | near-duplicate |
 | 5 | **Comedy/charm** — the staged gag lands visually (pose, timing, props, bubble) | 1.0 | makes me smile | flat |
 | 6 | **Motion quality** — no teleports, jitter, drift, tangled limbs (contact sheet) | 1.0 | smooth, readable arcs | broken |
-| 7 | **Safety/tone** — PG slapstick, no gore, no ethnic/religious/political jab (CROWD §9.3) | 0.5 (gate) | clean | **auto-fail** |
+| 7 | **Safety/tone** — PG slapstick, no gore, no ethnic/religious/political/regional jab, **no line, caption or sound celebrates or encourages hitting a person**, no dialect mockery (CROWD §9.3, LOCALIZATION §9) | 0.5 (gate) | clean | **auto-fail** |
 | 8 | **Perf** — fps budget met (GPU browser) | 0.5 | ≥ 55 fps | < 40 |
 **Gate to pass: total ≥ 8.0/10 AND criterion 7 = 5 AND criteria 1 & 2 ≥ 4.** Any criterion ≤ 2 forces another round regardless of total.
 

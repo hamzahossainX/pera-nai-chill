@@ -1,6 +1,6 @@
 # CROWD_AND_NPC_SPEC.md — A living street (bystanders, reactions, the pile-on)
 
-**Status:** SPEC v1 (2026-11-13) · **Implements owner brief:** people are always around; they notice the chase, point, shout, argue about it, sometimes join; at a dramatic moment a bump turns into a 10–15 person cartoon pile-on; meanwhile others sing, play guitar, sip tea, jog, stroll — every map is a *scene full of tiny stories*.
+**Status:** SPEC v1.1 (2026-11-13, after adversarial review) · **Implements owner brief:** people are always around; they notice the chase, point, shout, argue about it, sometimes join; at a dramatic moment a bump turns into a 10–15 person cartoon pile-on; meanwhile others sing, play guitar, sip tea, jog, stroll — every map is a *scene full of tiny stories*.
 **Depends on (build order):** V2-01 `layout.ts` [NEW], V2-02 `EntityMotion` [NEW], V2-16 `MapDefinition` [NEW]. Do **not** start before those exist.
 **Truth sources:** `docs/spec/API_FACTS.md` (what exists) · `docs/GAME_PLAN_V2.md §3` (zones) · `docs/DESIGN.md`. Anything named here with `[NEW]` does not exist yet and must be created exactly as specified.
 
@@ -45,22 +45,31 @@ export interface NpcArchetype {
 }
 ```
 ### 3.2 Visual construction (cheap, varied)
-- **Kit-bash**, not full rigs: `body (5) × outfit/palette (8) × headgear/prop (≈10)` composited **once at load** into a small atlas (`npc-atlas`) → ≥ 120 distinct-looking people from ~60 SVG parts. Walk = 4-frame sprite loop + procedural bob; activity poses = 2–4 frame loops.
-- Heights: sidewalk 110–130 px, road at lane scale (~190 px at 1.0, same as main characters), balcony 70–90 px. Faces: simple, no uploaded faces on NPCs (privacy + clarity).
-- Silhouette-distinct from chaser/villain (never green polo / dark hoodie).
-- Diversity: ages, genders, attire (lungi/panjabi/saree/school uniform/hijab/gamchha/suit/helmet) represented respectfully; no ethnic/religious caricature; no real-brand logos.
+- **Kit-bash, not full rigs.** Parts: 5 bodies + 8 outfits + ≥ 10 headgear/props = **≥ 23 SVG parts** (more welcome). Looks are composed **on demand** into a pooled texture page (`npc-atlas`) holding **≤ 24 composed walkers** at once (each 4-frame walk ≈ 70×130 px → ≈ 36 k px; 24 walkers ≈ 0.9 M px ⇒ fits one 1024×1024 page; activity poses use a second page ≤ 1024×1024). Selection space is ≈ 5×8×10 = **400 combinations**; the pool recycles least-recently-used looks. (Earlier "≥ 120 distinct people in one atlas" was infeasible and is withdrawn.)
+- Walk = 4-frame loop + procedural bob; activity poses = 2–4 frame loops.
+- Heights: sidewalk 110–130 px, road at lane scale (≈ 190 px at 1.0, same as main characters), balcony 70–90 px. **No uploaded faces on NPCs** (privacy + clarity).
+- **Silhouette/palette distinct** from chaser (green polo) and villain archetypes (dark hoodie etc.): NPCs never reuse their exact silhouette + palette. The S7 look-alike is the one exception and uses a *similar-but-different-hue* decoy outfit (never the villain's own palette).
+- Diversity: ages, genders, attire (lungi/saree/school uniform/hijab/gamchha/suit/helmet) respectful; no ethnic/religious caricature; no real-brand logos. **Religious attire (e.g. prayer caps) may appear on ambient NPCs but those NPCs have `canJoinMob:false`** — they never take part in the pile-on (§9.3).
+- Animals (goat, cow, horse, crab) are **hazard props defined in the map's `hazards[]`**, not NPC archetypes; they obey the same innocent-hit rule via `HazardDef.innocent: true` (comic "ব্যা!"/"হাম্বা!" sorry-gag, same penalty).
 
 ### 3.3 Runtime state machine (per NPC) — **only these states exist**
+**One visibility rule (used everywhere):** the chase is *visible* to an NPC when `villain.x ∈ [80, 1200]` **and** the NPC is inside the camera view. Each NPC reacts at most once per 8 s (`reactCooldownMs`).
+Activities (§4) are **sub-states of AMBIENT** (field `activity`), not separate states.
 ```
-AMBIENT ──(chase seen: villain within 520 px & NPC in view)──▶ NOTICE (350–600 ms, "!" mark, head turn)
-NOTICE ──▶ REACT (by stance, see §5)
-REACT:pro      ──▶ POINT_SHOUT ──▶ (30%) JOIN_CHASE (run alongside ≤ 3 s) ──▶ AMBIENT
-REACT:neutral  ──▶ FILM (phone up, "ভাইরাল!") ──▶ AMBIENT
-REACT:against  ──▶ MEDIATE (hands up, "থামেন ভাই!") ──▶ (25%) STEP_BLOCK (steps into lane, road layer only, 1.2 s) ──▶ AMBIENT
-any ──(mob trigger)──▶ PILE_ON ──▶ DISPERSE ──▶ removed (pooled)
-any ──(hit by chaser/villain)──▶ BONKED (falls, stars, 0.8 s) ──▶ GETUP ──▶ AMBIENT   (chaser hit ⇒ innocent penalty §6)
+AMBIENT(activity) ─(chase visible)──────────▶ NOTICE (350–600 ms: "!" mark, head turn / look-up)
+NOTICE ──▶ REACT by stance:
+   pro      ──▶ POINT_SHOUT ──▶ (30%) JOIN_CHASE (run alongside ≤ 3 s) ──▶ AMBIENT
+   neutral  ──▶ FILM (phone up) ──▶ AMBIENT
+   against  ──▶ MEDIATE (palms out) ──▶ (25%) STEP_BLOCK (road layer only, 1.2 s) ──▶ AMBIENT
+scenario-driven (entered only via ScenarioRunner `act`/set-piece):
+   ARGUE   (2.5 s, alternating bubbles, S2)            ──▶ AMBIENT
+   FREEZE  (look-up or eat, 1.2–1.5 s: MRT train, iftar siren, torch pose) ──▶ AMBIENT
+   GASP    (0.8 s one-shot; tea-pickers, tourists)      ──▶ AMBIENT
+   SCATTER (flee off-screen ≤ 1.5 s: tidal surge, mob end) ──▶ despawn
+mob:       any eligible state ──(mob trigger)──▶ PILE_ON ──▶ DISPERSE(=SCATTER) ──▶ despawn
+hit:       any road-layer state ──(hit by chaser)──▶ BONKED (0.8 s, stars) ──▶ GETUP ──▶ AMBIENT
 ```
-Forbidden transitions (tests assert): `PILE_ON → REACT`, `BONKED → PILE_ON`, any state → itself without cooldown.
+Forbidden transitions (unit tests assert they throw): `PILE_ON → REACT/NOTICE/AMBIENT`, `BONKED → PILE_ON`, `SCATTER → anything but despawn`, any REACT sub-state re-entered inside `reactCooldownMs`.
 
 ## 4. Ambient activities (the "tiny stories") — `ACTIVITIES` in `src/config/npcs.ts` [NEW]
 
@@ -92,7 +101,7 @@ Rules: ≥ 12 distinct activities visible across a run on any map; never > 2 of 
 
 ## 5. Reactions — what bystanders do when they see the chase
 
-Trigger: the **chase is visible** when `villain.x ∈ [80, 1200]` and the NPC is within the viewport. Each NPC reacts at most once per 8 s (`reactCooldownMs`). Reaction chosen by `stance`, with stance seeded per NPC by **crowd mood** (§7).
+Trigger: the **chase is visible** (single rule in §3.3). Reaction chosen by `stance`, with stance seeded per NPC by **crowd mood** (§7).
 
 | Stance | Gesture | Voice pool (see `docs/spec/voice/voice_lines.csv`) | Gameplay effect |
 |---|---|---|---|
@@ -106,6 +115,7 @@ Trigger: the **chase is visible** when `villain.x ∈ [80, 1200]` and the NPC is
 
 - If a **projectile** or **melee** from the chaser overlaps a road-layer NPC that is not the villain (`npc.state != PILE_ON`), the NPC is `BONKED`: comic word ("ভুল মানুষ!"), stars, chaser **patience −10** and **speed −15 % for 1.0 s**, combo resets, crowd mood −15.
 - Telegraph: NPCs about to cross a lane show a ground shadow + `!` 500 ms before entering (same telegraph rule as hazards, GAME_PLAN §2.4).
+- Detection hooks: melee via `CombatSystem.applyHit` position test; chappal/banana/can via `Projectile` overlap test against road-layer NPCs and `innocent` hazards (V2-32 touches both `CombatSystem.ts` and `Projectile.ts`).
 - Hitting 3 innocents in one run → the **crowd turns on the chaser**: a 6-NPC mini-mob runs at the chaser for 2.5 s (chaser must dash/jump out or lose 15 patience). This is the owner's "মানুষ আসছে, ঝামেলা করবে" beat and creates real stakes.
 
 ## 7. Crowd mood meter (0–100, hidden from UI except as a subtle HUD icon halo)
@@ -114,39 +124,47 @@ Trigger: the **chase is visible** when `villain.x ∈ [80, 1200]` and the NPC is
 - +3 per landed hit on the villain *in view of ≥ 2 NPCs*; +6 per combo tier; +10 on a witnessed trip/slip.
 - −15 per innocent hit; −5 per hit on the villain while ≥ 2 `against` NPCs are watching; decays toward base at 2 pts/s.
 - Mood bands: `<30` crowd mostly **against** (mob chance 0; hecklers: "বেচারারে মারছো কেন?"), `30–70` mixed, `>70` mostly **pro** (mob eligible).
-- Stored in a plain class field in `CrowdSystem` [NEW]; exposed read-only to the store as `crowdMood` [NEW] throttled at 10 Hz (same pattern as other store sync — DEC-004).
+- Stored in a plain field of `CrowdSystem`; published **only** via the bus event `crowd:mood` (single channel, no store field), emitted by `CrowdSystem` at ≤ 10 Hz (a simple accumulator inside `CrowdSystem.update` — there is no existing store throttle to reuse). A HUD-local listener may render the halo.
 
 ## 8. Viral meter (bonus layer, small)
 
 While the chaser is performing a combo ≥ 3 and ≥ 1 neutral NPC is filming, `viral` fills +8 /s. At 100: banner "ভাইরাল! +৳100", Taka bonus (config), then resets. Purely additive reward; disabled if reduced-motion/“Calm mode” to avoid flashing (see FEATURE_BACKLOG F-12).
 
-## 9. The pile-on (জনতার পিটুনি — cartoon mob finisher)
+## 9. The cartoon pile-on (finisher)
 
-### 9.1 Triggers (any one; all data-driven per map in `crowd.mobTriggers`)
-1. **Bump-and-brawl (owner's scenario):** villain HP ≤ `mob.hpGate` (default 30 %) AND villain collides with a road-layer NPC → NPC falls ("ওই মিয়া দেইখা চলো!"). `mood > 70`.
-2. **Ultimate cue:** Chappal Storm landed while ≥ 6 NPCs on screen and mood > 60.
-3. **Map set-piece:** scripted per map (e.g. Chawkbazar iftar siren).
-4. **Debug/test:** `window.__game.debug.triggerMob()` under `?test=1`.
-Never before 25 s of run time; never twice per run.
+> Naming: this is a **cartoon dust-cloud pile-on**, not a "beating". Never call it "জনতার পিটুনি"/mob-justice in UI, copy, ticket titles or code comments — that phrase refers to a real social problem. Internal names stay `mob*` for brevity; user-facing text uses neutral comic words ("ধুলার মেঘ!", "হইচই!").
 
-### 9.2 Choreography (total 2.6 s, fixed timeline; times in ms from `t0`)
+### 9.1 Arming & triggers (hpGate applies to **all** triggers)
+The pile-on **fires only when ALL hold:** villain HP ≤ `mob.hpGate` (default **30 %**) · crowd mood ≥ **70** · run time ≥ **25 s** · not already fired this run · ≥ 6 eligible NPCs available (`canJoinMob`, not BONKED).
+Triggers only decide *when* the next opportunity is taken (data per map in `crowd.mob.trigger`):
+1. `bump` — villain collides with a road-layer NPC while armed (the owner's last-moment scenario).
+2. `ultimate` — Chappal Storm lands while armed.
+3. `setPiece` — a map set-piece **arms** the pile-on; it fires on the next `bump`/`ultimate`, or after 6 s if neither occurs.
+4. **Fallback:** armed for ≥ 12 s with no qualifying bump ⇒ a scripted NPC steps into the villain's lane (bump).
+5. Debug/test: `window.__game.debug.triggerMob()` (registered by V2-33, test mode only).
+
+### 9.2 Choreography — fixed timeline (t0 = trigger moment; ms)
 ```
-0     bump: bumped NPC falls, bubble "ওই মিয়া, দেইখা চলেন!"; world slows to 0.6× for 400 ms
-150   8–15 NPCs sprint in from both screen edges and from adjacent lanes (count = clamp(8 + round(mood/15), 8, 15))
-550   convergence: villain disappears into a CARTOON FIGHT CLOUD (dust ball) at his position; NPCs freeze in a ring then vanish into the cloud
-550–2100  cloud shakes; limbs/stars/chappals/flip-flops/ sandals pop out (≤ 6 sprites at once); comic words "ঠাস! ধুম! ধপাস!" every 250 ms; crowd voices layer (≤ 3 voiced)
-          villain HP drains to 0 along an ease-out; chaser may still tap attack (adds +combo points, no extra damage)
-2100  a whistle: HAVILDAR MAMA enters with the siren; crowd scatters, villain pops out dizzy with stars
-2400  stamp "থানায় চালান!" (existing `fx-police-stamp` handles this today)
-2600  state → villain:dead flow (existing `villain:dead` event + GameOver)
+0      bump: bumped NPC falls ("ওই মিয়া, দেইখা চলেন!" = CSV `bmp_bump_01`); scene time dips to 0.6× for 400 ms
+150    N sprint in from screen edges/adjacent lanes, N = clamp(8 + round(mood/15), 8, 15)
+550    convergence ring → villain hidden by the DUST CLOUD (MobCloud); NPCs vanish into it
+550–2000  cloud shakes; ≤ 6 "poke-out" sprites (arm/leg/sandal/star shapes **attached to the cloud, never detached or lying on the ground**); comic words every 250 ms; ≤ 1 voiced mob chorus slot + 1 villain line
+          villain HP eases toward a FLOOR OF 1 (never 0 before t0+2600; implemented by a custom damage ramp, not by calling inflictDamage(0))
+2100   whistle: HAVILDAR MAMA enters (the mob plays it: `RunScene.playArrestFinale({ withPolice: true })`), crowd scatters, villain pops out dizzy with stars
+2400   stamp "থানায় চালান!" (also from `playArrestFinale`)
+2600   `useGameStore.inflictDamage(<remaining 1 HP>)` → emits `villain:dead` ONCE (ends the run flow)
+3800   GameOver screen (the store's existing 1200 ms `setTimeout` after `villain:dead`)
 ```
-- Existing building blocks (verified in `docs/spec/API_FACTS.md`): `FxSystem.spawnHitParticles`, `FxSystem.spawnFloatingText`, `FxSystem.triggerCameraShake`, `RunScene.handleVillainDead` (stamp, policeman, coin shower). **Reuse** them; the mob adds only the NPC sprint-in, the fight cloud, and the voice layer.
-- The villain's rig must remain visible *before* the cloud covers it and show the cartoon reactions (existing `triggerArchetypeHitReaction`).
+**Single deadline set used by every test/AC/doc:** `crowd:mobStart` at t0 · `crowd:mobEnd` at t0+2100 ± 100 · `villain:dead` at t0+2600 ± 100 · GameOver visible by t0+3800 ± 150.
+**Code facts (verified, `RunScene.ts`):** `handleVillainDead` is a *private* handler fired **by** `villain:dead`; it already does 0.25× slow-mo (`scene.time.timeScale` only — **tweens are not slowed**, set `scene.tweens.timeScale` too if the whole scene must slow), the policeman sprite, the stamp (+350 ms), a coin shower and +500 Taka. To avoid spawning policeman/stamp twice, V2-33 **refactors** it into a public `RunScene.playArrestFinale(opts: { withPolice: boolean })` that both the normal path (`villain:dead`, `withPolice: true`) and the pile-on call; the pile-on calls it with `withPolice:false` for the last segment *after* having already shown its own policeman at t0+2100 (or calls with `true` at 2100 and `false` at 2600 — pick one, document in DECISIONS). `RunScene` is therefore in V2-33's TOUCH list (public method + call-ins only).
+- Other building blocks verified in `docs/spec/API_FACTS.md §6`: `FxSystem.spawnHitParticles`, `FxSystem.spawnFloatingText`, `FxSystem.triggerCameraShake`, `CharacterRig.triggerHitStun`. Reuse; don't rebuild.
 
-### 9.3 Safety & tone rules (non-negotiable, tested by review checklist)
-- **No blood, wounds, weapons other than chappals/comic props; no impact on a downed figure; ≤ 2.6 s; always ends with the police/“law” punchline** (pool `policeman`, line `pol_law_01`: "আইন নিজের হাতে নিতে নাই, থানায় চল!"). The joke is the *excess* of the crowd and the cop's deadpan — not realistic violence.
-- Villain's "crimes" stay petty/comic (bKash blocked, no-change tea, etc.). Never target a real, identifiable person's face without the consent gate (GAME_PLAN §12 D10, FEATURE_BACKLOG F-01).
-- NPCs are generic cartoon people; never use religion, ethnicity or political affiliation as the butt of the joke.
+### 9.3 Safety & tone rules (non-negotiable; review rubric criterion 7 auto-fails on violation)
+- **No blood/wounds, no weapons beyond chappals and comic props, nothing happens to a downed figure, ≤ 2.6 s, always ends with the police "law" punchline** (pool `policeman`, line `pol_law_01`: "আইন নিজের হাতে নিতে নাই, থানায় চল!").
+- **No line, caption or sound may celebrate or encourage hitting a person** (checked in review): mob voices are comic chaos/confusion ("সরেন সরেন! ধুলা উড়ে!"), never "everyone gets a turn".
+- NPCs with religious attire/props never join (`canJoinMob:false`); no ethnicity/religion/politics as the joke.
+- The villain's "crimes" stay petty and comic. Never target a real, identifiable face without the consent gate (V2-37a, FEATURE_BACKLOG F-01); Friendly mode exports a generic cartoon.
+- Calm mode: single "ঠাস!", no shake, no slow-mo, cloud without poke-outs, mob size 8.
 
 ## 10. Pooling & performance budget (hard limits; tests enforce)
 
@@ -155,7 +173,7 @@ Never before 25 s of run time; never twice per run.
 | Max live NPC actors | **28** (balcony 6 + sidewalk 10 + road 12); mob can temporarily lend sidewalk NPCs to road → still ≤ 28 |
 | Max NPC sprites drawn in the mob | 15 (then they vanish into the cloud; cloud + ≤ 6 limb sprites) |
 | Per-frame update cost | O(n) over live NPCs; **no per-frame allocations** (pre-sized pools, reused arrays) |
-| Atlas | one `npc-atlas` texture ≤ 1024×1024; ≤ 1 extra draw call for NPCs when batched by layer |
+| Atlas | `npc-atlas` pooled pages: ≤ 24 composed walkers (≤ 1024×1024) + one activity page (≤ 1024×1024); ≤ 1 extra draw call per layer batch |
 | Spawn rate | ≤ 1 spawn per 350 ms; despawn when off-screen > 200 px |
 | Voice | see `VOICE_AND_SFX_SPEC.md §4` (≤ 3 concurrent crowd voices) |
 | FPS | ≥ 55 on the reference laptop with 28 NPCs + mob; `game.loop.actualFps` asserted in a perf test with GPU browser |
@@ -207,6 +225,6 @@ Add them to `src/game/bus.ts` `GameEventTypes` exactly (typed). Regenerate `docs
 ## 13. Test plan (acceptance — the implementer must produce this evidence)
 
 **Unit (Vitest, no Phaser):** state machine legality (forbidden transitions throw), mood math table, mob count formula, scenario runner step ordering with a fake clock, innocent-hit penalty arithmetic, pool never exceeds 28.
-**Deterministic e2e (Playwright + `?test=1&seed=1234`):** (1) 60 s run: live NPCs ≤ 28 every sampled frame; (2) force scenario `S3` via `window.__game.debug` → `crowd:mobStart` count ∈ [8,15] → within 3 s `villain:dead` fires → GameOver visible; (3) hit an NPC via debug → patience drops 10, combo reset; (4) all entities x ∈ [0,1280].
+**Deterministic e2e (Playwright + `?test=1&seed=1234`):** (1) 60 s run: live NPCs ≤ 28 every sampled frame; (2) force scenario `S3` via `window.__game.debug.triggerMob()` (registered by V2-33) → `crowd:mobStart` count ∈ [8,15] → `villain:dead` at t0+2600±100 ms → GameOver visible by t0+3800±150 ms (fixed-step); (3) hit an NPC via debug → patience drops 10, combo reset; (4) all entities x ∈ [0,1280].
 **Visual:** per map, screenshot at t=20 s with seed → ≥ 12 distinct activities visible across 3 seeds; mob frame at t0+1.2 s shows cloud, ≤ 6 limbs, no NPC overlapping HUD. Reviewed with `docs/spec/REVIEW_LOOP.md` rubric.
 **Perf:** GPU browser, 28 NPCs + mob → ≥ 55 FPS avg over 10 s; record number in the ticket evidence.

@@ -10,14 +10,14 @@ You are the implementing engineer for **Pera Nai Chill (Dhaka Rage Runner)** —
 
 ### 0. Anti-hallucination contract (binding — read before anything else)
 Read `docs/spec/README.md` then `docs/spec/ANTI_HALLUCINATION.md`. In short: the **code + `docs/spec/API_FACTS.md`** are the ground truth, never your memory; Phaser is **v4** (read `node_modules/phaser/skills/<topic>/SKILL.md` + `v3-to-v4-migration` before any Phaser API); never invent files/events/assets/numbers/Bangla text; specs are read-only (use `SPEC_CHANGE_REQUEST`); no new dependencies; every ticket ends with an **EVIDENCE block**; UI tickets run `docs/spec/REVIEW_LOOP.md`. Preflight at every session start: `npm run spec:facts && npm run spec:verify && npx tsc --noEmit && npm run lint && npm run test`.
-Crowd/voice/finale features (bystanders, pile-on, funny Bangladeshi voices, living-street maps) are fully specified in `docs/spec/` with build-ready packets in `docs/spec/TICKET_PACKETS.md` (tickets V2-31…V2-37, wave W3b).
+Crowd/voice/finale features (bystanders, pile-on, funny Bangladeshi voices, living-street maps) are fully specified in `docs/spec/` with build-ready packets in `docs/spec/TICKET_PACKETS.md` (tickets V2-31…V2-41, wave W3b; regional dialects: `docs/spec/LOCALIZATION_AND_DIALECTS.md`).
 
 ### 1. Read first (in this order — ~15 min, then stop reading and start building)
 1. `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` (A-Team law — identical; branch per ticket `t-###-slug`, conventional commits, gates, memory protocol).
 2. `docs/GAME_AUDIT.md` — every defect with an ID (G-/M-/C-/U-/T-) and an evidence tag. **[V]** verified at runtime, **[C]** verified in code, **[O]** observed (root cause unknown → *you* must find it), **[?]** unverified.
 3. `docs/GAME_PLAN_V2.md` — the target game: core loop, layout zones, character spec, map system, 8 Bangladesh maps, UI rebuild, ticket waves.
 4. `docs/DESIGN.md` — binding design law (tokens, banned defaults, viewports). **Read before touching any UI.**
-5. `docs/ROADMAP.md §V2` — tickets `V2-00…V2-37` with acceptance criteria. Work them **in order** (W0 → W1 → W2 → W3 → **W3b** → W4 → W5 → W6).
+5. `docs/ROADMAP.md §V2` — tickets `V2-00…V2-41` with acceptance criteria; the design lives in `docs/GDD.md`, the shipping plan in `docs/PRODUCTION_PLAN.md`. Work them **in order** (W0 → W1 → W2 → W3 → **W3b** → W4 → W5 → W6).
 5b. `docs/spec/CROWD_AND_NPC_SPEC.md`, `VOICE_AND_SFX_SPEC.md` (+ `voice/voice_lines.csv`), `MAP_SCENARIOS.md` — when you reach the crowd/voice/map tickets.
 6. `docs/STACK.md`, `docs/INVENTORY.md` (run `node .claude/scripts/gen-inventory.mjs` first), and the checkpoint memory.
 Also skim, don't absorb: `docs/issues-found.md` (older Phase A–C report), `docs/DECISIONS.md`.

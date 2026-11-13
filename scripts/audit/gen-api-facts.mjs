@@ -29,12 +29,14 @@ for (const k of ["next", "react", "phaser", "zustand", "framer-motion", "mitt", 
 h("2. Event bus — `src/game/bus.ts` (`gameBus`, mitt)");
 const bus = read("src/game/bus.ts");
 const busBody = bus.slice(bus.indexOf("GameEventTypes"), bus.indexOf("\n};"));
+const emitted = new Set();
+for (const f of walk("src").filter((f) => /\.(ts|tsx)$/.test(f))) for (const m of read(f).matchAll(/gameBus\.emit\(\s*"([^"]+)"/g)) emitted.add(m[1]);
 const keyRe = /^\s{2}"([^"]+)":/gm;
 const keys = [...busBody.matchAll(keyRe)];
 keys.forEach((k, i) => {
   const end = i + 1 < keys.length ? keys[i + 1].index : busBody.length;
   const payload = busBody.slice(k.index + k[0].length, end).replace(/\/\/.*$/gm, "").replace(/\s+/g, " ").trim().replace(/;$/, "");
-  out.push(`- \`${k[1]}\` → \`${payload}\``);
+  out.push(`- \`${k[1]}\` → \`${payload}\`${emitted.has(k[1]) ? "" : "  ⚠ **declared but NEVER emitted in src/** (do not rely on it)"}`);
 });
 
 h("3. Zustand store — `src/store/useGameStore.ts` (`useGameStore`)");
@@ -49,7 +51,10 @@ h("4. Audio — `src/services/audio.ts` (`audioService`) — 100% WebAudio synth
 const audio = read("src/services/audio.ts");
 out.push("**Public methods:**");
 uniq([...audio.matchAll(/^\s{2}public\s+(?:async\s+)?(\w+)\(([^)]*)\)/gm)].map((m) => `- \`${m[1]}(${m[2].replace(/\s+/g, " ")})\``)).forEach((l) => out.push(l));
-out.push(`\n**Sound keys accepted by \`play()\`/\`playSpatial()\`:** ${uniq([...audio.matchAll(/case "([a-z0-9-]+)"/g)].map((m) => m[1])).map((k) => `\`${k}\``).join(", ")}`);
+const bgmFilterKeys = ["normal", "underwater", "loadshedding", "muffled"]; // setBgmFilter() cases, NOT play() keys
+const playKeys = uniq([...audio.matchAll(/case "([a-z0-9-]+)"/g)].map((m) => m[1])).filter((k) => !bgmFilterKeys.includes(k));
+out.push(`\n**Sound keys accepted by \`play()\`/\`playSpatial()\`:** ${playKeys.map((k) => `\`${k}\``).join(", ")}`);
+out.push(`\n**BGM filter types (\`setBgmFilter\`, not \`play\` keys):** ${bgmFilterKeys.map((k) => `\`${k}\``).join(", ")}`);
 const mv = audio.match(/maxSimultaneousVoices\s*=\s*(\d+)/);
 out.push(`\n**Hard limit:** \`maxSimultaneousVoices = ${mv ? mv[1] : "?"}\` (shared by ALL synth SFX — voice/crowd audio needs its own channel).`);
 
@@ -63,7 +68,7 @@ out.push(`\n**SVG preloaded (PreloadScene) — ${svg.length} keys:** ${svg.map((
 out.push("\n> Other textures may be created dynamically (loops/templates) in BootScene; grep before claiming one is missing.");
 
 h("6. Public methods of game systems & entities");
-for (const f of walk("src/game").filter((f) => /\/(systems|entities|fx)\//.test(f) && f.endsWith(".ts"))) {
+for (const f of walk("src/game").filter((f) => /\/(systems|entities|fx|scenes)\//.test(f) && f.endsWith(".ts"))) {
   const src = read(f);
   const cls = [...src.matchAll(/export class (\w+)/g)].map((m) => m[1]).join(", ");
   const methods = uniq([...src.matchAll(/^\s{2}public\s+(?:async\s+|static\s+)?(\w+)\(([^)]*)\)/gm)].map((m) => `${m[1]}(${m[2].replace(/\s+/g, " ").slice(0, 60)})`));

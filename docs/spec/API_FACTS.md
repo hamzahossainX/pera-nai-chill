@@ -22,20 +22,20 @@
 - `event:clear` → `void`
 - `event:bribe` → `{ eventId: string }`
 - `game:pause` → `{ paused: boolean }`
-- `game:restart` → `void`
+- `game:restart` → `void`  ⚠ **declared but NEVER emitted in src/** (do not rely on it)
 - `debug:spawnObstacle` → `void`
-- `debug:spawnPickup` → `{ type?: string }`
+- `debug:spawnPickup` → `{ type?: string }`  ⚠ **declared but NEVER emitted in src/** (do not rely on it)
 - `debug:timeScale` → `{ scale: number }`
 - `player:taunt` → `void`
 - `hit` → `{ weaponId: string; damage: number; isCrit: boolean; position: { x: number; y: number }; }`
-- `combat:hit` → `void`
+- `combat:hit` → `void`  ⚠ **declared but NEVER emitted in src/** (do not rely on it)
 - `combo` → `{ count: number; multiplier: number }`
 - `villain:dead` → `{ score: number }`
-- `villain:damaged` → `{ hp: number; maxHp: number }`
+- `villain:damaged` → `{ hp: number; maxHp: number }`  ⚠ **declared but NEVER emitted in src/** (do not rely on it)
 - `event:started` → `{ eventId: string; duration: number }`
 - `event:ended` → `{ eventId: string }`
 - `loader:progress` → `{ progress: number; task: string }`
-- `villain:laneChange` → `{ lane: number }`
+- `villain:laneChange` → `{ lane: number }`  ⚠ **declared but NEVER emitted in src/** (do not rely on it)
 - `fps:update` → `{ fps: number }`
 
 ## 3. Zustand store — `src/store/useGameStore.ts` (`useGameStore`)
@@ -119,7 +119,9 @@
 - `stopBgm()`
 - `unlock()`
 
-**Sound keys accepted by `play()`/`playSpatial()`:** `banana`, `can`, `can-kick`, `chappal-golden`, `chappal-leather`, `chicken-grunt`, `click`, `coin`, `cough`, `fanfare`, `kick`, `loadshedding`, `lose`, `muffled`, `normal`, `powercut`, `punch`, `sardar-grunt`, `sfx-banana`, `sfx-can`, `sfx-coin`, `sfx-cough`, `sfx-kick`, `sfx-powercut`, `sfx-punch`, `sfx-siren`, `sfx-slap`, `sfx-splash`, `sfx-taunt`, `sfx-ultimate`, `sfx-whistle`, `sfx-whoosh`, `siren`, `slap`, `snatcher-grunt`, `splash`, `taunt`, `ultimate`, `underwater`, `vehicle-bike`, `vehicle-bus`, `vehicle-cng`, `vehicle-rickshaw`, `whistle`, `whoosh`, `win`
+**Sound keys accepted by `play()`/`playSpatial()`:** `banana`, `can`, `can-kick`, `chappal-golden`, `chappal-leather`, `chicken-grunt`, `click`, `coin`, `cough`, `fanfare`, `kick`, `lose`, `powercut`, `punch`, `sardar-grunt`, `sfx-banana`, `sfx-can`, `sfx-coin`, `sfx-cough`, `sfx-kick`, `sfx-powercut`, `sfx-punch`, `sfx-siren`, `sfx-slap`, `sfx-splash`, `sfx-taunt`, `sfx-ultimate`, `sfx-whistle`, `sfx-whoosh`, `siren`, `slap`, `snatcher-grunt`, `splash`, `taunt`, `ultimate`, `vehicle-bike`, `vehicle-bus`, `vehicle-cng`, `vehicle-rickshaw`, `whistle`, `whoosh`, `win`
+
+**BGM filter types (`setBgmFilter`, not `play` keys):** `normal`, `underwater`, `loadshedding`, `muffled`
 
 **Hard limit:** `maxSimultaneousVoices = 6` (shared by ALL synth SFX — voice/crowd audio needs its own channel).
 
@@ -140,6 +142,9 @@
 - `src/game/entities/Projectile.ts` — **Projectile**: `update(_time: number, delta: number)`
 - `src/game/entities/Villain.ts` — **Villain**: `die(onComplete?: ()`, `hideBehindVehicle()`, `hit(damage: number, knockback: number = 35, isCrit: boolean = fa)`, `setLane(laneIndex: number)`, `trip(durationMs: number = 1600)`, `update(time: number, delta: number)`, `vault()`
 - `src/game/fx/index.ts` — **BlackoutEffect, SmogEffect, WaterloggingEffect**: `activate(alpha: number = 0.45)`, `activate(alpha: number = 0.6)`, `activate(alpha: number = 0.94)`, `deactivate()`, `update()`, `update(_time: number, delta: number)`
+- `src/game/scenes/BootScene.ts` — **BootScene**: —
+- `src/game/scenes/PreloadScene.ts` — **PreloadScene**: —
+- `src/game/scenes/RunScene.ts` — **RunScene**: —
 - `src/game/systems/CombatSystem.ts` — **CombatSystem**: `destroy()`, `update(_time: number, delta: number)`
 - `src/game/systems/DialogueSystem.ts` — **DialogueSystem**: `clearBubble(target: "villain" | "chaser")`, `destroy()`, `showBubble(target: "villain" | "chaser", line: DialogueLine)`, `triggerLine( target: "villain" | "chaser", groupKey: keyof typeof DIALOG)`, `update(_time: number, delta: number)`
 - `src/game/systems/DifficultySystem.ts` — **DifficultySystem**: `getCurrentSpeed()`, `getDifficultyMultiplier()`, `getElapsedSeconds()`, `reset()`, `update(_time: number, delta: number)`

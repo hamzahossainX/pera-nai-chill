@@ -1,0 +1,161 @@
+{
+ "params": {
+  "surge.prob": 0.46666205970288516,
+  "surge.mult": 1.2523111379919065,
+  "surge.sec": 1.6,
+  "hpScale": 1.9270091747535079,
+  "assist.boost": 0.2610424274231341,
+  "assist.afterSec": 2.578297793215218,
+  "bossHpMul": 0.7362557536527028,
+  "rampPct": 0.24711214259696132,
+  "speedCompress": 0.11618280106048327,
+  "patience.farDrain": 0.683615124661784,
+  "map.beginner.hazardEvery": 7.756119266685706,
+  "map.medium.hazardEvery": 3.6053607898747635,
+  "map.hard.hazardEvery": 5.259847092454692,
+  "map.hard.counterEvery": 8.465508674994384,
+  "patience.hazardCost": 7.4795271141938695,
+  "dash.mult": 0.6134462577161889,
+  "chaserBase": 0.9966858094788806
+ },
+ "err": 2.771331166416006,
+ "results": [
+  {
+   "arch": "phoneSnatcher",
+   "map": "beginner",
+   "skill": "novice",
+   "win": 0,
+   "avgWinDur": 0,
+   "avgPatience": 0.2,
+   "hits": 2.5,
+   "innocents": 0.21,
+   "causes": {
+    "patience": 0.973,
+    "escaped(gap)": 0.008,
+    "safehouse": 0.02
+   }
+  },
+  {
+   "arch": "phoneSnatcher",
+   "map": "beginner",
+   "skill": "average",
+   "win": 0.812,
+   "avgWinDur": 48.4,
+   "avgPatience": 51.1,
+   "hits": 12.7,
+   "innocents": 0.44,
+   "causes": {
+    "kill": 0.811,
+    "safehouse": 0.11,
+    "patience": 0.078,
+    "mob": 0.001
+   }
+  },
+  {
+   "arch": "phoneSnatcher",
+   "map": "beginner",
+   "skill": "expert",
+   "win": 0.984,
+   "avgWinDur": 38.7,
+   "avgPatience": 85,
+   "hits": 13.1,
+   "innocents": 0.15,
+   "causes": {
+    "kill": 0.982,
+    "mob": 0.002,
+    "safehouse": 0.017
+   }
+  },
+  {
+   "arch": "manholeChor",
+   "map": "medium",
+   "skill": "novice",
+   "win": 0,
+   "avgWinDur": 0,
+   "avgPatience": 0,
+   "hits": 3.4,
+   "innocents": 0.25,
+   "causes": {
+    "patience": 1
+   }
+  },
+  {
+   "arch": "manholeChor",
+   "map": "medium",
+   "skill": "average",
+   "win": 0.644,
+   "avgWinDur": 49.8,
+   "avgPatience": 32.1,
+   "hits": 19.4,
+   "innocents": 0.64,
+   "causes": {
+    "patience": 0.347,
+    "mob": 0.217,
+    "kill": 0.427,
+    "safehouse": 0.009
+   }
+  },
+  {
+   "arch": "manholeChor",
+   "map": "medium",
+   "skill": "expert",
+   "win": 0.999,
+   "avgWinDur": 36.6,
+   "avgPatience": 85.6,
+   "hits": 20.5,
+   "innocents": 0.21,
+   "causes": {
+    "mob": 0.561,
+    "kill": 0.439,
+    "safehouse": 0.001
+   }
+  },
+  {
+   "arch": "boss",
+   "map": "hard",
+   "skill": "novice",
+   "win": 0,
+   "avgWinDur": 0,
+   "avgPatience": 0,
+   "hits": 3,
+   "innocents": 0.33,
+   "causes": {
+    "patience": 0.999,
+    "safehouse": 0.001,
+    "escaped(gap)": 0
+   }
+  },
+  {
+   "arch": "boss",
+   "map": "hard",
+   "skill": "average",
+   "win": 0.21,
+   "avgWinDur": 60.6,
+   "avgPatience": 15.3,
+   "hits": 19.4,
+   "innocents": 0.9,
+   "causes": {
+    "kill": 0.15,
+    "patience": 0.454,
+    "safehouse": 0.336,
+    "mob": 0.06
+   }
+  },
+  {
+   "arch": "boss",
+   "map": "hard",
+   "skill": "expert",
+   "win": 0.814,
+   "avgWinDur": 54.5,
+   "avgPatience": 70.1,
+   "hits": 22,
+   "innocents": 0.32,
+   "causes": {
+    "mob": 0.281,
+    "safehouse": 0.186,
+    "kill": 0.533,
+    "patience": 0
+   }
+  }
+ ]
+}

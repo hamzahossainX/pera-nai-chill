@@ -1,8 +1,8 @@
 # MAP_SCENARIOS.md — The 8 maps redesigned as "living streets"
 
-**Status:** SPEC v1 (2026-11-13) · Extends `docs/GAME_PLAN_V2.md §5` (visual/layer/hazard contract) with **who lives in each map and what happens there**.
+**Status:** SPEC v1.1 (2026-11-13, after adversarial review) · Extends `docs/GAME_PLAN_V2.md §5` (visual/layer/hazard contract) with **who lives in each map and what happens there**.
 **Contract:** every map folder (`src/maps/<id>/map.ts` [NEW]) must now also supply a `crowd` block and a `voice` block (schema in §1). Map is *not done* until its scenario beats play (§3) and `/design-review` + `playtest-audit` pass.
-**Voice lines** referenced here are pool names from `docs/spec/voice/voice_lines.csv`. Pools marked **(new)** need lines added to the CSV (status `draft`) before the map ships.
+**Voice lines** referenced here are pool names from `docs/spec/voice/voice_lines.csv`. All pools named here exist in the CSV (`status=draft`); no map ships with an empty pool.
 
 ---
 
@@ -15,13 +15,14 @@ interface MapCrowdPlan {
   activityWeights: Record<string, number>;   // ids from CROWD_AND_NPC_SPEC §4 (0 = never on this map)
   roster: { npc: string; weight: number; layer: "balcony"|"sidewalk"|"road" }[];
   scenarios: { id: string; weight: number; overrides?: Partial<ScenarioDef> }[];   // templates S1..S7 + map-specific
-  mob: { hpGate: number; trigger: "bump" | "setPiece" | "ultimate" ; minRunSec: number };
+  mob: { hpGate: number /* applies to ALL triggers, default 0.30 */; trigger: "bump" | "setPiece" | "ultimate" /* when the armed pile-on is taken; setPiece only ARMS it */; minRunSec: number /* default 25 */ };
   vignettes: VignetteDef[];                  // fixed staged mini-scenes placed on the landmark (§2)
 }
 interface MapVoicePlan {
-  hawkerPool: string;                        // e.g. "hawker_fuchka"
+  hawkerPools: string[];                     // e.g. ["hawker_fuchka","hawker_book"]
   ambientPools: string[];                    // e.g. ["teastall_chat","uncle_tut"]
-  pack: string;                              // lazy-load pack id = map id
+  pack: string;                              // lazy-load pack id = map id (manifest `packs[mapId]`)
+  dialect: { primary: DialectId; localShare: number };   // see LOCALIZATION_AND_DIALECTS §4 (default { primary: "std", localShare: 0.7 })
 }
 interface VignetteDef {                      // a staged "tiny story" that scrolls past as part of the scenery
   id: string; atKm: number;                  // position along the run (0..1 of the distance bar)
@@ -30,7 +31,7 @@ interface VignetteDef {                      // a staged "tiny story" that scrol
   reaction?: "gasp" | "cheer" | "ignore";    // how the group reacts when the villain passes
 }
 ```
-Adding these fields to the registry's Zod schema is **part of V2-16** (map framework), not a later patch.
+Adding these fields to the registry's Zod schema is **owned by V2-16** (map framework); V2-17 supplies M1–M3 *data* that must validate; V2-31+ only consume the types.
 
 ---
 
@@ -50,10 +51,10 @@ Format per map: **Place feel → Scenery layers → Cast (who) → Vignettes (ti
 
 ### M2 · Farmgate Overbridge (sunset · easy · baseMood 60 · density high)
 - **Place feel:** golden light, a steel footbridge spanning the whole screen, yellow buses, leguna queue, hawkers on the steps.
-- **Cast:** commuters with bags, bus conductor (hangs from door), hawker (জুতা/মোজা), a *banker in suit*, students, a *selfie couple*, an uncle with a cage of parrots (gag).
+- **Cast:** commuters with bags, bus conductor (hangs from door), hawker (জামা-কাপড়), a *banker in suit*, students, a *selfie couple*, an uncle with a cage of parrots (gag).
 - **Vignettes:** (1) **Overbridge crowd** (balcony layer): 8 walkers crossing; 3 stop and look down at the chase and shout (`bystander_pro`). (2) *Conductor shouting "ফার্মগেট ফার্মগেট!"* **(new pool `conductor_call`)**. (3) *Selfie couple* `selfie` — villain photobombs.
 - **Reactive scenarios:** `S1`, `S4_reel_photobomb`, `S7_bhul_manush` (look-alike in a suit), **`M2_bag_rain`**: from the footbridge, shopping bags drop into a lane (hazard, telegraphed).
-- **Mob trigger:** `setPiece` — the overbridge crowd *rushes down the stairs* and floods the road.
+- **Mob trigger:** `setPiece` **arms** it — the overbridge crowd rushes down the stairs; the pile-on fires on the next bump/ultimate.
 - **Set-piece:** bus honk wave: all buses honk; voices duck.
 - **Voice:** `hawker_sale`, `conductor_call` (new), `aunty_shout`, `bystander_phone`.
 - **Owner's beat:** "many people come" — the stair-rush mob.
@@ -61,7 +62,7 @@ Format per map: **Place feel → Scenery layers → Cast (who) → Vignettes (ti
 ### M3 · New Market & Nilkhet (night · medium · baseMood 55 · density high)
 - **Place feel:** warm neon + string lights, book stalls, fuchka carts, the historic arch gate.
 - **Cast:** book-seller, fuchka-wala, shoppers with bags, students with books, couple with ice-cream, a guy with a guitar at the arch, aunty bargaining.
-- **Vignettes:** (1) **Guitar corner** at the arch: `guitar` + `sing`, 4 NPCs listening; they *keep listening* even as the chase passes (`reaction: ignore`) — until the chaser bumps them (comedy). (2) *Bargain pair* `bargain` ("একশো টাকা!"). (3) *Book stall* with a reader who `dozing`-reads.
+- **Vignettes:** (1) **Guitar corner** at the arch: `guitar` + `sing`, 4 NPCs listening; they *keep listening* even as the chase passes (`reaction: ignore`) — until the chaser bumps them (comedy). (2) *Bargain pair* `bargain` ("একশো টাকা!"). (3) *Book stall* with a reader (`newsRead`) nodding off over a book.
 - **Reactive scenarios:** `S2_kenore_maro` (dispute at the fuchka cart), `S5`, **`M3_power_flicker`**: lights cut for 1.5 s, NPCs light phone torches (neutral film pose), villain only visible by torch beams.
 - **Mob trigger:** `bump` — villain crashes into the **fuchka cart**; fuchka crowd + shoppers pile on.
 - **Set-piece:** power-cut candle glow.
@@ -70,10 +71,10 @@ Format per map: **Place feel → Scenery layers → Cast (who) → Vignettes (ti
 
 ### M4 · Old Dhaka — Chawkbazar Iftar Rush (dusk · hard · baseMood 65 · density high)
 - **Place feel:** Mughal-era balconies, kite strings, painted rickshaws, haleem/jilapi stalls; narrow, packed.
-- **Cast:** haleem-seller, jilapi-maker, rickshawala (richly painted), boys with kites, aunties on balconies, uncles with prayer caps carrying iftar bags, a street kid.
+- **Cast:** haleem-seller, jilapi-maker, rickshawala (richly painted), boys with kites, aunties on balconies, uncles carrying iftar bags (ambient NPCs with religious attire have `canJoinMob:false` and never join the pile-on), a street kid.
 - **Vignettes:** (1) **Balcony aunties** (balcony layer) leaning out, shouting commentary (`aunty_shout`) and throwing a pillow/pot-lid gag (non-harmful prop) toward the villain. (2) *Jilapi stall* — maker flips jilapi; chaser can grab a **jilapi pickup**. (3) *Kite boys* on a rooftop `kite`.
 - **Reactive scenarios:** `S1`, `S6`, **`M4_iftar_siren`** (set-piece), `S7`.
-- **Mob trigger:** `setPiece` — after the **iftar siren**, everyone eats for 1.5 s (free combo window); a *bump* during that moment launches the pile-on (crowd already gathered).
+- **Mob trigger:** `setPiece` **arms** the pile-on (CROWD §9.1): after the **iftar siren** everyone eats for 1.5 s (free combo window); the armed pile-on fires on the next bump/ultimate (or after 6 s). Only non-religious-attire NPCs join.
 - **Set-piece:** iftar siren: all NPCs freeze to eat 1.5 s; the villain keeps running → big gap-closing opportunity; afterwards the crowd surges.
 - **Voice:** `hawker_haleem`, `aunty_shout`, `rickshawala`, `uncle_tut`. **Tone: respectful** — no jokes at the expense of the fast/prayer.
 - **Owner's beat:** narrow street crowd → big mob.
@@ -113,7 +114,7 @@ Format per map: **Place feel → Scenery layers → Cast (who) → Vignettes (ti
 - **Cast:** fish-seller (ইলিশ), farmer with a cow, boatman, kids splashing, women with baskets, a *buyer-seller haggling pair*, uncle with an umbrella.
 - **Vignettes:** (1) **Haat stalls** along the road: haggling (`bargain`), hawkers calling. (2) *Kids splashing* in puddles (`kidsMarbles` variant). (3) *Cow on the road* (hazard w/ telegraph).
 - **Reactive scenarios:** `S1`, `S5`, `S6` (cow-blocks), `M8_mud_slide`.
-- **Mob trigger:** `setPiece` — villain slips in the mud pit; the **whole haat** (12–15) converges.
+- **Mob trigger:** `setPiece` **arms** it — villain slips in the mud pit; the haat (12–15) converges on the next bump/ultimate.
 - **Set-piece:** downpour + a boat drifts across a flooded stretch; speed −25 % (reuse waterlogging rules in `events.json`).
 - **Voice:** `hawker_haat`, `bargain`, `aunty_shout`, `uncle_tut`.
 - **Owner's beat:** a big communal pile-on in a village market.
@@ -124,10 +125,10 @@ Format per map: **Place feel → Scenery layers → Cast (who) → Vignettes (ti
 
 | Beat | Required | Test |
 |---|---|---|
-| ≥ 3 vignettes scrolling past with ≥ 3 different activities | yes | screenshot set across 3 seeds shows ≥ 12 distinct activities per map (CROWD §13) |
+| ≥ 3 vignettes scrolling past with ≥ 3 different activities | yes | seeded screenshots: ≥ 12 distinct activities **across 3 seeds** (≥ 6 in any single run on low-density maps) |
 | `S1_ei_je_ota` pointers | yes | seeded run emits `crowd:react` with stance pro within 30 s |
 | ≥ 1 map-specific scenario (named `M#_*`) | yes | forced via `window.__game.debug.runScenario("M3_power_flicker")` |
-| mob finisher reachable & ends with police line | yes | forced → `crowd:mobStart` → `villain:dead` ≤ 3.2 s |
+| mob finisher reachable & ends with police line | yes | forced via `debug.triggerMob()`: `crowd:mobStart` t0 → `villain:dead` at t0+2600±100 ms → GameOver by t0+3800±150 ms |
 | innocent-hit penalty works with this map's NPCs | yes | debug-hit NPC → patience −10 |
 | voice pack lazy-loads; T3 babble fallback works with zero clips | yes | network-blocked `/assets/voice/` run still plays babble |
 

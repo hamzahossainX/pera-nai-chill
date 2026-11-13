@@ -7,12 +7,12 @@
 
 **W0 — Stabilise (sequential; touches shared files)**
 - [ ] V2-00 — Fix unscrollable lobby / unreachable map picker [app:web][tags:ui,bug,S0][audit:M-01,U-04] — AC: at 1280×720, 1920×1080, 844×390 every lobby section incl. Map selector is reachable by wheel, touch and keyboard; screenshot proof; Playwright asserts Map heading `getBoundingClientRect().top` becomes < viewport height after scrolling.
-- [ ] V2-01 — `src/config/layout.ts` [NEW] + deterministic test hook [app:web][tags:arch,test][audit:T-01,M-04] — AC: all lane Y/HUD zones read from layout.ts (grep finds no `LANES_Y` literals elsewhere); `?test=1` gives fixed-step loop and read-only `window.__game.getState()` (positions, hp, gap); works under software GL.
+- [ ] V2-01 — `src/config/layout.ts` [NEW] + deterministic test hook + seeded RNG [app:web][tags:arch,test][audit:T-01,M-04] — AC: all lane Y/HUD zones read from layout.ts (grep finds no `LANES_Y` literals elsewhere); `src/game/testHook.ts` [NEW] installed only under `?test=1`: `window.__game = { seed, step(ms), getState(), registerState(name,fn), debug:{register,call,list} }` with the exact `getState()` shape in `docs/spec/TICKET_PACKETS.md §0` (unimplemented fields = `null`); `src/lib/rng.ts` [NEW] wraps Phaser's seedable RND, `?seed=N` supported, and `Math.random` is migrated in SpawnSystem/Villain/DialogueSystem/CombatSystem; works under software GL.
 - [ ] V2-02 — `EntityMotion` (home/offset spring/lane/jump channels + clamp) and knockback fix [app:web][tags:game,bug,S0][audit:C-01,C-03] — AC: Vitest: 500 random impulses → |offset| < 1 px within 400 ms and x∈[60,1220]; Playwright (test hook): 60 s auto-attack keeps villain & chaser x∈[0,1280]; no direct `rig.x/y =` writes outside EntityMotion (lint rule or grep gate).
 
 **W1 — Core loop (sequential)**
 - [ ] V2-03 — Player controls: lanes, dash, jump [tags:game][audit:G-02] — AC: keyboard + swipe + on-screen; chaser no longer mirrors villain lane; unit tests for lane/jump state machine.
-- [ ] V2-04 — Gap, Patience & fail states [tags:game][audit:G-01,G-03] — AC: GapSystem zones; melee only in range; escape and patience-zero both reach a Lose result; tuned so a mashing-only player loses.
+- [ ] V2-04 — Gap, Patience & fail states [tags:game][audit:G-01,G-03] — AC: GapSystem zones; melee only in range; escape and patience-zero both reach a Lose result; **store API `patience`, `drainPatience`, `restorePatience`, `slowChaser(mult,sec)` + `getState().gap/patience` providers**; tuned so a mashing-only player loses (confirmed by V2-40a bot).
 - [ ] V2-05 — Telegraphed hazards, villain counter-moves, wire archetype stats (HP/speed/dodge), remove hidden boss override [tags:game][audit:G-04,G-05,G-06] — AC: each hazard has telegraph+counter+cost; each archetype has its counter-move; boss is an explicit final stage.
 - [ ] V2-06 — Run structure, distance bar, stars, persistence v1, Result screen skeleton [tags:game,ui][audit:G-07,G-08] — AC: 1–3 stars rules in plan §2.6; localStorage migration test; daily reward outlier fixed.
 
@@ -22,17 +22,24 @@
 - [ ] V2-09…V2-15 — Redraw + counter-move gag + mask/hood slots, one ticket per archetype: 09 Phone Snatcher · 10 Pickpocket · 11 Cable Chor · 12 Manhole Chor · 13 Eid-Market Chor · 14 Chicken Chor · 15 Chor-er Sardar (boss) [tags:art,design][audit:C-02,C-05] — AC each: pose sheet + in-game screenshots at 3 viewports; `/design-review` ≥ 8/10.
 
 **W3 — Map framework**
-- [ ] V2-16 — `MapDefinition` + `src/maps/registry.ts` [NEW] + generic layer-driven `ParallaxSystem`; delete all `mapId` branches; map owns time-of-day [tags:arch,game][audit:M-02,M-03] — AC: adding a dummy map = 1 folder + 1 registry line, nothing else; architect-reviewer APPROVE first (shared contract).
-- [ ] V2-17 — Rework maps 1–3 (Mirpur 10, Farmgate, New Market) onto the framework with real layers/landmarks/set-pieces/hazards **and the living-street casts in `docs/spec/MAP_SCENARIOS.md` (M1–M3)** [tags:art,design][audit:M-02,M-04] — AC: Map Done-definition (PLAN §5.3) for each.
+- [ ] V2-16 — `MapDefinition` **including `crowd`, `voice`, `dialect` blocks (MAP_SCENARIOS §1, LOCALIZATION §4) with Zod validation** + `src/maps/registry.ts` [NEW] + generic layer-driven `ParallaxSystem`; delete all `mapId` branches; map owns time-of-day [tags:arch,game][audit:M-02,M-03] — AC: adding a dummy map = 1 folder + 1 registry line, nothing else; a map missing/violating `crowd`/`voice` fails validation; architect-reviewer APPROVE first (shared contract).
+- [ ] V2-17 — Rework maps 1–3 (Mirpur 10, Farmgate, New Market) onto the framework with real layers/landmarks/set-pieces/hazards **(M1–M3 get `crowd`/`voice` *data* that validates against the schema; their living-street *behaviour* acceptance is V2-33b)** [tags:art,design][audit:M-02,M-04] — AC: Map Done-definition (PLAN §5.3) for each.
 
-**W3b — Living streets: crowd, voice, finale (sequential; shared bus/store/audio). Full packets: `docs/spec/TICKET_PACKETS.md`. Order is mandatory: V2-34 → 31 → 32 → 33 → 35 → 36 → 37.**
-- [ ] V2-34 — Voice engine (clip→TTS→babble tiers, separate voice bus, priority/cooldown/duck rules, settings fields, CSV→manifest + validator) [tags:audio,arch][spec:VOICE_AND_SFX_SPEC] — needs only W0
-- [ ] V2-31 — NPC framework & ambient layer (pooled NPCs, kit-bash atlas, 19 activities, seeded RNG, budgets ≤ 28 actors) [tags:game,art][spec:CROWD_AND_NPC_SPEC §1–4,§10] — needs V2-01/02/16/34
-- [ ] V2-32 — Reactions, crowd mood, innocent-bystander rule, scenario runner (S1,S2,S4–S7 + map beats), viral meter [tags:game][spec:CROWD §5–8,§11]
-- [ ] V2-33 — Pile-on finisher: 2.6 s cartoon mob → Havildar Mama → "থানায় চালান!" (reuse `RunScene.handleVillainDead`) [tags:game,art][spec:CROWD §9]
-- [ ] V2-35 — Voice integration (all triggers→pools), BubbleSystem, crowd SFX, SW cache, clip import pipeline [tags:audio,game][spec:VOICE §3,§5,§7,§8]
-- [ ] V2-36 — Cricket-commentary announcer [tags:game,audio][spec:VOICE §3]
-- [ ] V2-37 — Safety & access: face-consent gate, Calm mode, voice/subtitle settings [tags:ui,safety][spec:FEATURE_BACKLOG F-01,F-12]
+**W3b — Living streets: crowd, voice, finale, dialects (sequential; shared bus/store/audio). Full packets: `docs/spec/TICKET_PACKETS.md`. Mandatory order: V2-34 → V2-31 → V2-32 → V2-37a → V2-33 → V2-33b → V2-35 → V2-36 → V2-37b → V2-38 → V2-39.**
+- [ ] V2-34 — Voice engine: mode table, babble synth, separate voice bus, concurrency/rate rules, ref-counted ducking, `startLoop`, settings persistence, CSV→manifest + validator [tags:audio,arch][spec:VOICE_AND_SFX_SPEC] — needs V2-01
+- [ ] V2-31 — NPC framework, ambient layer & BubbleSystem (pooled NPCs, kit-bash atlas ≤ 24 walkers, 19+ activities, budgets ≤ 28 actors) [tags:game,art][spec:CROWD §1–4,§10] — needs V2-01/04/17/34
+- [ ] V2-32 — Reactions, crowd mood (bus-only), innocent-bystander rule (melee+projectile+animals), scenario runner S1/S2/S4–S7, viral meter [tags:game][spec:CROWD §5–8,§11] — needs V2-31/03/04
+- [ ] V2-37a — Consent gate + Friendly exports (**before** the pile-on) [tags:ui,safety][spec:FEATURE_BACKLOG F-01]
+- [ ] V2-33 — Cartoon pile-on finisher with one deadline set (villain:dead t0+2600, GameOver t0+3800), shared `RunScene.playArrestFinale` [tags:game,art][spec:CROWD §9]
+- [ ] V2-33b — Living-street acceptance for M1–M3 (MAP_SCENARIOS §3) [tags:game,content]
+- [ ] V2-35 — Voice integration: CSV single source for DialogueSystem, `hit` subscription fix, trigger-coverage check, SFX, clip import, SW cache [tags:audio,game][spec:VOICE §3,§5,§7]
+- [ ] V2-36 — Cricket-commentary announcer (`AnnouncerSystem`, ticker slot reserved in layout.ts) [tags:game,audio]
+- [ ] V2-37b — Settings UI: voice, subtitles, Calm mode, Friendly toggle [tags:ui]
+- [ ] V2-38 — Localization engine (dialect resolver, per-map mix, subtitle modes, CSV v2, import + release gate) [tags:audio,game,ui][spec:LOCALIZATION_AND_DIALECTS]
+- [ ] V2-39 — Dialect-gap gag `S8_ki_koila` [tags:game,content]
+- [ ] V2-40a — In-engine bot harness (after V2-06) · [ ] V2-40 — Balance port (`src/config/balance.v2.ts`, assist ladder, bands from GDD §7, masher = 0 %, monotonic hazard cadence) [tags:test,game][spec:GDD §9]
+- [ ] V2-40c — **Owner/native content task (not AI):** dialect packs phase 1 (Dhakaiya, Chittagonian, Sylheti) via `docs/spec/dialect/translation_sheet.csv`; record clips; fill `docs/audio/ASSET_LEDGER.csv`
+- [ ] V2-41 — Post-launch: phase-2 regions (maps + dialects `mym`,`noa`,`bar`,`rng`,`khl`)
 
 **W4 — New maps (one ticket per map folder → parallel, cap 5)**
 - [ ] V2-18 Old Dhaka Chawkbazar Iftar Rush · [ ] V2-19 Sadarghat Launch Terminal · [ ] V2-20 Cox's Bazar Beach · [ ] V2-21 Sreemangal Tea Garden · [ ] V2-22 Haor Village Haat (Monsoon) [tags:art,design,content] — AC each: Map Done-definition (PLAN §5.3) **plus** its `crowd`/`voice` plan and all scenario beats of `docs/spec/MAP_SCENARIOS.md §3` (incl. the map-specific `M#_*` scenario and mob trigger); Bangla copy flagged for owner proof-read.
