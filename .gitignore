@@ -9,11 +9,6 @@ The_A_Stack.zip
 .vercel
 
 # Local AI-agent tooling & memory — kept out of the shared repo
-.claude/agents/
-.claude/settings.local.json
-.claude/projects/
-.claude/memory/
-.claude/worktrees/
 .agents/
 .agent/
 .gemini/
@@ -29,4 +24,6 @@ docs/CODEX_QUEUE.md
 CLAUDE.md
 AGENTS.md
 GEMINI.md
-.claude/skills/
+
+# Local assistant tooling folder — never shared
+.claude/
