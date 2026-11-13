@@ -158,6 +158,30 @@ Touched files:
 - `docs/overnight/evidence/V2-06.md` [NEW]
 
 | 2026-11-14T03:20:00+06:00 | 1.0h | V2-06 | done | tsc ✅ · lint ✅ · test ✅ (92/92) · build ✅ · playwright ✅ · pattern:check ✅ · spec:verify ✅ | Completed V2-06. Tagged v2-06-done. Next: Pattern Audit #2.
+| 2026-11-14T03:30:00+06:00 | 0.2h | Audit #2 | done | 10-point checklist PASS · P01: 43, P02: 0, P03: 0, P04: 0, P05: 0, P07: 0, P08: 48, P10: 0 · committed c83331f | Pattern Audit #2 completed across W1. Next: V2-40a & V2-40.
+
+### V2-40a & V2-40 → started 2026-11-14T03:32:00+06:00
+Plan:
+1. Port balance configuration to `src/config/balance.v2.ts` [NEW] with monotonic hazard cadence (`mirpur: 7.5s > farmgate: 5.5s > newmarket: 4.0s`), 4-tier adaptive assist ladder (L0..L3), gap thresholds, and patience drain formulas.
+2. Build in-engine bot runner in `src/game/bot/BotHarness.ts` [NEW] evaluating gameplay via `ControlSource` abstraction across 4 skill profiles (`masher`, `novice`, `average`, `expert`), accounting for safehouse distance (1000m), archetype speeds, and mob finishers.
+3. Write unit tests in `src/__tests__/balance_and_bot.test.ts` [NEW] asserting monotonic hazard cadence, assist ladder scaling, masher = 0% win rate, average win rate in 65-88% band (measured: 82-86%) and 50-90s duration (measured: 53s), and expert win rate >= 95% (measured: 98%).
+4. Generate balance report in `docs/balance/BALANCE_REPORT.md` [NEW].
+5. Update docs (ROADMAP, LOG, INVENTORY, API_FACTS, PROGRESS, MORNING_REPORT), write evidence `docs/overnight/evidence/V2-40.md`.
+6. Run all gates, commit, and tag `v2-40-done`.
+
+Touched files:
+- `src/config/balance.v2.ts` [NEW]
+- `src/game/bot/BotHarness.ts` [NEW]
+- `src/__tests__/balance_and_bot.test.ts` [NEW]
+- `docs/balance/BALANCE_REPORT.md` [NEW]
+- `docs/overnight/evidence/V2-40.md` [NEW]
+- `docs/spec/API_FACTS.md`
+- `docs/INVENTORY.md`
+- `docs/ROADMAP.md`
+- `docs/LOG.md`
+
+| 2026-11-14T04:15:00+06:00 | 0.8h | V2-40 | done | tsc ✅ · lint ✅ · test ✅ (98/98) · build ✅ · playwright ✅ (22/22) · pattern:check ✅ · spec:verify ✅ | Completed V2-40a & V2-40. Tagged v2-40-done. Queue A complete! Next: Section F (Morning Report & close).
+
 
 
 

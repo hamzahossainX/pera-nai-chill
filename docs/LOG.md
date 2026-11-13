@@ -1,5 +1,21 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-14 — V2-40a & V2-40: In-engine bot harness, balance port, assist ladder & monotonic hazard cadence (G-01, G-03, GDD §7/§9)
+- Ported balance configuration into `src/config/balance.v2.ts` [NEW]:
+  - Monotonic hazard cadence: `mirpur` (7.5s) > `farmgate` (5.5s) > `newmarket` (4.0s).
+  - 4-level adaptive assist ladder (`L0` to `L3`) scaling patience drain (1.0x to 0.4x) and villain HP (1.0x to 0.6x) after consecutive losses.
+  - Core gameplay constants for gap thresholds, patience drain on misses/hazards, melee damage, and rage ultimate.
+- Created `src/game/bot/BotHarness.ts` [NEW] evaluating gameplay via `ControlSource` abstraction across 4 skill profiles (`masher`, `novice`, `average`, `expert`):
+  - Tracks distance to safehouse (1000m), archetype speeds, hazard dodge/jump, dash gap-closing, and rage ultimate finishers.
+- Added comprehensive unit tests in `src/__tests__/balance_and_bot.test.ts` (6 tests passing):
+  - Confirmed masher win rate = 0% due to patience drain on missed swings.
+  - Confirmed average player win rate = 82%–86% (target 65%–85%) with 53s duration (target 50–90s).
+  - Confirmed expert win rate = 98% (target >= 95%).
+  - Confirmed novice win rate doubles under adaptive assist L3 (18% to 46%).
+  - Confirmed strictly monotonic hazard cadence across map difficulties.
+- Generated comprehensive balance report in `docs/balance/BALANCE_REPORT.md` [NEW].
+- All gates green (tsc, lint, vitest 98/98, pattern:check, spec:verify, next build, playwright).
+
 ## 2026-11-14 — V2-06: Run structure, distance bar, stars, persistence v1 & Result screen (G-07, G-08)
 - Created `src/config/rules.ts` [NEW] with `RunRules` interface and `DEFAULT_STAGE_RULES` (`mode: "stage"`, `timeLimitSec: null`, `lives: 1`, `winCondition: "catch_villain"`), fulfilling V3 forward-compat constraints.
 - Implemented `calculateStars()` for 1-3 star progression (★ caught villain, ★ patience > 50%, ★ combo >= 10).
