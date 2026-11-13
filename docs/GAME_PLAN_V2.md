@@ -56,7 +56,7 @@ Each map defines `hazards[]` with `{kind, lanes, telegraphMs, effect}`; every ha
 
 ## 3. View, camera & layout spec (fixes M-04, U-01, U-02)
 
-**One layout module**, `src/config/layout.ts`, is the only place Y/X zones live. Logical canvas stays **1280×720** (Phaser `FIT`, letterboxed), with CSS `dvh` containers.
+**One layout module**, `src/config/layout.ts` [NEW], is the only place Y/X zones live. Logical canvas stays **1280×720** (Phaser `FIT`, letterboxed), with CSS `dvh` containers.
 
 ```
 y   0 ─ 100   HUD band (React): top-left villain card (compact), top-right pause/sound/fullscreen
@@ -122,6 +122,8 @@ export interface MapDefinition {
   audio: { bgm: string; ambience: string; stingers?: string[] };
   copy: { barks: LocalizedText[]; ticker: LocalizedText[]; billboards: Billboard[] };  // max 4 billboards on screen
   events: { allowed: string[]; bias?: Record<string, number> };
+  crowd: MapCrowdPlan;                 // who lives here + scenarios + mob trigger — see docs/spec/MAP_SCENARIOS.md §1
+  voice: MapVoicePlan;                 // hawker/ambient pools + lazy pack id — see docs/spec/VOICE_AND_SFX_SPEC.md
 }
 ```
 - `ParallaxSystem` becomes a generic **layer renderer** driven by `layers[]`; `SpawnSystem` reads `hazards/props`; `EventSystem`/`AudioService` read `events/audio`. Delete the `mapId` branches (`ParallaxSystem.ts:51-66`, `SpawnSystem.ts:70-82`).
@@ -186,14 +188,14 @@ Tokens only (DESIGN.md) · min tap target 48 px · focus rings · `button` seman
 | BreakingNews ticker overlapping HUD | single-line, top, auto-hide (§3) |
 | Weapon tutorial toast over lanes | one-time coach-mark in thumb zone |
 | `/dev/characters`, `DebugBar` in prod | gate by env/flag |
-| Repo clutter: `Hr*.jpg`, `The_A_Stack.zip`, Next starter SVGs, duplicate root plans | move plans into `docs/archive/`; delete the rest (owner confirms) |
+| Repo clutter: `Hr*.jpg`, `The_A_Stack.zip`, Next starter SVGs, duplicate root plans | move plans into `docs/archive/` [NEW]; delete the rest (owner confirms) |
 
 ## 9. Pickups (replace weapon hotkeys)
 Banana peel (trap behind chaser → villain slips if he doubles back; also usable ahead), Soda can (auto-kick on contact), Daab (patience +10), N95 mask (smog immunity), Biriyani (rage +20), Tong Cha (stamina full), Taka bag. Map-flavoured variants (e.g. ice-cream at the beach).
 
 ## 10. Technical architecture changes
-1. `src/config/layout.ts` (§3) — single source of truth; fixes magic numbers.
-2. `src/game/motion/EntityMotion.ts` (§4.4) — all entity position writes.
+1. `src/config/layout.ts` [NEW] (§3) — single source of truth; fixes magic numbers.
+2. `src/game/motion/EntityMotion.ts` [NEW] (§4.4) — all entity position writes.
 3. `src/maps/{registry.ts, <id>/map.ts, <id>/art/*.svg}` + generic `ParallaxSystem` (§5.1).
 4. `GapSystem` + `PatienceSystem` + `HazardSystem` (telegraphed) replacing ad-hoc logic in `SpawnSystem`.
 5. Split `BootScene.ts` by domain (`textures/chars.ts, fx.ts, ui.ts`) as maps move to SVG — target < 400 lines.
@@ -222,6 +224,10 @@ Ten-minute blind run. Fail if any box is unchecked:
 | D5 | Touch layout: thumb clusters (replaces dock) | yes |
 | D6 | Bangla copy proof-reading by owner | owner reviews before release |
 | D7 | Gabtoli bonus map | deferred |
+| D8 | Voice source: real recorded clips (owner + friends) with robot-TTS and babble fallbacks; no voice cloning / viral-clip copying | T1 clips primary, T3 babble baseline (VOICE_AND_SFX_SPEC §1) |
+| D9 | Pile-on finisher is allowed as cartoon slapstick **only** (≤ 2.6 s, no gore, always ends with the police "law" punchline) | yes, with CROWD §9.3 guardrails |
+| D10 | Face-consent gate before any photo upload + Friendly mode (F-01) | yes (V2-37) |
+| D11 | Regional dialect lines (Chattogram/Sylheti/Dhakaiya) only via native speakers | deferred (F-09) |
 
 ## 13. Ticket plan (execute in this order; details/AC in `docs/ROADMAP.md §V2`)
 
@@ -236,3 +242,6 @@ Ten-minute blind run. Fail if any box is unchecked:
 | **W6 QA & polish** | V2-26 Playwright suite (GPU) · V2-27 perf pass · V2-28 repo cleanup · V2-29 a11y/Bangla review · V2-30 final playtest | — | Release gate |
 
 **Parallelism note:** the A-Team default cap is 5 concurrent worktree agents; W2 (7 archetypes) and W4 (5 maps) fit when run 5 + 2 or 5 at a time. Never two agents on shared files (`layout.ts`, `EntityMotion`, `MapDefinition`, `registry.ts` are shared — they live in W0/W3 *alone*).
+
+## 14. Living streets, voices & the spec pack (added 2026-11-13)
+The owner's crowd brief (bystanders who point/argue/film, a 10–15-person cartoon pile-on, ambient people singing/playing guitar/sipping tea/jogging, funny Bangladeshi voices) is specified in **`docs/spec/`** — start at `docs/spec/README.md`. It adds Wave **W3b** (tickets V2-31…V2-37) between the map framework and the new-map wave, extends `MapDefinition` with `crowd` and `voice`, and gives the implementing AI a hallucination-proof contract (`ANTI_HALLUCINATION.md`, generated `API_FACTS.md`, `verify-spec-refs.mjs`, `REVIEW_LOOP.md`).

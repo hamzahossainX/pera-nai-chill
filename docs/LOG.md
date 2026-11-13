@@ -1,5 +1,11 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-13 — Spec pack for crowd, voices & living-street maps (docs/tooling only)
+- `docs/spec/`: README (read order), ANTI_HALLUCINATION (12 rules + preflight + evidence block), CROWD_AND_NPC_SPEC, VOICE_AND_SFX_SPEC (+ `voice/voice_lines.csv`, 116 draft Bangla lines), MAP_SCENARIOS (8 maps as living streets), REVIEW_LOOP (rubric, ≤3 rounds, golden frames), TICKET_PACKETS (V2-31…V2-37), FEATURE_BACKLOG (F-M1…F-20), generated API_FACTS.
+- Tooling: `scripts/audit/gen-api-facts.mjs`, `scripts/audit/verify-spec-refs.mjs` (negative-tested), npm scripts `spec:facts`, `spec:verify`.
+- ROADMAP W3b added; GAME_PLAN_V2 §5.1/§12/§14 extended (D8–D11); HANDOFF_PROMPT + CLAUDE/AGENTS/GEMINI entry files point to the pack. Key discovery: Phaser 4 ships 28 first-party skill guides in `node_modules/phaser/skills` (referenced as mandatory reading).
+- No game code changed.
+
 ## 2026-11-13 — V2 audit & game plan (docs only, no game code changed)
 - **Gamer-eye audit** of baseline `3899745`: `docs/GAME_AUDIT.md` — 40+ findings with IDs and evidence tags. Headline verified facts: lobby cannot scroll so the Map picker (y≈1320) is unreachable at 1280×720 / 1920×1080 / 844×390 (M-01); the 3 maps are palette swaps (M-02); villain knockback is never undone so he drifts off-world (C-01, code-verified); no player movement, no gap, no fail state (G-01..G-03); HUD covers lanes on phones (U-01).
 - **Plan:** `docs/GAME_PLAN_V2.md` (core loop, layout zones, character spec, `MapDefinition` framework, 8 Bangladesh maps, UI rebuild, cleanup list), `docs/DESIGN.md` filled (was an empty template), `docs/ROADMAP.md §V2` tickets V2-00..V2-30.

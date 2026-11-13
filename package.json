@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "spec:facts": "node scripts/audit/gen-api-facts.mjs",
+    "spec:verify": "node scripts/audit/verify-spec-refs.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.2.2",

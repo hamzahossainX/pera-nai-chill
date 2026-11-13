@@ -7,7 +7,7 @@
 
 **W0 — Stabilise (sequential; touches shared files)**
 - [ ] V2-00 — Fix unscrollable lobby / unreachable map picker [app:web][tags:ui,bug,S0][audit:M-01,U-04] — AC: at 1280×720, 1920×1080, 844×390 every lobby section incl. Map selector is reachable by wheel, touch and keyboard; screenshot proof; Playwright asserts Map heading `getBoundingClientRect().top` becomes < viewport height after scrolling.
-- [ ] V2-01 — `src/config/layout.ts` + deterministic test hook [app:web][tags:arch,test][audit:T-01,M-04] — AC: all lane Y/HUD zones read from layout.ts (grep finds no `LANES_Y` literals elsewhere); `?test=1` gives fixed-step loop and read-only `window.__game.getState()` (positions, hp, gap); works under software GL.
+- [ ] V2-01 — `src/config/layout.ts` [NEW] + deterministic test hook [app:web][tags:arch,test][audit:T-01,M-04] — AC: all lane Y/HUD zones read from layout.ts (grep finds no `LANES_Y` literals elsewhere); `?test=1` gives fixed-step loop and read-only `window.__game.getState()` (positions, hp, gap); works under software GL.
 - [ ] V2-02 — `EntityMotion` (home/offset spring/lane/jump channels + clamp) and knockback fix [app:web][tags:game,bug,S0][audit:C-01,C-03] — AC: Vitest: 500 random impulses → |offset| < 1 px within 400 ms and x∈[60,1220]; Playwright (test hook): 60 s auto-attack keeps villain & chaser x∈[0,1280]; no direct `rig.x/y =` writes outside EntityMotion (lint rule or grep gate).
 
 **W1 — Core loop (sequential)**
@@ -22,11 +22,20 @@
 - [ ] V2-09…V2-15 — Redraw + counter-move gag + mask/hood slots, one ticket per archetype: 09 Phone Snatcher · 10 Pickpocket · 11 Cable Chor · 12 Manhole Chor · 13 Eid-Market Chor · 14 Chicken Chor · 15 Chor-er Sardar (boss) [tags:art,design][audit:C-02,C-05] — AC each: pose sheet + in-game screenshots at 3 viewports; `/design-review` ≥ 8/10.
 
 **W3 — Map framework**
-- [ ] V2-16 — `MapDefinition` + `src/maps/registry.ts` + generic layer-driven `ParallaxSystem`; delete all `mapId` branches; map owns time-of-day [tags:arch,game][audit:M-02,M-03] — AC: adding a dummy map = 1 folder + 1 registry line, nothing else; architect-reviewer APPROVE first (shared contract).
-- [ ] V2-17 — Rework maps 1–3 (Mirpur 10, Farmgate, New Market) onto the framework with real layers/landmarks/set-pieces/hazards [tags:art,design][audit:M-02,M-04] — AC: Map Done-definition (PLAN §5.3) for each.
+- [ ] V2-16 — `MapDefinition` + `src/maps/registry.ts` [NEW] + generic layer-driven `ParallaxSystem`; delete all `mapId` branches; map owns time-of-day [tags:arch,game][audit:M-02,M-03] — AC: adding a dummy map = 1 folder + 1 registry line, nothing else; architect-reviewer APPROVE first (shared contract).
+- [ ] V2-17 — Rework maps 1–3 (Mirpur 10, Farmgate, New Market) onto the framework with real layers/landmarks/set-pieces/hazards **and the living-street casts in `docs/spec/MAP_SCENARIOS.md` (M1–M3)** [tags:art,design][audit:M-02,M-04] — AC: Map Done-definition (PLAN §5.3) for each.
+
+**W3b — Living streets: crowd, voice, finale (sequential; shared bus/store/audio). Full packets: `docs/spec/TICKET_PACKETS.md`. Order is mandatory: V2-34 → 31 → 32 → 33 → 35 → 36 → 37.**
+- [ ] V2-34 — Voice engine (clip→TTS→babble tiers, separate voice bus, priority/cooldown/duck rules, settings fields, CSV→manifest + validator) [tags:audio,arch][spec:VOICE_AND_SFX_SPEC] — needs only W0
+- [ ] V2-31 — NPC framework & ambient layer (pooled NPCs, kit-bash atlas, 19 activities, seeded RNG, budgets ≤ 28 actors) [tags:game,art][spec:CROWD_AND_NPC_SPEC §1–4,§10] — needs V2-01/02/16/34
+- [ ] V2-32 — Reactions, crowd mood, innocent-bystander rule, scenario runner (S1,S2,S4–S7 + map beats), viral meter [tags:game][spec:CROWD §5–8,§11]
+- [ ] V2-33 — Pile-on finisher: 2.6 s cartoon mob → Havildar Mama → "থানায় চালান!" (reuse `RunScene.handleVillainDead`) [tags:game,art][spec:CROWD §9]
+- [ ] V2-35 — Voice integration (all triggers→pools), BubbleSystem, crowd SFX, SW cache, clip import pipeline [tags:audio,game][spec:VOICE §3,§5,§7,§8]
+- [ ] V2-36 — Cricket-commentary announcer [tags:game,audio][spec:VOICE §3]
+- [ ] V2-37 — Safety & access: face-consent gate, Calm mode, voice/subtitle settings [tags:ui,safety][spec:FEATURE_BACKLOG F-01,F-12]
 
 **W4 — New maps (one ticket per map folder → parallel, cap 5)**
-- [ ] V2-18 Old Dhaka Chawkbazar Iftar Rush · [ ] V2-19 Sadarghat Launch Terminal · [ ] V2-20 Cox's Bazar Beach · [ ] V2-21 Sreemangal Tea Garden · [ ] V2-22 Haor Village Haat (Monsoon) [tags:art,design,content] — AC each: Map Done-definition (PLAN §5.3) incl. Bangla copy flagged for owner proof-read.
+- [ ] V2-18 Old Dhaka Chawkbazar Iftar Rush · [ ] V2-19 Sadarghat Launch Terminal · [ ] V2-20 Cox's Bazar Beach · [ ] V2-21 Sreemangal Tea Garden · [ ] V2-22 Haor Village Haat (Monsoon) [tags:art,design,content] — AC each: Map Done-definition (PLAN §5.3) **plus** its `crowd`/`voice` plan and all scenario beats of `docs/spec/MAP_SCENARIOS.md §3` (incl. the map-specific `M#_*` scenario and mob trigger); Bangla copy flagged for owner proof-read.
 
 **W5 — UI/UX rebuild (sequential; after mechanics settle)**
 - [ ] V2-23 — Home + Setup stepper (Face/Villain · Map carousel · Loadout) [tags:ui,design][audit:U-05,M-01]

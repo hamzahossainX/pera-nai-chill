@@ -41,3 +41,11 @@ Format: `## DEC-### — YYYY-MM-DD — <title>` then **What / Why / Alternatives
 **Why:** Unreviewed third-party skill files are executable instructions for the agent (supply-chain/prompt-injection surface) and the repo's existing skills already cover rig, Phaser integration, juice, Bangla copy, events and audio. The gaps (map pipeline, judge procedure) were project-specific anyway.
 **Consequences:** If a specific public skill is wanted later, review its text first, then vendor it under `.claude/skills/`.
 
+## DEC-008 — 2026-11-13 — Living streets: crowd/NPC system, voice tiers, cartoon pile-on (spec pack)
+**What:** Adopt `docs/spec/` (CROWD_AND_NPC_SPEC, VOICE_AND_SFX_SPEC, MAP_SCENARIOS, TICKET_PACKETS, REVIEW_LOOP, ANTI_HALLUCINATION, FEATURE_BACKLOG). New wave W3b (V2-31…V2-37). Voices: three tiers with automatic fallback (recorded clips → browser TTS → WebAudio babble) on a separate voice bus; crowd = lightweight pooled NPCs (≤ 28 actors) with a state machine, stance/mood model and an innocent-bystander penalty; finale = 2.6 s cartoon pile-on that always ends with the police "law" punchline.
+**Why:** Owner brief (crowd reacts, argues, joins a 10–15-person pile-on; ambient singers/guitarists/tea-sippers/joggers; funny Bangladeshi voices). The game currently has no sample/TTS audio and no NPCs (API_FACTS §4).
+**Alternatives considered:** (a) AI-cloned/ TTS-generated voices as primary — rejected: rights/consent risk and cost, quality unknown; kept TTS as opt-in tier. (b) Full 15-slot rigs per NPC — rejected: perf. (c) Realistic mob violence — rejected: tone/safety; slapstick-only with guardrails (CROWD §9.3). (d) Downloading third-party agent skills — rejected (DEC-007); the Phaser package already ships 28 first-party skill guides, referenced instead.
+**Door type:** two-way for content/art; the bus event names and `MapDefinition.crowd/voice` schema are contract-level (change via SPEC_CHANGE_REQUEST).
+**Safety guards added:** consent gate for face uploads + Friendly mode (V2-37), Calm mode, PG line policy, no cloning/viral-clip copying.
+**Anti-hallucination infrastructure:** generated `docs/spec/API_FACTS.md`, `scripts/audit/verify-spec-refs.mjs` (rejects invented paths/events — negative-tested), `npm run spec:facts` / `spec:verify`, spec pointer block in CLAUDE.md/AGENTS.md/GEMINI.md.
+
