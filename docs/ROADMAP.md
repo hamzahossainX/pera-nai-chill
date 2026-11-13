@@ -11,10 +11,10 @@
 - [ ] V2-02 — `EntityMotion` (home/offset spring/lane/jump channels + clamp) and knockback fix [app:web][tags:game,bug,S0][audit:C-01,C-03] — AC: Vitest: 500 random impulses → |offset| < 1 px within 400 ms and x∈[60,1220]; Playwright (test hook): 60 s auto-attack keeps villain & chaser x∈[0,1280]; no direct `rig.x/y =` writes outside EntityMotion (lint rule or grep gate).
 
 **W1 — Core loop (sequential)**
-- [ ] V2-03 — Player controls: lanes, dash, jump [tags:game][audit:G-02] — AC: keyboard + swipe + on-screen; chaser no longer mirrors villain lane; unit tests for lane/jump state machine.
+- [ ] V2-03 — Player controls: lanes, dash, jump [tags:game][audit:G-02] — AC: keyboard + swipe + on-screen; chaser no longer mirrors villain lane; unit tests for lane/jump state machine; **input flows through a `ControlSource` abstraction emitting typed input commands (`KeyboardTouchSource`, `BotSource`); gameplay never reads keyboard/touch directly** (V3 forward-compat, `docs/spec/MULTIPLAYER_V3.md §8`).
 - [ ] V2-04 — Gap, Patience & fail states [tags:game][audit:G-01,G-03] — AC: GapSystem zones; melee only in range; escape and patience-zero both reach a Lose result; **store API `patience`, `drainPatience`, `restorePatience`, `slowChaser(mult,sec)` + `getState().gap/patience` providers**; tuned so a mashing-only player loses (confirmed by V2-40a bot).
 - [ ] V2-05 — Telegraphed hazards, villain counter-moves, wire archetype stats (HP/speed/dodge), remove hidden boss override [tags:game][audit:G-04,G-05,G-06] — AC: each hazard has telegraph+counter+cost; each archetype has its counter-move; boss is an explicit final stage.
-- [ ] V2-06 — Run structure, distance bar, stars, persistence v1, Result screen skeleton [tags:game,ui][audit:G-07,G-08] — AC: 1–3 stars rules in plan §2.6; localStorage migration test; daily reward outlier fixed.
+- [ ] V2-06 — Run structure, distance bar, stars, persistence v1, Result screen skeleton [tags:game,ui][audit:G-07,G-08] — AC: 1–3 stars rules in plan §2.6; localStorage migration test; daily reward outlier fixed; **run rules are data: `RunRules { mode: "stage"|"timeAttack"|"hunt"; timeLimitSec: number|null; lives; winCondition }` with stage mode = `timeLimitSec: null`** (V3 forward-compat; no timer UI yet).
 
 **W2 — Characters (rig fix first; archetype redraws file-disjoint → parallel, cap 5)**
 - [ ] V2-07 — Instrument + fix rig pose math; pose-sheet gate at `/dev/characters?frames=1` [tags:art,game][audit:C-02] — AC: silhouette test passes (bbox ≤160×220, head within ±14 px of neck joint) for every pose; dev route gated out of production.
@@ -51,6 +51,9 @@
 
 **W6 — QA & release gate**
 - [ ] V2-26 Playwright suite on GPU Chrome (movement bounds, map reachability, per-map smoke, HUD overlap assertions) · [ ] V2-27 perf pass vs PLAN §10 budget · [ ] V2-28 repo cleanup (docs/archive, stray files, unused SVGs) · [ ] V2-29 a11y + Bangla typography review · [ ] V2-30 final 10-minute gamer playtest (PLAN §11) → `/ship`
+
+## Next scope — V3 (PARKED until V2 reaches M6; recorded 2026-11-13 from the owner)
+- [ ] **V3 Hunt Mode** — 2 hunters vs 1 human target with a selectable countdown (2/3/5/10 min, custom up to 50), shared life pool, target evasion kit, local shared-screen first then online (WebRTC, friends-only). Full parked spec: `docs/spec/MULTIPLAYER_V3.md` (tickets V3-00…V3-09 sketched there). **Do not start; V2 only honours the three forward-compat constraints (ControlSource in V2-03, RunRules in V2-06, determinism in V2-01/02).**
 
 ## Later (Phase 2 — Optional Backend)
 - [ ] T-101 — Supabase World Events Realtime Channel [app:web][tags:backend,supabase]

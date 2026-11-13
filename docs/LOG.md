@@ -1,5 +1,12 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-13 — Multiplayer parked (V3), overnight run protocol, pattern ratchet (docs/tooling only)
+- `docs/spec/MULTIPLAYER_V3.md` (parked Hunt Mode spec) + ROADMAP "Next scope — V3"; V2-03 gains `ControlSource`, V2-06 gains `RunRules` forward-compat ACs; FEATURE_BACKLOG/GDD/README updated.
+- `docs/OVERNIGHT_RUN.md` (launch steps, paste-in prompt, queue, failure policy, morning checklist) + `docs/overnight/{PROGRESS,QUESTIONS,MORNING_REPORT_TEMPLATE,evidence/}`.
+- `docs/spec/ARCHITECTURE_PATTERNS.md` + `scripts/audit/pattern-check.mjs` (+ baseline: P01 63, P02 5, P03 18, P06 1, P08 48, P09 2; others 0; negative-tested) + `npm run pattern:check`.
+- `verify-spec-refs.mjs`: covers more docs, ignores branch names/`NN` placeholders.
+- No game code changed.
+
 ## 2026-11-13 — GDD, production plan, dialect system, audio sourcing, balance model, spec v1.1 (docs/tooling only)
 - New: `docs/GDD.md`, `docs/PRODUCTION_PLAN.md`, `docs/spec/LOCALIZATION_AND_DIALECTS.md` (+ `dialect/translation_sheet.csv`, 124 rows × 8 dialect columns), `docs/spec/AUDIO_SOURCING.md` (+ `docs/audio/ASSET_LEDGER.csv`), `scripts/balance/{sim,tune,assist}.mjs` (+ `tuned.json`).
 - Voice CSV v2: 124 lines, 22 speakers, columns `dialect, base_id, priority, group, review`; unsafe/unclear lines rewritten (mob chaos lines, lane tips, brand/anthem mentions); copy rows added for bump/innocent/heckle/dialect-gap/boatman.

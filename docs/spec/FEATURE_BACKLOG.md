@@ -44,8 +44,13 @@
 | F-19 | **Sticker-pack unlocks per map** (collect map-specific props) | gives maps completion goals |
 | F-20 | **Bangla numerals / Bangla-first toggle** | typographic polish for pure-Bangla users |
 
+## NEXT SCOPE (parked, owner-requested 2026-11-13)
+| ID | Feature | Where |
+|---|---|---|
+| F-V3 | **Hunt Mode multiplayer** — 2 hunters vs 1 human target, selectable timer, evasion kit, local then online (friends-only) | `docs/spec/MULTIPLAYER_V3.md`, ROADMAP "Next scope — V3" |
+
 ## WON'T (for now) — and why
-Online multiplayer/leaderboards (no backend by design, DEC-003 privacy) · user-uploaded content sharing between players (harassment risk) · real brand/celebrity tie-ins (rights) · gambling/loot-box monetisation · AI-generated NPC chatter at runtime (cost, safety, offline) · voice cloning of real people.
+Online **leaderboards**, random-stranger matchmaking and in-game chat (privacy/moderation; friends-only room codes are the V3 path) · user-uploaded content sharing between players (harassment risk) · real brand/celebrity tie-ins (rights) · gambling/loot-box monetisation · AI-generated NPC chatter at runtime (cost, safety, offline) · voice cloning of real people.
 
 ## Cross-cutting safety & trust (applies to all features)
 1. **Consent:** any real face → F-01 gate; no face data leaves the device; never put uploaded faces on NPCs.

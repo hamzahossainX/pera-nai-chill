@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "spec:facts": "node scripts/audit/gen-api-facts.mjs",
-    "spec:verify": "node scripts/audit/verify-spec-refs.mjs"
+    "spec:verify": "node scripts/audit/verify-spec-refs.mjs",
+    "pattern:check": "node scripts/audit/pattern-check.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.2.2",

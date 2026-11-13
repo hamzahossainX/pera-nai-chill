@@ -55,3 +55,15 @@ Format: `## DEC-### — YYYY-MM-DD — <title>` then **What / Why / Alternatives
 **Alternatives:** AI/TTS voices as primary (rejected: quality, dialects, rights); AI-drafted dialect lines (rejected: hallucination/offence risk); content-first build order (rejected: vertical slice first).
 **Door type:** two-way (docs); the ticket order and test-hook contract are contract-level.
 
+## DEC-010 — 2026-11-13 — Multiplayer "Hunt Mode" is PARKED as next scope (V3)
+**What:** Owner's idea — 2 hunters vs 1 human target, selectable countdown (2/3/5/10 min, custom up to 50), shared life pool, target evasion kit — is recorded in `docs/spec/MULTIPLAYER_V3.md` and ROADMAP "Next scope — V3". **No V3 code in V2.** V2 honours three cheap forward-compat constraints: `ControlSource` input abstraction (V2-03), `RunRules` data incl. `timeLimitSec` (V2-06), determinism/test hook (V2-01/02).
+**Why:** owner explicitly wants V2 finished first; the idea touches architecture (networking, privacy, DEC-003) so it needs LAW-level approval (signalling, TURN budget, friends-only) before any work. The target being a *real player choosing their own face* resolves the face-consent problem by construction.
+**Alternatives:** build multiplayer inside V2 (rejected: scope/risk); keep "WON'T" (rejected: owner wants it).
+**Door type:** two-way while parked; networking model is one-way once built (option A recommended).
+
+## DEC-011 — 2026-11-13 — Overnight unattended build protocol + pattern ratchet
+**What:** `docs/OVERNIGHT_RUN.md` defines a copy-paste prompt and protocol for the builder AI to work up to 10 h unattended on branch `v2/build` (from `docs/v2-audit-and-plan`), Queue A = W0+W1+bot/balance (stop at M1 candidate), Queue B = V2-34, V2-37a, V2-07 (only if time), with evidence per ticket, heartbeat, morning report, and strict failure/stay-in-lane rules (no push/deploy/deps). `docs/spec/ARCHITECTURE_PATTERNS.md` + `scripts/audit/pattern-check.mjs` (ratchet, baseline `scripts/audit/pattern-baseline.json`, `npm run pattern:check`) guard the design patterns mechanically; `verify-spec-refs` now also covers GDD/PRODUCTION_PLAN/OVERNIGHT_RUN and ignores git branch names.
+**Why:** owner will sleep with the laptop on; unattended runs fail by drifting, hallucinating or silently stalling — each gets a mechanical or procedural counter. Queue stops before anything needing human judgement (maps, art direction, dialects, contract approval, playtests).
+**Alternatives:** unbounded "build everything" run (rejected: later waves need owner/judge decisions); Claude-judge running overnight (not requested).
+**Door type:** two-way.
+

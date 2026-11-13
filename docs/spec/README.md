@@ -18,6 +18,8 @@
 | 10 | `AUDIO_SOURCING.md` + `../audio/ASSET_LEDGER.csv` | where voices come from, rights, ledger, import pipeline | audio tickets, owner |
 | 11 | `../GDD.md`, `../PRODUCTION_PLAN.md` | the design (fun, numbers, FTUE) and the plan to ship it | planning/judging |
 | 12 | `FEATURE_BACKLOG.md` | recommended extras (prioritised) | planning only — do **not** build without a ticket |
+| 13 | `MULTIPLAYER_V3.md` | **PARKED** Hunt Mode (2v1, timer) — only its §8 forward-compat constraints apply to V2 | read §8 only |
+| 14 | `ARCHITECTURE_PATTERNS.md` + `npm run pattern:check` | the design patterns to follow and the mechanical ratchet that guards them | every ticket (re-check) |
 
 ## Mechanical checks (run them — they are the anti-hallucination guard)
 ```bash
