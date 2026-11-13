@@ -27,7 +27,9 @@ const busEvents = new Set([...bus.matchAll(/"([a-zA-Z]+(?::[a-zA-Z]+)?)":/g)].ma
 // Namespaces owned by the event bus. Add a new namespace here when a spec introduces one.
 const BUS_NAMESPACES = new Set(["weapon", "event", "game", "debug", "player", "combat", "villain", "loader", "fps", "crowd", "voice", "mob", "npc", "announcer", "hit", "combo"]);
 let branches = new Set();
-try { branches = new Set(execSync("git branch --format='%(refname:short)'", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).split("\n").filter(Boolean)); } catch { /* not a git repo */ }
+try { branches = new Set(execSync("git for-each-ref --format='%(refname:short)' refs/heads refs/remotes", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).split("\n").filter(Boolean).flatMap((b) => [b, b.replace(/^origin\//, "")])); } catch { /* not a git repo */ }
+// Local-only tooling folders are not part of the shared repo; references to them are never verified.
+const LOCAL_ONLY = /^(?:\.claude|\.agents|\.agent|\.gemini|\.antigravity)(?:\/|$)/;
 const PATH_RE = /^(?:src|public|docs|scripts|e2e|\.claude|\.agents)\/[\w./@()\-\[\]]+$/;
 const problems = [];
 let checked = 0;
@@ -49,7 +51,7 @@ for (const file of specFiles) {
       const isNew = !!m[2];
       // strip :line suffix and trailing punctuation
       tok = tok.replace(/:(\d+)(-\d+)?$/, "").replace(/[),.;]+$/, "");
-      if (/[<*{}]|https?:/.test(tok) || /\bNN\b/.test(tok) || branches.has(tok)) continue;
+      if (/[<*{}]|https?:/.test(tok) || /\bNN\b/.test(tok) || branches.has(tok) || LOCAL_ONLY.test(tok)) continue;
       if (PATH_RE.test(tok)) {
         checked++;
         if (!isNew && !declaredNew.has(tok) && !fs.existsSync(path.join(root, tok))) problems.push(`${file}:${i + 1}  missing path  ${tok}   (tag [NEW] if it should be created)`);
