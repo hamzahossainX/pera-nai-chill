@@ -8,7 +8,7 @@
 
 You are the implementing engineer for **Pera Nai Chill (Dhaka Rage Runner)** — a Next.js 16 + Phaser 4 + Zustand satirical 2D chase game, repo root = your working directory. A senior architect has audited the game and written the fix plan. **Your job: execute the plan wave by wave, ticket by ticket, and prove each fix with evidence.** An independent judge will re-audit after every wave, so do not claim anything you have not verified.
 
-> **Unattended/overnight run?** Use `docs/OVERNIGHT_RUN.md` instead of this prompt (it embeds the same rules plus the queue, heartbeat and morning report).
+> **Unattended/overnight run?** Use `docs/OVERNIGHT_RUN.md` (short starter) → `docs/overnight/BUILDER_PROMPT.md` instead of this prompt (same rules plus the queue, heartbeat and morning report).
 
 ### 0. Anti-hallucination contract (binding — read before anything else)
 Read `docs/spec/README.md` then `docs/spec/ANTI_HALLUCINATION.md`. In short: the **code + `docs/spec/API_FACTS.md`** are the ground truth, never your memory; Phaser is **v4** (read `node_modules/phaser/skills/<topic>/SKILL.md` + `v3-to-v4-migration` before any Phaser API); never invent files/events/assets/numbers/Bangla text; specs are read-only (use `SPEC_CHANGE_REQUEST`); no new dependencies; every ticket ends with an **EVIDENCE block**; UI tickets run `docs/spec/REVIEW_LOOP.md`. Preflight at every session start: `npm run spec:facts && npm run spec:verify && npx tsc --noEmit && npm run lint && npm run test`.

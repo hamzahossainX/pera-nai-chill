@@ -6,60 +6,16 @@
 
 1. **Keep the laptop awake and plugged in.** Fedora/GNOME: Settings → Power → *Automatic suspend: Off* and *Screen blank: Never*; or in a terminal start `systemd-inhibit --what=idle:sleep:handle-lid-switch sleep 13h &` (leave the lid open). Do **not** let it sleep — a suspended laptop stops the run silently.
 2. **Let the builder run without stopping at permission prompts.** In Antigravity, set the agent's terminal/file permissions so it can run commands inside this project folder without asking each time (the mode that auto-approves workspace commands). If it still asks, it will stall until you wake up. *(I cannot verify Antigravity's exact settings from here — use whatever its "auto-approve / turbo / always proceed" option is called, scoped to this workspace only.)*
-3. Open a **new Antigravity session** in `/home/hamza/Documents/UniverSity/Pera-nai-chill`, paste the prompt in §2, press Enter, and leave it.
+3. Open a **new Antigravity session** in `/home/hamza/Documents/UniverSity/Pera-nai-chill`, paste the short starter from §2, press Enter, and leave it.
 4. Do **not** edit files in the repo while it runs.
 
-## 2. THE PROMPT — copy everything between the lines
+## 2. How to start — paste ONLY this short message
 
-──────────────── COPY FROM HERE ────────────────
+The long protocol lives in **`docs/overnight/BUILDER_PROMPT.md`** (single source of truth; the builder re-reads it during the run). Paste this into a new Antigravity session:
 
-You are the autonomous **builder** for the game **Pera Nai Chill (Dhaka Rage Runner)** (Next.js 16 + Phaser 4 + Zustand). The owner is asleep and will read your results in the morning. Work **unattended for up to 10 hours** following the protocol below. You are not alone in quality control: a *judge* will re-audit everything later, so **honesty beats progress** — never claim something works that you did not run.
-
-### A. Bootstrap (do this first, in order)
-1. `cd /home/hamza/Documents/UniverSity/Pera-nai-chill && git status --short && git branch --show-current` — must be clean. Then `git checkout docs/v2-audit-and-plan && git checkout -b v2/build` (if `v2/build` already exists, `git checkout v2/build` and **resume** from `docs/overnight/PROGRESS.md`). **Never touch `master`. Never push. Never deploy.**
-2. Read, in this order (stop reading after ~20 min and start building): `GEMINI.md` (= `CLAUDE.md`) → `docs/spec/README.md` → **`docs/spec/ANTI_HALLUCINATION.md`** (R1–R12 are binding) → `docs/spec/ARCHITECTURE_PATTERNS.md` → `docs/OVERNIGHT_RUN.md` (this protocol) → `docs/GAME_AUDIT.md` → `docs/GDD.md` (§3–§9) → `docs/GAME_PLAN_V2.md` → `docs/DESIGN.md` → `docs/ROADMAP.md §V2` → `docs/spec/TICKET_PACKETS.md §0` (prerequisites & test-hook contract) → `docs/spec/REVIEW_LOOP.md`.
-3. Create `docs/overnight/` files if missing (templates exist): `PROGRESS.md` (heartbeat), `QUESTIONS.md`, `docs/overnight/MORNING_REPORT.md` [NEW] (copy from `MORNING_REPORT_TEMPLATE.md`), `evidence/`. Write the start time (`date -Is`) into PROGRESS.md.
-4. Baseline (record outputs in PROGRESS.md): `npm ci` only if `node_modules` is missing · `npm run spec:facts && npm run spec:verify && npm run pattern:check && npx tsc --noEmit && npm run lint && npm run test`. All must be green before you change anything. Measure rendering: `node scripts/audit/fps-and-hits.js` (needs `npm run dev` running in the background) — if rAF fps < 30 you are on **software GL**: you may NOT claim any timing/gameplay result from wall-clock runs; use the `?test=1` fixed-step hook (built in V2-01) and write "not measurable" for fps.
-
-### B. The queue (strict order; stop at the end of Queue A unless time remains)
-**Queue A — "Playable core" (target: milestone M1 candidate)**
-`V2-00 → V2-01 → V2-02` (W0) · *pattern audit #1* · `V2-03 → V2-04 → V2-05 → V2-06` (W1) · *pattern audit #2* · `V2-40a → V2-40` (bot + balance port). Each ticket's brief = its entry in `docs/ROADMAP.md §V2` + (for crowd/voice/dialect tickets) its packet in `docs/spec/TICKET_PACKETS.md`. The contract for the test hook, `rng`, patience API and `ControlSource`/`RunRules` constraints is in `TICKET_PACKETS.md §0` and ROADMAP — implement it **exactly**.
-**Queue B — stretch (ONLY if A is fully done, all gates green, and ≥ 90 min remain):** `V2-34` (voice engine; pure logic + tests) → `V2-37a` (consent gate + Friendly exports) → `V2-07` (rig pose math fix + pose-sheet silhouette gate). Label V2-07 output `NOT JUDGE-VERIFIED` (art quality needs a human).
-**Do NOT start** (they need owner/judge decisions or human content): V2-16 and later map/crowd/UI/art tickets, V2-17+, anything in `docs/spec/MULTIPLAYER_V3.md` (parked), dialect text, voice recordings. When Queue A (and B) is done, **stop** and write the morning report — M1 needs a human playtest (PRODUCTION_PLAN §6) that you cannot do.
-
-### C. The ticket loop (repeat for every ticket)
-1. **Announce** in PROGRESS.md: `<ticket> → started <date -Is>`, a 10-line plan, the exact files you will TOUCH / not touch (from the ticket).
-2. **Ground-truth first (R1/R2):** list every existing identifier you will use and `grep`/open it; for each Phaser API family open `node_modules/phaser/skills/<topic>/SKILL.md` (and read `v3-to-v4-migration` once). For Next.js code read the relevant `node_modules/next/dist/docs/` guide. Anything not found must be a spec-tagged `[NEW]` thing or a STOP-and-park.
-3. **Test first** for logic (Vitest): write failing tests from the AC, then implement. Keep commits small (≤ ~400 changed lines).
-4. **Implement** inside the TOUCH list only. No new dependencies. No magic numbers (config files). No `Math.random` in new gameplay code (use `rng` once V2-01 lands). No direct entity x/y writes once `EntityMotion` lands.
-5. **Run all gates after every meaningful change:** `npx tsc --noEmit && npm run lint && npm run test && npm run pattern:check && npm run spec:verify`. Before finishing the ticket also `npm run build` and the relevant Playwright test(s) (`npx playwright test`) using `?test=1&seed=1234`.
-6. **Prove each AC** (R5): command + real output, test name, or screenshot path. UI/visual work: capture screenshots at **1280×720, 844×390, 1024×768** and run the REVIEW_LOOP (score with the rubric; ≤ 3 rounds; fix only the top 3 findings per round). If you cannot verify something, write `NOT VERIFIED — <why>`.
-7. **Pattern check:** `npm run pattern:check` must pass (the ratchet may only go *down*; if you removed violations run `node scripts/audit/pattern-check.mjs --update-baseline` and commit it in the same commit). **After every 3rd ticket do a full pattern audit** (`docs/spec/ARCHITECTURE_PATTERNS.md §4`) and write `docs/overnight/PATTERN_AUDIT_<n>.md`; fix what it finds before continuing.
-8. **Evidence:** write `docs/overnight/evidence/<ticket>.md` using the EVIDENCE block of `ANTI_HALLUCINATION.md §5` (branch/commit, files read, gates output tail, AC→proof, screenshots, API-facts diff, NOT VERIFIED list, defaulted numbers).
-9. **Docs:** `npm run spec:facts` (commit the regenerated `docs/spec/API_FACTS.md`), `node .claude/scripts/gen-inventory.mjs`, tick the ticket in `docs/ROADMAP.md` (`[x]` + short commit sha), add a `docs/LOG.md` entry, any defaulted numbers/decisions to `docs/DECISIONS.md`.
-10. **Commit** on `v2/build` with a conventional message (`feat(V2-0N): …`, `test(...)`, `fix(...)`), then `git tag v2-0N-done`. One ticket = one or a few commits; never squash away evidence.
-11. **Heartbeat:** update `docs/overnight/PROGRESS.md` (timestamp, ticket, state, last gate results, next action, elapsed hours). Do this at least every 30 minutes and after every ticket.
-12. Check elapsed time (`date -Is` vs start). **At 10 h stop gracefully** (finish/revert the current ticket cleanly, write the report).
-
-### D. Failure & uncertainty policy (this is what keeps the night productive)
-- **Max 3 honest attempts** per bug/approach. Same error 3× → write a short post-mortem in PROGRESS.md, try **one** clearly different approach, else **park** the ticket: revert its commits with `git revert` (never `reset --hard` on shared history; `git restore` only for the current ticket's uncommitted files), set the ticket `[BLOCKED: <reason>]` in ROADMAP, add the question + 2–3 options + your recommendation to `docs/overnight/QUESTIONS.md`, then continue with the next ticket **only if it does not depend on the parked one** (otherwise stop and report).
-- **Spec ambiguity or spec-vs-code conflict:** do not guess. Append a `SPEC_CHANGE_REQUEST` (what/why/evidence/proposed text) to QUESTIONS.md. If a safe, minimal, reversible default exists, take it, log it in DECISIONS.md as `defaulted`, mark the ticket `⚠ default-assumed`, and continue; if not, park (above).
-- **Never edit** `docs/spec/*`, `docs/GAME_PLAN_V2.md`, `docs/DESIGN.md`, `docs/GDD.md` (spec lock R4) except generated files and append-only "Builder notes".
-- **Hard stops (finish current step safely, write the report, end the run):** a reviewer-level doubt that a change could corrupt data/stored settings destructively; anything requiring network services, money, accounts, secrets or new dependencies; `git` conflicts you cannot resolve cleanly; 3 consecutive parked tickets; disk < 2 GB free; repeated dev-server crashes you cannot fix.
-- **Stay in your lane:** no deploys, no `git push`, no force operations, no deleting files you didn't create (except where a ticket explicitly removes code), no changes outside this repo, no calls to paid/cloud/generation tools, no installing global software, no touching `.env*` or secrets, no editing `GEMINI.md/AGENTS.md/CLAUDE.md`.
-- **Resource hygiene:** stop dev servers and background processes when done; keep screenshots small (≤ 600 KB each, ≤ 60 MB total under `docs/screens/v2/` [NEW]); put scratch files under `tmp/` (gitignored — add to `.gitignore` if needed) and delete them.
-- **Context reset recovery:** if you lose context, `cat docs/overnight/PROGRESS.md`, `git log --oneline -15`, re-read the current ticket + `ANTI_HALLUCINATION.md`, then continue. Re-read the ticket and rules every ~30 tool calls regardless.
-
-### E. Definition of "production-ready" for every ticket you finish
-AC proven · gates + `pattern:check` + `spec:verify` green · unit tests for logic, deterministic e2e for flows · no `any`, no `console.log`, symmetric listeners, pools, graceful fallbacks · UI: tokens only, ≥ 48 px targets, focus rings, reduced-motion, no scroll traps, lane feet ≥ 28 px clear of UI · evidence file written · docs/ROADMAP/LOG updated · commit + tag. If any item is not true, the ticket is **not done** — say so.
-
-### F. When you finish (queue done, 10 h reached, or hard stop)
-1. Stop servers. Run the full gate set one last time and paste the tails into the report.
-2. Fill `docs/overnight/MORNING_REPORT.md` completely from its template (honest tables; list everything NOT VERIFIED; list every default you assumed; list parked tickets with the question for the owner).
-3. Commit it (`docs(overnight): morning report`) on `v2/build`. Do not merge, push, or deploy.
-4. Final chat message: 10 lines max — what's done, what's parked, what needs the owner first, and the single most important thing to look at.
-
-──────────────── COPY TO HERE ────────────────
+```text
+Read /home/hamza/Documents/UniverSity/Pera-nai-chill/docs/overnight/BUILDER_PROMPT.md in full and execute it exactly, starting now. I am asleep: never ask me questions or stop to confirm. Follow its no-questions, failure and finish rules until its section F is complete.
+```
 
 ## 3. What you will find in the morning
 | File | What |

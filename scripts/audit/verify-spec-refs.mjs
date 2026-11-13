@@ -19,6 +19,7 @@ const specFiles = [
   "docs/GDD.md",
   "docs/PRODUCTION_PLAN.md",
   "docs/OVERNIGHT_RUN.md",
+  "docs/overnight/BUILDER_PROMPT.md",
 ];
 const bus = fs.readFileSync("src/game/bus.ts", "utf8");
 const busEvents = new Set([...bus.matchAll(/"([a-zA-Z]+(?::[a-zA-Z]+)?)":/g)].map((m) => m[1]));
