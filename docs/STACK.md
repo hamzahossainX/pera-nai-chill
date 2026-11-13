@@ -5,7 +5,7 @@
 ## §1 — Identity
 - **Project:** Pernaichill (Pera Nai Chill — Dhaka Rage Runner)
 - **Domain:** Satirical 2D comic action-runner web arcade game
-- **Status:** Phase 1 Complete (In Polish & Visual Simulation Expansion)
+- **Status:** Phase 1+2 shipped; **V2 overhaul in planning/execution** (see `docs/GAME_AUDIT.md`, `docs/GAME_PLAN_V2.md`, ROADMAP §V2)
 - **One-line what-it-is:** A client-side 2D ragdoll action-runner web game where players caricature a villain, navigate 3 lanes of Dhaka traffic, unleash slap/chappal combos, and survive real-life Dhaka events (loadshedding, smog, strikes).
 
 ## §2 — Stack
