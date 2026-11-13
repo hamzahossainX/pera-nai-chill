@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { CharacterRig } from "./CharacterRig";
-import { BALANCE } from "@/config/balance";
+import { getLaneY, getLaneScale } from "@/config/layout";
 import { OUTFITS } from "@/config/outfits";
 
 export class Chaser {
@@ -11,8 +11,8 @@ export class Chaser {
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
 
-    const initialY = BALANCE.LANES_Y[this.currentLane];
-    const initialScale = BALANCE.LANE_SCALES[this.currentLane];
+    const initialY = getLaneY(this.currentLane);
+    const initialScale = getLaneScale(this.currentLane);
 
     this.rig = new CharacterRig({
       scene,
@@ -60,8 +60,8 @@ export class Chaser {
 
     this.spawnDashDust(this.rig.x - 15, this.rig.y + 10);
 
-    const targetY = BALANCE.LANES_Y[laneIndex];
-    const targetScale = BALANCE.LANE_SCALES[laneIndex];
+    const targetY = getLaneY(laneIndex);
+    const targetScale = getLaneScale(laneIndex);
 
     this.scene.tweens.add({
       targets: this.rig,

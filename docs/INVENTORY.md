@@ -4,7 +4,7 @@
 
 > **Reuse rubric:** exact match → **reuse** · close (differs by config) → **extend with a variant/prop** · genuinely new → **create** in the right unit, add a one-line `@purpose` comment, regenerate this file. Search here before writing any new component/util/schema, and state your reuse/extend/new choice in the ticket summary.
 
-## src  _(129)_
+## src  _(140)_
 
 | Export | Kind | Purpose | File |
 |---|---|---|---|
@@ -22,6 +22,8 @@
 | `BribeButton` | function | — | `src/components/game/BribeButton.tsx` |
 | `BypassSchema` | const | — | `src/services/eventService.ts` |
 | `calculateComboMultiplier` | function | — | `src/config/balance.ts` |
+| `CANVAS_HEIGHT` | const | — | `src/config/layout.ts` |
+| `CANVAS_WIDTH` | const | — | `src/config/layout.ts` |
 | `CHAPPAL_VARIETIES` | const | — | `src/config/weapons.ts` |
 | `ChappalVariety` | interface | — | `src/config/weapons.ts` |
 | `CharacterRig` | class | — | `src/game/entities/CharacterRig.ts` |
@@ -66,12 +68,19 @@
 | `GameScreen` | type | — | `src/store/useGameStore.ts` |
 | `GameSettings` | interface | — | `src/store/useGameStore.ts` |
 | `GameState` | interface | — | `src/store/useGameStore.ts` |
+| `GameStateSnapshot` | interface | — | `src/game/testHook.ts` |
+| `GameTestHook` | interface | — | `src/game/testHook.ts` |
+| `getLaneCount` | function | — | `src/config/layout.ts` |
+| `getLaneScale` | function | — | `src/config/layout.ts` |
+| `getLaneY` | function | — | `src/config/layout.ts` |
 | `getTodayChallenge` | function | — | `src/config/dailyChallenge.ts` |
 | `getVillainById` | function | — | `src/config/villains.ts` |
 | `hapticsService` | const | — | `src/services/haptics.ts` |
 | `Home` | default function | — | `src/app/page.tsx` |
 | `HudOverlay` | function | — | `src/components/game/HudOverlay.tsx` |
+| `installTestHook` | function | — | `src/game/testHook.ts` |
 | `isMobile` | const | — | `src/lib/device.ts` |
+| `LAYOUT` | const | — | `src/config/layout.ts` |
 | `LEGACY_VILLAIN_MAP` | const | — | `src/config/villains.ts` |
 | `LOADING_TIPS` | const | — | `src/config/tips.ts` |
 | `LoadingProgress` | interface | — | `src/store/useGameStore.ts` |
@@ -97,9 +106,11 @@
 | `PropTag` | type | — | `src/config/props.ts` |
 | `RigOptions` | interface | — | `src/game/entities/CharacterRig.ts` |
 | `RigSlotTextures` | interface | — | `src/config/outfits.ts` |
+| `rng` | const | — | `src/lib/rng.ts` |
 | `RootLayout` | default function | — | `src/app/layout.tsx` |
 | `RunScene` | class | — | `src/game/scenes/RunScene.ts` |
 | `SecondaryMotion` | class | — | `src/game/systems/SecondaryMotion.ts` |
+| `SeededRNG` | class | — | `src/lib/rng.ts` |
 | `ServiceWorkerRegister` | function | — | `src/components/shell/ServiceWorkerRegister.tsx` |
 | `SettingsSheet` | function | — | `src/components/lobby/SettingsSheet.tsx` |
 | `SHOP_ITEMS` | const | — | `src/config/shop.ts` |
@@ -139,4 +150,4 @@
 | `WorldEventSchema` | const | — | `src/services/eventService.ts` |
 
 
-_129 exports across 1 unit(s)._
+_140 exports across 1 unit(s)._
