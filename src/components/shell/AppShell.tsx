@@ -92,7 +92,10 @@ export function AppShell() {
       )}
 
       {screen === "LOBBY" && (
-        <div className="relative min-h-screen w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6 select-none">
+        <div
+          tabIndex={0}
+          className="relative h-dvh max-h-dvh w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6 select-none focus:outline-none"
+        >
           <SettingsSheet
             isOpen={isSettingsOpen}
             onClose={() => setIsSettingsOpen(false)}

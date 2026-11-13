@@ -7,6 +7,9 @@ The_A_Stack.zip
 *.log
 *.tsbuildinfo
 .vercel
+test-results/
+playwright-report/
+tmp/
 
 # Local AI-agent tooling & memory — kept out of the shared repo
 .agents/

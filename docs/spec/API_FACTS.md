@@ -206,7 +206,7 @@
 - `src/components/lobby/SettingsSheet.tsx` (136)
 - `src/components/lobby/VillainPreview.tsx` (519)
 - `src/components/lobby/WeaponSelector.tsx` (133)
-- `src/components/shell/AppShell.tsx` (208)
+- `src/components/shell/AppShell.tsx` (211)
 - `src/components/shell/OrientationGuard.tsx` (51)
 - `src/components/shell/ServiceWorkerRegister.tsx` (22)
 - `src/config/achievements.ts` (60)
