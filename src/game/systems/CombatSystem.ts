@@ -11,6 +11,7 @@ import {
   DEFAULT_CHAPPAL,
 } from "@/config/weapons";
 import { calculateComboMultiplier } from "@/config/balance";
+import { rng } from "@/lib/rng";
 import { useGameStore } from "@/store/useGameStore";
 import { gameBus } from "@/game/bus";
 import { audioService } from "@/services/audio";
@@ -208,10 +209,10 @@ export class CombatSystem {
 
       const comicWord =
         attackType === "slap"
-          ? slapWords[Math.floor(Math.random() * slapWords.length)]
+          ? rng.pick(slapWords)
           : attackType === "punch"
-          ? punchWords[Math.floor(Math.random() * punchWords.length)]
-          : kickWords[Math.floor(Math.random() * kickWords.length)];
+          ? rng.pick(punchWords)
+          : rng.pick(kickWords);
 
       this.scene.time.delayedCall(delay, () => {
         const hitX = this.villain.rig.x - 20;
@@ -248,10 +249,10 @@ export class CombatSystem {
     const barrageCount = 10;
     for (let i = 0; i < barrageCount; i++) {
       this.scene.time.delayedCall(i * 50, () => {
-        const startX = 100 + Math.random() * 200;
-        const startY = 100 + Math.random() * 200;
-        const targetX = this.villain.rig.x + (Math.random() - 0.5) * 40;
-        const targetY = this.villain.rig.y - 70 + (Math.random() - 0.5) * 30;
+        const startX = 100 + rng.range(0, 200);
+        const startY = 100 + rng.range(0, 200);
+        const targetX = this.villain.rig.x + rng.range(-20, 20);
+        const targetY = this.villain.rig.y - 70 + rng.range(-15, 15);
 
         const p = new Projectile({
           scene: this.scene,

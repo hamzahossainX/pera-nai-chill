@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { getLaneY, getLaneScale } from "@/config/layout";
 import { BALANCE } from "@/config/balance";
 
 export type ObstacleType =
@@ -48,8 +49,8 @@ export class Obstacle extends Phaser.GameObjects.Sprite {
         : "projectile-brick";
 
     this.setTexture(textureKey);
-    this.setPosition(startX, BALANCE.LANES_Y[lane] - 15);
-    this.setScale(BALANCE.LANE_SCALES[lane]);
+    this.setPosition(startX, getLaneY(lane) - 15);
+    this.setScale(getLaneScale(lane));
     this.setDepth(lane + 8);
     this.setVisible(true);
   }

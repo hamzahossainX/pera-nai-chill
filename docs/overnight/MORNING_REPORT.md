@@ -11,6 +11,7 @@
 | Ticket | Status (done / done-with-caveats / parked / not started) | Commit / tag | Evidence | Gates | Review score | NOT VERIFIED / ⚠ default-assumed |
 |---|---|---|---|---|---|---|
 | V2-00 | done | tag: v2-00-done | docs/overnight/evidence/V2-00.md | tsc ✅ · lint ✅ · test ✅ (37) · build ✅ · playwright ✅ (8) | n/a | none |
+| V2-01 | done | tag: v2-01-done | docs/overnight/evidence/V2-01.md | tsc ✅ · lint ✅ · test ✅ (47) · build ✅ · playwright ✅ (14) | n/a | none |
 
 ## 3. Audit findings status (proof required)
 | Finding | ✅ fixed / ❌ open / ⚠ partial | Proving artefact (test name / command / screenshot) |

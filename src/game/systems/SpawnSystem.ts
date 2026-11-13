@@ -4,6 +4,8 @@ import { PickupItem, PickupType } from "@/game/entities/PickupItem";
 import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { FxSystem } from "@/game/systems/FxSystem";
+import { getLaneY } from "@/config/layout";
+import { rng } from "@/lib/rng";
 import { BALANCE } from "@/config/balance";
 import { useGameStore } from "@/store/useGameStore";
 import { audioService } from "@/services/audio";
@@ -70,7 +72,7 @@ export class SpawnSystem {
     const free = this.pool.find((o) => !o.isActiveInWorld);
     if (!free) return;
 
-    const chosenLane = lane ?? Math.floor(Math.random() * 3);
+    const chosenLane = lane ?? rng.between(0, 2);
     const mapId = useGameStore.getState().currentMapId || "mirpur";
 
     // Scenario-based obstacle weighting
@@ -84,7 +86,7 @@ export class SpawnSystem {
       types = ["crowd", "rickshaw", "brick", "barricade", "pothole"];
     }
 
-    const chosenType = type ?? types[Math.floor(Math.random() * types.length)];
+    const chosenType = type ?? rng.pick(types);
     free.spawn(chosenLane, chosenType);
   }
 
@@ -92,7 +94,7 @@ export class SpawnSystem {
     const free = this.pickupPool.find((p) => !p.isActiveInWorld);
     if (!free) return;
 
-    const chosenLane = lane ?? Math.floor(Math.random() * 3);
+    const chosenLane = lane ?? rng.between(0, 2);
     const store = useGameStore.getState();
 
     // Context-sensitive pickup selection:
@@ -105,7 +107,7 @@ export class SpawnSystem {
       pickupTypes = ["daab", "biriyani", "cha", "taka", "mask"];
     }
 
-    const chosenType = type ?? pickupTypes[Math.floor(Math.random() * pickupTypes.length)];
+    const chosenType = type ?? rng.pick(pickupTypes);
     free.spawn(chosenLane, chosenType);
   }
 
@@ -136,9 +138,9 @@ export class SpawnSystem {
         const dist = obs.x - this.villain.rig.x;
         // Obstacle approaching villain: 50% chance villain vaults
         if (dist > 35 && dist < 95 && !this.villain.isVaulting) {
-          if (Math.random() < 0.5) {
+          if (rng.chance(0.5)) {
             this.villain.vault();
-          } else if (obs.obstacleType === "barricade" && Math.random() < 0.3) {
+          } else if (obs.obstacleType === "barricade" && rng.chance(0.3)) {
             // Villain shoves the barricade backwards!
             obs.x -= 80;
           }
@@ -209,7 +211,7 @@ export class SpawnSystem {
           store.addTaka(10);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "আহা তাজা ডাব! চাঙ্গা!",
             "#22c55e",
             "24px"
@@ -218,7 +220,7 @@ export class SpawnSystem {
           store.setCounterBuff("N95 মাস্ক", 15);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "এন৯৫ মাস্ক! ধোঁয়া গায়েব!",
             "#38bdf8",
             "24px"
@@ -227,7 +229,7 @@ export class SpawnSystem {
           store.addRage(20);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "কাচ্চি বিরিয়ানি! ফুল পাওয়ার!",
             "#f59e0b",
             "24px"
@@ -236,7 +238,7 @@ export class SpawnSystem {
           store.setStamina(100);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "টংয়ের দুধ চা! ফুল স্ট্যামিনা!",
             "#ea580c",
             "24px"
@@ -245,7 +247,7 @@ export class SpawnSystem {
           store.addTaka(50);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "+৫০ ৳ টাকার ব্যাগ!",
             "#10b981",
             "26px"

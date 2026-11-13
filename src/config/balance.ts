@@ -1,3 +1,5 @@
+import { LAYOUT } from "./layout";
+
 export const BALANCE = {
   // Combat
   INITIAL_VILLAIN_HP: 1000,
@@ -10,10 +12,10 @@ export const BALANCE = {
   COMBO_TIMEOUT_MS: 2500,
 
   // World & Camera
-  LOGICAL_WIDTH: 1280,
-  LOGICAL_HEIGHT: 720,
-  LANES_Y: [430, 485, 540] as const,
-  LANE_SCALES: [0.9, 1.0, 1.1] as const,
+  LOGICAL_WIDTH: LAYOUT.CANVAS_WIDTH,
+  LOGICAL_HEIGHT: LAYOUT.CANVAS_HEIGHT,
+  LANES_Y: LAYOUT.LANES_Y,
+  LANE_SCALES: LAYOUT.LANE_SCALES,
   BASE_RUN_SPEED: 320,
   TARGET_FPS: 60,
 

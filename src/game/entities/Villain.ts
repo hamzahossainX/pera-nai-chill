@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { CharacterRig } from "./CharacterRig";
-import { BALANCE } from "@/config/balance";
+import { getLaneY, getLaneScale, getLaneCount } from "@/config/layout";
+import { rng } from "@/lib/rng";
 import { VILLAINS } from "@/config/villains";
 import { OUTFITS } from "@/config/outfits";
 import { useGameStore } from "@/store/useGameStore";
@@ -17,8 +18,8 @@ export class Villain {
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
 
-    const initialY = BALANCE.LANES_Y[this.currentLane];
-    const initialScale = BALANCE.LANE_SCALES[this.currentLane];
+    const initialY = getLaneY(this.currentLane);
+    const initialScale = getLaneScale(this.currentLane);
 
     const villainConfig =
       VILLAINS.find((v) => v.id === useGameStore.getState().villainId) ||
@@ -45,11 +46,11 @@ export class Villain {
   }
 
   public setLane(laneIndex: number) {
-    if (laneIndex < 0 || laneIndex >= BALANCE.LANES_Y.length || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
+    if (laneIndex < 0 || laneIndex >= getLaneCount() || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
     this.currentLane = laneIndex;
 
-    const targetY = BALANCE.LANES_Y[laneIndex];
-    const targetScale = BALANCE.LANE_SCALES[laneIndex];
+    const targetY = getLaneY(laneIndex);
+    const targetScale = getLaneScale(laneIndex);
 
     this.scene.tweens.add({
       targets: this.rig,
@@ -162,13 +163,13 @@ export class Villain {
     const threshold = this.isBossPhase2 ? 2200 : 4500;
     if (this.laneChangeTimer > threshold) {
       this.laneChangeTimer = 0;
-      if (Math.random() < (this.isBossPhase2 ? 0.8 : 0.6)) {
+      if (rng.chance(this.isBossPhase2 ? 0.8 : 0.6)) {
         const nextLane =
           this.currentLane === 0
             ? 1
             : this.currentLane === 2
             ? 1
-            : Math.random() < 0.5
+            : rng.chance(0.5)
             ? 0
             : 2;
         this.setLane(nextLane);

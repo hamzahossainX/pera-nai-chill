@@ -1,5 +1,12 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-13 — V2-01: layout.ts, test hook & seeded RNG (T-01, M-04)
+- Created `src/config/layout.ts` [NEW] with canvas zones (HUD, SKY, SIDEWALK, PLAY_ZONE, FOOT_ZONE), lanes (`[450, 515, 580]`), and scales (`[0.88, 1.0, 1.12]`).
+- Migrated all `LANES_Y` and `LANE_SCALES` consumers in `src/game/` (`Chaser.ts`, `Villain.ts`, `Obstacle.ts`, `PickupItem.ts`, `SpawnSystem.ts`). Pattern ratchet P03 dropped from 18 to 0!
+- Created `src/lib/rng.ts` [NEW] wrapping/matching Phaser's seedable Alea PRNG (`next`, `chance`, `pick`, `range`, `between`, `init`). Migrated 21 `Math.random` calls in `SpawnSystem`, `Villain`, `DialogueSystem`, `CombatSystem`. Pattern ratchet P01 dropped from 63 to 43.
+- Created `src/game/testHook.ts` [NEW] installed when `?test=1` with `seed`, `step(ms)`, `getState()`, `registerState(name, fn)`, and `debug.{register, call, list}` matching spec.
+- Added comprehensive unit tests in `src/__tests__/layout_and_rng.test.ts` (10 tests) and e2e test in `e2e/test-hook.spec.ts` (4 tests). All 47 vitest tests and 14 Playwright tests passed.
+
 ## 2026-11-13 — V2-00: Fix unscrollable lobby / unreachable map picker (M-01, U-04)
 - Fixed lobby scroll container in `src/components/shell/AppShell.tsx`: bounded height via `h-dvh max-h-dvh overflow-y-auto` with `tabIndex={0}` so the lobby container clientHeight is constrained to the viewport and properly scrolls.
 - Fixed `e2e/smoke.spec.ts` tap-to-start locator and mobile orientation bypass.
