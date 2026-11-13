@@ -55,7 +55,7 @@ export class Chaser {
   }
 
   public followLane(laneIndex: number) {
-    if (this.currentLane === laneIndex || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
+    if (this.currentLane === laneIndex || !this.rig || !this.rig.scene) return;
     this.currentLane = laneIndex;
 
     this.spawnDashDust(this.rig.x - 15, this.rig.y + 10);
@@ -63,17 +63,18 @@ export class Chaser {
     const targetY = getLaneY(laneIndex);
     const targetScale = getLaneScale(laneIndex);
 
-    this.scene.tweens.add({
-      targets: this.rig,
-      y: targetY,
-      scaleX: targetScale,
-      scaleY: targetScale,
-      duration: 260,
-      ease: "Quad.Out",
-      onUpdate: () => {
-        this.rig.setDepth(this.currentLane + 9);
-      },
-    });
+    this.rig.motion.setLaneY(targetY);
+    this.rig.setDepth(this.currentLane + 9);
+
+    if (this.scene && this.scene.tweens) {
+      this.scene.tweens.add({
+        targets: this.rig,
+        scaleX: targetScale,
+        scaleY: targetScale,
+        duration: 260,
+        ease: "Quad.Out",
+      });
+    }
   }
 
   public attack(type: "slap" | "punch" | "kick" | "throw") {

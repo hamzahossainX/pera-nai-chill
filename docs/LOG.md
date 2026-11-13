@@ -1,6 +1,18 @@
 # LOG.md — Shipped Work History
 
-## 2026-11-13 — V2-01: layout.ts, test hook & seeded RNG (T-01, M-04)
+## 2026-11-13 — V2-02: EntityMotion position channels & knockback fix (C-01, C-03)
+- Created `src/game/motion/EntityMotion.ts` [NEW] as single owner of entity positions `(x, y)`:
+  - Channels: `homeX`, `offsetX` (sub-stepped damped harmonic oscillator spring-back), `laneY` (smooth exponential lerp), `jumpY` (normalized parabolic vertical arc for jumps/vaults), `extraY` (vertical trip/death offset), and bounding clamp to `[minX, maxX] = [60, 1220]`.
+- Integrated `EntityMotion` into `CharacterRig.ts` (`motion` member instantiated in constructor, updated per frame in `update`).
+- Fixed C-01 (villain knockback drift bug): replaced direct `x: targetX` tween in `triggerHitStun` with `motion.applyImpulse(knockbackX)`, which auto-recovers to home position within 400 ms.
+- Fixed C-03 (vault snapback bug): replaced `this.rig.y = currentY` snapback in `Villain.vault()` with `this.rig.motion.vault(50, 400)`. Lane changes during vaults now transition smoothly without snapping back or teleporting.
+- Replaced direct tween `y: targetY` in `Villain.setLane` and `Chaser.followLane` with `this.rig.motion.setLaneY(targetY)`.
+- Replaced direct `this.x -= ...` in `Obstacle.ts` and `PickupItem.ts` with `this.setX(...)`.
+- Reduced pattern violation `P02_direct_entity_position_write` from 5 to 0; lowered baseline in `scripts/audit/pattern-baseline.json`.
+- Added unit tests in `src/__tests__/entity_motion.test.ts` (3 tests: 500 impulses bounds check, spring recovery in < 400 ms, vault/lane-change independence).
+- Added e2e test in `e2e/knockback-drift.spec.ts` (simulates 60s of continuous attacks, proving villain and chaser stay strictly within `[0, 1280]` and villain springs back to ~880).
+- All gates green (tsc, lint, vitest 50/50, pattern:check, spec:verify, next build, playwright 16/16).
+
 - Created `src/config/layout.ts` [NEW] with canvas zones (HUD, SKY, SIDEWALK, PLAY_ZONE, FOOT_ZONE), lanes (`[450, 515, 580]`), and scales (`[0.88, 1.0, 1.12]`).
 - Migrated all `LANES_Y` and `LANE_SCALES` consumers in `src/game/` (`Chaser.ts`, `Villain.ts`, `Obstacle.ts`, `PickupItem.ts`, `SpawnSystem.ts`). Pattern ratchet P03 dropped from 18 to 0!
 - Created `src/lib/rng.ts` [NEW] wrapping/matching Phaser's seedable Alea PRNG (`next`, `chance`, `pick`, `range`, `between`, `init`). Migrated 21 `Math.random` calls in `SpawnSystem`, `Villain`, `DialogueSystem`, `CombatSystem`. Pattern ratchet P01 dropped from 63 to 43.
