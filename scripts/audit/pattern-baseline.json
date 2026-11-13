@@ -1,0 +1,15 @@
+{
+  "generated": "2026-11-13",
+  "counts": {
+    "P01_math_random_in_game": 63,
+    "P02_direct_entity_position_write": 5,
+    "P03_lane_literals_outside_layout": 18,
+    "P04_bus_on_without_off": 0,
+    "P05_any_type": 0,
+    "P06_console_log": 1,
+    "P07_settimeout_in_game": 0,
+    "P08_hex_literals_in_systems": 48,
+    "P09_file_over_800_lines": 2,
+    "P10_unguarded_localstorage": 0
+  }
+}

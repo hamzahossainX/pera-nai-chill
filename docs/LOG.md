@@ -1,5 +1,32 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-13 — Multiplayer parked (V3), overnight run protocol, pattern ratchet (docs/tooling only)
+- `docs/spec/MULTIPLAYER_V3.md` (parked Hunt Mode spec) + ROADMAP "Next scope — V3"; V2-03 gains `ControlSource`, V2-06 gains `RunRules` forward-compat ACs; FEATURE_BACKLOG/GDD/README updated.
+- `docs/OVERNIGHT_RUN.md` (launch steps, paste-in prompt, queue, failure policy, morning checklist) + `docs/overnight/{PROGRESS,QUESTIONS,MORNING_REPORT_TEMPLATE,evidence/}`.
+- `docs/spec/ARCHITECTURE_PATTERNS.md` + `scripts/audit/pattern-check.mjs` (+ baseline: P01 63, P02 5, P03 18, P06 1, P08 48, P09 2; others 0; negative-tested) + `npm run pattern:check`.
+- `verify-spec-refs.mjs`: covers more docs, ignores branch names/`NN` placeholders.
+- No game code changed.
+
+## 2026-11-13 — GDD, production plan, dialect system, audio sourcing, balance model, spec v1.1 (docs/tooling only)
+- New: `docs/GDD.md`, `docs/PRODUCTION_PLAN.md`, `docs/spec/LOCALIZATION_AND_DIALECTS.md` (+ `dialect/translation_sheet.csv`, 124 rows × 8 dialect columns), `docs/spec/AUDIO_SOURCING.md` (+ `docs/audio/ASSET_LEDGER.csv`), `scripts/balance/{sim,tune,assist}.mjs` (+ `tuned.json`).
+- Voice CSV v2: 124 lines, 22 speakers, columns `dialect, base_id, priority, group, review`; unsafe/unclear lines rewritten (mob chaos lines, lane tips, brand/anthem mentions); copy rows added for bump/innocent/heckle/dialect-gap/boatman.
+- **Spec v1.1** after adversarial review: CROWD (states, single visibility rule, pile-on timeline with HP floor and shared `playArrestFinale`, safety wording), VOICE (mode table, trigger-based selection, ref-counted ducking, loops API, full babble table), TICKET_PACKETS rewritten (owned test-hook, acyclic order, V2-37a before pile-on, V2-33b, V2-38…41), MAP_SCENARIOS, ANTI_HALLUCINATION (rng owner, dead events), REVIEW_LOOP (no-celebrate rule), API_FACTS generator (flags declared-but-never-emitted events; bgm vs play keys; scenes), audit T-07.
+- Balance model result (candidate): masher 0 %, average 82/77/65/21 %, expert 98–100/81 % (beginner/medium/boss); novice needs assist (2 → 40 % across L0→L3). Caveats in GDD §9.
+- No game code changed.
+
+## 2026-11-13 — Spec pack for crowd, voices & living-street maps (docs/tooling only)
+- `docs/spec/`: README (read order), ANTI_HALLUCINATION (12 rules + preflight + evidence block), CROWD_AND_NPC_SPEC, VOICE_AND_SFX_SPEC (+ `voice/voice_lines.csv`, 116 draft Bangla lines), MAP_SCENARIOS (8 maps as living streets), REVIEW_LOOP (rubric, ≤3 rounds, golden frames), TICKET_PACKETS (V2-31…V2-37), FEATURE_BACKLOG (F-M1…F-20), generated API_FACTS.
+- Tooling: `scripts/audit/gen-api-facts.mjs`, `scripts/audit/verify-spec-refs.mjs` (negative-tested), npm scripts `spec:facts`, `spec:verify`.
+- ROADMAP W3b added; GAME_PLAN_V2 §5.1/§12/§14 extended (D8–D11); HANDOFF_PROMPT + CLAUDE/AGENTS/GEMINI entry files point to the pack. Key discovery: Phaser 4 ships 28 first-party skill guides in `node_modules/phaser/skills` (referenced as mandatory reading).
+- No game code changed.
+
+## 2026-11-13 — V2 audit & game plan (docs only, no game code changed)
+- **Gamer-eye audit** of baseline `3899745`: `docs/GAME_AUDIT.md` — 40+ findings with IDs and evidence tags. Headline verified facts: lobby cannot scroll so the Map picker (y≈1320) is unreachable at 1280×720 / 1920×1080 / 844×390 (M-01); the 3 maps are palette swaps (M-02); villain knockback is never undone so he drifts off-world (C-01, code-verified); no player movement, no gap, no fail state (G-01..G-03); HUD covers lanes on phones (U-01).
+- **Plan:** `docs/GAME_PLAN_V2.md` (core loop, layout zones, character spec, `MapDefinition` framework, 8 Bangladesh maps, UI rebuild, cleanup list), `docs/DESIGN.md` filled (was an empty template), `docs/ROADMAP.md §V2` tickets V2-00..V2-30.
+- **Handoff:** `docs/HANDOFF_PROMPT.md` (paste into a new session). New local skills: `map-authoring`, `playtest-audit`. Repro scripts in `scripts/audit/`. Evidence in `docs/audit/screens/`. `.claude/launch.json` added for the dev server.
+- **Gates (unchanged code):** tsc clean · lint clean · vitest 37/37.
+- **Caveat:** headless Chromium here runs WebGL at ~1.5 fps (software GL) → runtime Phaser behaviour (combat chains, events, boss) was code-verified, not played.
+
 ## 2026-11-10 — Phase 1.5 Game Design Polish & Feature Expansion
 - **Pre-Game Wanted Reason / Crime Tags (`src/config/crimes.ts`)**:
   - Curated 6 clean, hilarious, highly relatable Dhaka reasons (bKash money borrow & block, sleeping through group project, stealing big mutton roast at wedding, pretending no change at tea stall, trolling boss in company group chat, running away from rickshaw mama).

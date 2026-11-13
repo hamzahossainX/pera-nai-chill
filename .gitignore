@@ -7,3 +7,26 @@ The_A_Stack.zip
 *.log
 *.tsbuildinfo
 .vercel
+
+# Local AI-agent tooling & memory — kept out of the shared repo
+.claude/agents/
+.claude/settings.local.json
+.claude/projects/
+.claude/memory/
+.claude/worktrees/
+.agents/
+.agent/
+.gemini/
+.antigravity/
+docs/CODEX_QUEUE.md
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# AI-assistant instruction files & skills — local only (next dev may regenerate AGENTS.md/CLAUDE.md)
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+.claude/skills/
