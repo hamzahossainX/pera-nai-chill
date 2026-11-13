@@ -1,5 +1,12 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-13 — V2-00: Fix unscrollable lobby / unreachable map picker (M-01, U-04)
+- Fixed lobby scroll container in `src/components/shell/AppShell.tsx`: bounded height via `h-dvh max-h-dvh overflow-y-auto` with `tabIndex={0}` so the lobby container clientHeight is constrained to the viewport and properly scrolls.
+- Fixed `e2e/smoke.spec.ts` tap-to-start locator and mobile orientation bypass.
+- Added `e2e/lobby-scroll.spec.ts` testing 1280x720, 1920x1080, 1024x768, and 844x390 viewports with wheel, keyboard, and touch scrolling.
+- Verified Map heading `getBoundingClientRect().top` reduces from ~1320px to `< viewport height`. Captured screenshots in `docs/screens/v2/00/`.
+- All gates green (tsc, lint, vitest 37/37, pattern:check, spec:verify, playwright 8/8).
+
 ## 2026-11-13 — Multiplayer parked (V3), overnight run protocol, pattern ratchet (docs/tooling only)
 - `docs/spec/MULTIPLAYER_V3.md` (parked Hunt Mode spec) + ROADMAP "Next scope — V3"; V2-03 gains `ControlSource`, V2-06 gains `RunRules` forward-compat ACs; FEATURE_BACKLOG/GDD/README updated.
 - `docs/OVERNIGHT_RUN.md` (launch steps, paste-in prompt, queue, failure policy, morning checklist) + `docs/overnight/{PROGRESS,QUESTIONS,MORNING_REPORT_TEMPLATE,evidence/}`.
