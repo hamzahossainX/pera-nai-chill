@@ -1,4 +1,4 @@
-export type TimeOfDay = "noon" | "sunset" | "night" | "dawn";
+export type TimeOfDay = "noon" | "goldenHour" | "night" | "dawn";
 
 export interface MapScenario {
   id: "mirpur" | "farmgate" | "newmarket";
@@ -14,9 +14,12 @@ export interface MapScenario {
   accentColor: string;
   badgeText: string;
   skyKey: string;
+  farKey: string;
   nearKey: string;
   roadKey: string;
-  timeOfDay?: TimeOfDay;
+  defaultTimeOfDay: TimeOfDay;
+  supportedTimeOfDay: TimeOfDay[];
+  visualProfile: "residential" | "commercial" | "market";
   ambientEvent: string;
   hazards: {
     primary: string;
@@ -45,9 +48,12 @@ export const MAP_SCENARIOS: MapScenario[] = [
     accentColor: "#f59e0b",
     badgeText: "মিরপুর ১০",
     skyKey: "bg-sky-mirpur",
+    farKey: "bg-far-mirpur",
     nearKey: "bg-near-mirpur",
-    roadKey: "bg-road",
-    timeOfDay: "noon",
+    roadKey: "bg-road-mirpur",
+    defaultTimeOfDay: "noon",
+    supportedTimeOfDay: ["dawn", "noon", "goldenHour", "night"],
+    visualProfile: "residential",
     ambientEvent: "ধূলাবালি ও ম্যানহোল",
     hazards: {
       primary: "ভাঙা রাস্তা ও গর্ত",
@@ -77,9 +83,12 @@ export const MAP_SCENARIOS: MapScenario[] = [
     accentColor: "#ef4444",
     badgeText: "ফার্মগেট",
     skyKey: "bg-sky-farmgate",
+    farKey: "bg-far-farmgate",
     nearKey: "bg-near-farmgate",
-    roadKey: "bg-road",
-    timeOfDay: "sunset",
+    roadKey: "bg-road-farmgate",
+    defaultTimeOfDay: "goldenHour",
+    supportedTimeOfDay: ["dawn", "noon", "goldenHour", "night"],
+    visualProfile: "commercial",
     ambientEvent: "বাসের হর্ন ও জ্যাম",
     hazards: {
       primary: "চলন্ত হলুদ বাস ও লেগুনা",
@@ -109,9 +118,12 @@ export const MAP_SCENARIOS: MapScenario[] = [
     accentColor: "#8b5cf6",
     badgeText: "নিউ মার্কেট",
     skyKey: "bg-sky-newmarket",
+    farKey: "bg-far-newmarket",
     nearKey: "bg-near-newmarket",
-    roadKey: "bg-road",
-    timeOfDay: "night",
+    roadKey: "bg-road-newmarket",
+    defaultTimeOfDay: "night",
+    supportedTimeOfDay: ["dawn", "noon", "goldenHour", "night"],
+    visualProfile: "market",
     ambientEvent: "১০০ টাকা সেল ও ফুচকা",
     hazards: {
       primary: "ফুচকা-চটপটি ভ্যান",

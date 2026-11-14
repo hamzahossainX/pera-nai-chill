@@ -108,8 +108,8 @@ export function LoadingScreen() {
     }
   }, [displayProgress]);
 
-  const handleStart = async () => {
-    await audioService.unlock();
+  const handleStart = () => {
+    void audioService.unlock();
     audioService.play("click");
     if (typeof window !== "undefined") {
       try {
