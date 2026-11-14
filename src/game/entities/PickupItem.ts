@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { getLaneY, getLaneScale } from "@/config/layout";
 import { BALANCE } from "@/config/balance";
 
 export type PickupType = "daab" | "mask" | "biriyani" | "cha" | "taka";
@@ -31,8 +32,8 @@ export class PickupItem extends Phaser.GameObjects.Sprite {
         : "pickup-taka-bag";
 
     this.setTexture(textureKey);
-    this.setPosition(startX, BALANCE.LANES_Y[lane] - 25);
-    this.setScale(BALANCE.LANE_SCALES[lane]);
+    this.setPosition(startX, getLaneY(lane) - 25);
+    this.setScale(getLaneScale(lane));
     this.setDepth(lane + 9);
     this.setVisible(true);
 
@@ -57,7 +58,7 @@ export class PickupItem extends Phaser.GameObjects.Sprite {
   public update(_time: number, delta: number, speed: number) {
     if (!this.isActiveInWorld) return;
 
-    this.x -= speed * (delta * 0.001);
+    this.setX(this.x - speed * (delta * 0.001));
 
     if (this.x < -150) {
       this.deactivate();

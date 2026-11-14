@@ -4,7 +4,7 @@
 
 > **Reuse rubric:** exact match → **reuse** · close (differs by config) → **extend with a variant/prop** · genuinely new → **create** in the right unit, add a one-line `@purpose` comment, regenerate this file. Search here before writing any new component/util/schema, and state your reuse/extend/new choice in the ticket summary.
 
-## src  _(129)_
+## src  _(178)_
 
 | Export | Kind | Purpose | File |
 |---|---|---|---|
@@ -13,15 +13,26 @@
 | `AchievementsModal` | function | — | `src/components/game/AchievementsModal.tsx` |
 | `AppShell` | function | — | `src/components/shell/AppShell.tsx` |
 | `assetManifest` | const | — | `src/config/assetManifest.ts` |
+| `ASSIST_LADDER` | const | — | `src/config/balance.v2.ts` |
+| `AssistLevel` | interface | — | `src/config/balance.v2.ts` |
 | `AudioPlayOptions` | interface | — | `src/services/audio.ts` |
 | `audioService` | const | — | `src/services/audio.ts` |
 | `BALANCE` | const | — | `src/config/balance.ts` |
+| `BALANCE_V2` | const | — | `src/config/balance.v2.ts` |
 | `BgmFilterType` | type | — | `src/services/audio.ts` |
 | `BlackoutEffect` | class | — | `src/game/fx/index.ts` |
 | `BootScene` | class | — | `src/game/scenes/BootScene.ts` |
+| `BOT_PROFILES` | const | — | `src/game/bot/BotHarness.ts` |
+| `BotHarness` | class | — | `src/game/bot/BotHarness.ts` |
+| `BotProfile` | interface | — | `src/game/bot/BotHarness.ts` |
+| `BotSkill` | type | — | `src/game/bot/BotHarness.ts` |
+| `BotSource` | class | — | `src/game/input/BotSource.ts` |
 | `BribeButton` | function | — | `src/components/game/BribeButton.tsx` |
 | `BypassSchema` | const | — | `src/services/eventService.ts` |
 | `calculateComboMultiplier` | function | — | `src/config/balance.ts` |
+| `calculateStars` | function | — | `src/config/rules.ts` |
+| `CANVAS_HEIGHT` | const | — | `src/config/layout.ts` |
+| `CANVAS_WIDTH` | const | — | `src/config/layout.ts` |
 | `CHAPPAL_VARIETIES` | const | — | `src/config/weapons.ts` |
 | `ChappalVariety` | interface | — | `src/config/weapons.ts` |
 | `CharacterRig` | class | — | `src/game/entities/CharacterRig.ts` |
@@ -31,7 +42,9 @@
 | `CombatSystem` | class | — | `src/game/systems/CombatSystem.ts` |
 | `COMBO_NAMES` | const | — | `src/config/dialogue.ts` |
 | `ComboTier` | interface | — | `src/config/dialogue.ts` |
+| `CommandListener` | type | — | `src/game/input/ControlSource.ts` |
 | `COMMENTATOR_TICKER` | const | — | `src/config/dialogue.ts` |
+| `ControlSource` | interface | — | `src/game/input/ControlSource.ts` |
 | `createGame` | function | — | `src/game/createGame.ts` |
 | `CRIMES` | const | — | `src/config/crimes.ts` |
 | `CrimeTag` | interface | — | `src/config/crimes.ts` |
@@ -41,12 +54,16 @@
 | `DEFAULT_CHAPPAL` | const | — | `src/config/weapons.ts` |
 | `DEFAULT_CRIME` | const | — | `src/config/crimes.ts` |
 | `DEFAULT_MAP` | const | — | `src/config/maps.ts` |
+| `DEFAULT_SAVE_DATA_V1` | const | — | `src/services/storage.ts` |
+| `DEFAULT_STAGE_RULES` | const | — | `src/config/rules.ts` |
 | `DEFAULT_VILLAIN` | const | — | `src/config/villains.ts` |
 | `DemoRunner` | function | — | `src/components/game/DemoRunner.tsx` |
 | `DIALOGUE_GROUPS` | const | — | `src/config/dialogue.ts` |
 | `DialogueLine` | interface | — | `src/config/dialogue.ts` |
 | `DialogueSystem` | class | — | `src/game/systems/DialogueSystem.ts` |
 | `DifficultySystem` | class | — | `src/game/systems/DifficultySystem.ts` |
+| `EntityMotion` | class | — | `src/game/motion/EntityMotion.ts` |
+| `EntityMotionConfig` | interface | — | `src/game/motion/EntityMotion.ts` |
 | `EventBanner` | function | — | `src/components/game/EventBanner.tsx` |
 | `EventBypass` | type | — | `src/services/eventService.ts` |
 | `EventEffect` | type | — | `src/services/eventService.ts` |
@@ -66,21 +83,40 @@
 | `GameScreen` | type | — | `src/store/useGameStore.ts` |
 | `GameSettings` | interface | — | `src/store/useGameStore.ts` |
 | `GameState` | interface | — | `src/store/useGameStore.ts` |
+| `GameStateSnapshot` | interface | — | `src/game/testHook.ts` |
+| `GameTestHook` | interface | — | `src/game/testHook.ts` |
+| `GapSystem` | class | — | `src/game/systems/GapSystem.ts` |
+| `GapSystemConfig` | interface | — | `src/game/systems/GapSystem.ts` |
+| `GapZone` | type | — | `src/game/systems/GapSystem.ts` |
+| `getAssistLevel` | function | — | `src/config/balance.v2.ts` |
+| `getLaneCount` | function | — | `src/config/layout.ts` |
+| `getLaneScale` | function | — | `src/config/layout.ts` |
+| `getLaneY` | function | — | `src/config/layout.ts` |
+| `getMapStars` | function | — | `src/services/storage.ts` |
 | `getTodayChallenge` | function | — | `src/config/dailyChallenge.ts` |
 | `getVillainById` | function | — | `src/config/villains.ts` |
 | `hapticsService` | const | — | `src/services/haptics.ts` |
 | `Home` | default function | — | `src/app/page.tsx` |
 | `HudOverlay` | function | — | `src/components/game/HudOverlay.tsx` |
+| `InputCommand` | interface | — | `src/game/input/ControlSource.ts` |
+| `InputCommandType` | type | — | `src/game/input/ControlSource.ts` |
+| `installTestHook` | function | — | `src/game/testHook.ts` |
 | `isMobile` | const | — | `src/lib/device.ts` |
+| `KeyboardTouchSource` | class | — | `src/game/input/KeyboardTouchSource.ts` |
+| `LAYOUT` | const | — | `src/config/layout.ts` |
 | `LEGACY_VILLAIN_MAP` | const | — | `src/config/villains.ts` |
 | `LOADING_TIPS` | const | — | `src/config/tips.ts` |
 | `LoadingProgress` | interface | — | `src/store/useGameStore.ts` |
 | `LoadingScreen` | function | — | `src/components/loading/LoadingScreen.tsx` |
+| `loadSaveData` | function | — | `src/services/storage.ts` |
 | `LocalizedText` | type | — | `src/services/eventService.ts` |
 | `LocalizedTextSchema` | const | — | `src/services/eventService.ts` |
+| `MAP_BALANCE` | const | — | `src/config/balance.v2.ts` |
 | `MAP_SCENARIOS` | const | — | `src/config/maps.ts` |
+| `MapBalanceConfig` | interface | — | `src/config/balance.v2.ts` |
 | `MapScenario` | interface | — | `src/config/maps.ts` |
 | `MapSelector` | function | — | `src/components/lobby/MapSelector.tsx` |
+| `MapStarsRecord` | interface | — | `src/services/storage.ts` |
 | `metadata` | const | — | `src/app/layout.tsx` |
 | `Obstacle` | class | — | `src/game/entities/Obstacle.ts` |
 | `ObstacleOptions` | interface | — | `src/game/entities/Obstacle.ts` |
@@ -91,15 +127,24 @@
 | `ParallaxSystem` | class | — | `src/game/systems/ParallaxSystem.ts` |
 | `PickupItem` | class | — | `src/game/entities/PickupItem.ts` |
 | `PickupType` | type | — | `src/game/entities/PickupItem.ts` |
+| `Positionable` | interface | — | `src/game/motion/EntityMotion.ts` |
 | `PreloadScene` | class | — | `src/game/scenes/PreloadScene.ts` |
 | `Projectile` | class | — | `src/game/entities/Projectile.ts` |
 | `ProjectileOptions` | interface | — | `src/game/entities/Projectile.ts` |
 | `PropTag` | type | — | `src/config/props.ts` |
+| `recordMapStars` | function | — | `src/services/storage.ts` |
 | `RigOptions` | interface | — | `src/game/entities/CharacterRig.ts` |
 | `RigSlotTextures` | interface | — | `src/config/outfits.ts` |
+| `rng` | const | — | `src/lib/rng.ts` |
 | `RootLayout` | default function | — | `src/app/layout.tsx` |
+| `RunMode` | type | — | `src/config/rules.ts` |
+| `RunResult` | interface | — | `src/game/bot/BotHarness.ts` |
+| `RunRules` | interface | — | `src/config/rules.ts` |
 | `RunScene` | class | — | `src/game/scenes/RunScene.ts` |
+| `SaveDataV1` | interface | — | `src/services/storage.ts` |
+| `saveSaveData` | function | — | `src/services/storage.ts` |
 | `SecondaryMotion` | class | — | `src/game/systems/SecondaryMotion.ts` |
+| `SeededRNG` | class | — | `src/lib/rng.ts` |
 | `ServiceWorkerRegister` | function | — | `src/components/shell/ServiceWorkerRegister.tsx` |
 | `SettingsSheet` | function | — | `src/components/lobby/SettingsSheet.tsx` |
 | `SHOP_ITEMS` | const | — | `src/config/shop.ts` |
@@ -108,7 +153,10 @@
 | `SmogEffect` | class | — | `src/game/fx/index.ts` |
 | `SpawnSystem` | class | — | `src/game/systems/SpawnSystem.ts` |
 | `SpringNode` | interface | — | `src/game/systems/SecondaryMotion.ts` |
+| `STAGE_CONFIG` | const | — | `src/config/rules.ts` |
+| `StarResult` | interface | — | `src/config/rules.ts` |
 | `storage` | const | — | `src/lib/storage.ts` |
+| `STORAGE_KEY_V1` | const | — | `src/services/storage.ts` |
 | `STREET_PROPS` | const | — | `src/config/props.ts` |
 | `StreetPropDefinition` | interface | — | `src/config/props.ts` |
 | `TIME_OF_DAY_CONFIGS` | const | — | `src/config/timeOfDay.ts` |
@@ -117,6 +165,7 @@
 | `TimeOfDayPhase` | type | — | `src/services/audio.ts` |
 | `TimeOfDayPhaseConfig` | interface | — | `src/config/timeOfDay.ts` |
 | `TimeOfDaySystem` | class | — | `src/game/systems/TimeOfDaySystem.ts` |
+| `TouchControls` | function | — | `src/components/game/TouchControls.tsx` |
 | `ULTIMATE_WEAPON` | const | — | `src/config/weapons.ts` |
 | `useGameStore` | const | — | `src/store/useGameStore.ts` |
 | `validateEvents` | function | — | `src/services/eventService.ts` |
@@ -139,4 +188,4 @@
 | `WorldEventSchema` | const | — | `src/services/eventService.ts` |
 
 
-_129 exports across 1 unit(s)._
+_178 exports across 1 unit(s)._

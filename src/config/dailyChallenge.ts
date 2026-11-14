@@ -27,7 +27,7 @@ const DAILY_CHALLENGES: Omit<DailyChallenge, "dateKey">[] = [
     weather: "clear",
     timeOfDay: "night",
     targetCombo: 8,
-    rewardTaka: 5000,
+    rewardTaka: 150,
     event: "loadshedding",
     badgeId: "nightLoadshedding",
   },

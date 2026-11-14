@@ -1,7 +1,9 @@
 import mitt, { Emitter } from "mitt";
+import type { InputCommand } from "@/game/input/ControlSource";
 
 export type GameEventTypes = {
   // UI -> Game
+  "input:command": { command: InputCommand };
   "weapon:use": { weaponId: string; timestamp: number };
   "event:trigger": { eventId: string };
   "event:clear": void;
@@ -24,6 +26,8 @@ export type GameEventTypes = {
   "combo": { count: number; multiplier: number };
   "villain:dead": { score: number };
   "villain:damaged": { hp: number; maxHp: number };
+  "game:lose": { reason: "escaped" | "patience_zero" };
+  "gap:zoneChange": { zone: "CLOSE" | "MID" | "FAR" | "ESCAPE"; gap: number };
   "event:started": { eventId: string; duration: number };
   "event:ended": { eventId: string };
   "loader:progress": { progress: number; task: string };

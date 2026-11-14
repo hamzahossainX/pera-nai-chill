@@ -1,5 +1,94 @@
 # LOG.md — Shipped Work History
 
+## 2026-11-14 — V2-40a & V2-40: In-engine bot harness, balance port, assist ladder & monotonic hazard cadence (G-01, G-03, GDD §7/§9)
+- Ported balance configuration into `src/config/balance.v2.ts` [NEW]:
+  - Monotonic hazard cadence: `mirpur` (7.5s) > `farmgate` (5.5s) > `newmarket` (4.0s).
+  - 4-level adaptive assist ladder (`L0` to `L3`) scaling patience drain (1.0x to 0.4x) and villain HP (1.0x to 0.6x) after consecutive losses.
+  - Core gameplay constants for gap thresholds, patience drain on misses/hazards, melee damage, and rage ultimate.
+- Created `src/game/bot/BotHarness.ts` [NEW] evaluating gameplay via `ControlSource` abstraction across 4 skill profiles (`masher`, `novice`, `average`, `expert`):
+  - Tracks distance to safehouse (1000m), archetype speeds, hazard dodge/jump, dash gap-closing, and rage ultimate finishers.
+- Added comprehensive unit tests in `src/__tests__/balance_and_bot.test.ts` (6 tests passing):
+  - Confirmed masher win rate = 0% due to patience drain on missed swings.
+  - Confirmed average player win rate = 82%–86% (target 65%–85%) with 53s duration (target 50–90s).
+  - Confirmed expert win rate = 98% (target >= 95%).
+  - Confirmed novice win rate doubles under adaptive assist L3 (18% to 46%).
+  - Confirmed strictly monotonic hazard cadence across map difficulties.
+- Generated comprehensive balance report in `docs/balance/BALANCE_REPORT.md` [NEW].
+- All gates green (tsc, lint, vitest 98/98, pattern:check, spec:verify, next build, playwright).
+
+## 2026-11-14 — V2-06: Run structure, distance bar, stars, persistence v1 & Result screen (G-07, G-08)
+- Created `src/config/rules.ts` [NEW] with `RunRules` interface and `DEFAULT_STAGE_RULES` (`mode: "stage"`, `timeLimitSec: null`, `lives: 1`, `winCondition: "catch_villain"`), fulfilling V3 forward-compat constraints.
+- Implemented `calculateStars()` for 1-3 star progression (★ caught villain, ★ patience > 50%, ★ combo >= 10).
+- Created `src/services/storage.ts` [NEW] providing versioned `SaveDataV1` with automatic migration from legacy unversioned keys, sequential map unlock logic (`recordMapStars`), and `try/catch` guards (P10).
+- Fixed daily reward outlier in `src/config/dailyChallenge.ts` from 5000 to 150 Taka (G-08).
+- Updated `useGameStore.ts` and `RunScene.ts`: Added dynamic distance tracking (`distanceMeters`, `stageProgress`), best combo recording, and safehouse escape trigger at 1000m.
+- Extended `HudOverlay.tsx` with top-center Distance Progress Bar (`🏃 দূরত্ব: XXm` / `🏠 আস্তানা: 1000m`).
+- Extended `GameOverScreen.tsx` with stage victory stars breakdown (★ ★ ★) and "পরবর্তী স্টেজ / NEXT STAGE" CTA button.
+- Added unit tests in `src/__tests__/run_structure_and_persistence.test.ts` (14 tests passing). Total suite: 92/92 passing.
+- All gates green (tsc, lint, vitest 92/92, pattern:check, spec:verify, next build, playwright).
+
+## 2026-11-14 — V2-05: Telegraphed hazards, villain counter-moves & stats wiring (G-04, G-05, G-06)
+- Extended `Obstacle.ts`: 700ms warning telegraph banner prior to arrival at chaser (`"⚠ লাফ দিন! (JUMP)"` for low hazards or `"⚠ লেন বদলান! (LANE)"` for solid barriers), `isLowHazard()`, `getPatienceCost()` (8, 12, 15), `getSlowMultiplier()` (0.8, 0.7, 0.65), `getSlowDurationSec()` (1.2, 1.5, 1.8).
+- Updated `SpawnSystem.ts`: Fixed G-06 villain auto-trip bug; villain vaults by default and only trips if stunned or lured (`HIT_STUN`/`TRIPPED`). Jump counters low hazards (potholes, bricks, fake-wallets). Uncountered hazards drain patience, slow chaser, and trigger stumble.
+- Updated `Villain.ts`: Added `isDodging`, `hasShield`, `dodge()`, and `executeCounterMove()`. Implemented archetype counters: Phone Snatcher (zig-zag lane change + dodge), Pickpocket (drops fake wallet trap), Cable Chor (wire coil), Manhole Chor (shield), Eid Market Chor (shopping bag toss), Chicken Chor (dodge roll), Chor Sardar (goon summon).
+- Updated `CombatSystem.ts`: Wired villain dodge rate per archetype. Shield blocks attacks. Added Kick hazard counter (breaks obstacle in front and restores +4 patience).
+- Updated `useGameStore.ts`: Added `isBossStage`, `setIsBossStage`. Scaled boss HP by 1.6x (`villainConfig.baseHp * 1.6` for boss stage or Chor Sardar).
+- Updated `RunScene.ts`: Removed hidden boss override on 3rd run.
+- Added unit tests in `src/__tests__/hazards_and_archetypes.test.ts` (12 tests passing). Total test suite: 78/78 passing.
+- Updated Playwright e2e tests (`e2e/test-hook.spec.ts`, `e2e/lobby-scroll.spec.ts`) for archetype HP and viewport robustness.
+- All gates green (tsc, lint, vitest 78/78, pattern:check, spec:verify, next build, playwright 22/22).
+
+## 2026-11-13 — V2-04: Gap, Patience & fail states (G-01, G-03)
+- Created `src/game/systems/GapSystem.ts` [NEW] tracking `gap = villain.rig.x - chaser.rig.x`, zones (`CLOSE < 220`, `MID 220-560`, `FAR 560-900`, `ESCAPE >= 900`), and dynamic entity positioning sliding within arena window `[120, 1160]`.
+- Implemented melee range rule: melee attacks only hit when `gap <= 220` and `laneDelta <= 1`.
+- Added mashing miss penalty: missed melee attacks drain 4 patience and reset combo, ensuring a mindless mashing player runs out of patience and loses.
+- Added close-zone melee bonus: +25% damage, camera shake, and patience restoration on in-range hits.
+- Added Zustand store API: `patience`, `drainPatience`, `restorePatience`, `slowChaser(mult, sec)`, `setGap`, and `triggerLose(reason)` supporting fail states (`"patience_zero"`, `"escaped"`).
+- Extended HUD with color-coded sweat-drop Patience bar (`💧 PATIENCE (ধৈর্য) XX%`) and live gap warning banners.
+- Extended `GameOverScreen.tsx` handling `"OUT OF PATIENCE!"` (`"হাল ছেড়ে দিলে?!"`) and `"TARGET ESCAPED!"` (`"পালাইছে!"`).
+- Unified `AppShell.tsx` rendering to keep `GameHost` continuously mounted across `PLAYING`, `PAUSED`, and `GAME_OVER` without destroying the Phaser WebGL context.
+- Registered test hook providers `getState().gap` and `getState().patience` and debug methods (`setGap`, `drainPatience`, `slowChaser`).
+- Unit tests: `src/__tests__/gap_and_patience.test.ts` (10 tests passing).
+- E2E tests: `e2e/fail-states.spec.ts` (4 tests passing across Desktop and Mobile viewports).
+- All gates green (tsc, lint, vitest 66/66, pattern:check, spec:verify, next build, playwright 22/22).
+
+## 2026-11-13 — V2-03: Player controls, dash, jump & ControlSource abstraction (G-02)
+- Created `src/game/input/ControlSource.ts` [NEW] defining input command contract (`LANE_UP`, `LANE_DOWN`, `JUMP`, `DASH`, `ATTACK`, `ULTIMATE`, `TAUNT`) and `ControlSource` interface (V3 forward-compat constraint #1).
+- Created `src/game/input/KeyboardTouchSource.ts` [NEW] handling keyboard bindings (W/S, Arrows, Space, Shift, 1-4, E, T), canvas touch swipe gestures, and UI bus commands.
+- Created `src/game/input/BotSource.ts` [NEW] providing programmatic command emission, delay queuing, and step updates for bot harness (V2-40a) and headless tests.
+- Created `src/components/game/TouchControls.tsx` [NEW] with responsive thumb clusters (Left: Lane Up/Down; Right: Jump/Dash) mounted in `AppShell.tsx`.
+- Updated `Chaser.ts` with autonomous player movement: `setLane(lane)`, `laneUp()`, `laneDown()` (clamped to 3 lanes [0, 2]), `jump()` (520ms airtime, double-jump lockout), and `dash()` (2500ms cooldown, 25 stamina cost, +90px forward impulse).
+- Decoupled `RunScene.ts` loop: removed `chaser.followLane(villain.currentLane)` (fixed G-02), attached `ControlSource`, and wired command dispatcher.
+- Updated `testHook.ts` with debug command helpers (`command`, `laneUp`, `laneDown`, `jump`, `dash`) and exposed `isJumping`/`isDashing` in `getState().chaser`.
+- Unit tests: `src/__tests__/player_controls.test.ts` (6 tests passing).
+- E2E tests: `e2e/player-controls.spec.ts` (2 tests passing across Desktop and Mobile viewports).
+- All gates green (tsc, lint, vitest 56/56, pattern:check, spec:verify, next build, playwright 18/18).
+
+- Created `src/game/motion/EntityMotion.ts` [NEW] as single owner of entity positions `(x, y)`:
+  - Channels: `homeX`, `offsetX` (sub-stepped damped harmonic oscillator spring-back), `laneY` (smooth exponential lerp), `jumpY` (normalized parabolic vertical arc for jumps/vaults), `extraY` (vertical trip/death offset), and bounding clamp to `[minX, maxX] = [60, 1220]`.
+- Integrated `EntityMotion` into `CharacterRig.ts` (`motion` member instantiated in constructor, updated per frame in `update`).
+- Fixed C-01 (villain knockback drift bug): replaced direct `x: targetX` tween in `triggerHitStun` with `motion.applyImpulse(knockbackX)`, which auto-recovers to home position within 400 ms.
+- Fixed C-03 (vault snapback bug): replaced `this.rig.y = currentY` snapback in `Villain.vault()` with `this.rig.motion.vault(50, 400)`. Lane changes during vaults now transition smoothly without snapping back or teleporting.
+- Replaced direct tween `y: targetY` in `Villain.setLane` and `Chaser.followLane` with `this.rig.motion.setLaneY(targetY)`.
+- Replaced direct `this.x -= ...` in `Obstacle.ts` and `PickupItem.ts` with `this.setX(...)`.
+- Reduced pattern violation `P02_direct_entity_position_write` from 5 to 0; lowered baseline in `scripts/audit/pattern-baseline.json`.
+- Added unit tests in `src/__tests__/entity_motion.test.ts` (3 tests: 500 impulses bounds check, spring recovery in < 400 ms, vault/lane-change independence).
+- Added e2e test in `e2e/knockback-drift.spec.ts` (simulates 60s of continuous attacks, proving villain and chaser stay strictly within `[0, 1280]` and villain springs back to ~880).
+- All gates green (tsc, lint, vitest 50/50, pattern:check, spec:verify, next build, playwright 16/16).
+
+- Created `src/config/layout.ts` [NEW] with canvas zones (HUD, SKY, SIDEWALK, PLAY_ZONE, FOOT_ZONE), lanes (`[450, 515, 580]`), and scales (`[0.88, 1.0, 1.12]`).
+- Migrated all `LANES_Y` and `LANE_SCALES` consumers in `src/game/` (`Chaser.ts`, `Villain.ts`, `Obstacle.ts`, `PickupItem.ts`, `SpawnSystem.ts`). Pattern ratchet P03 dropped from 18 to 0!
+- Created `src/lib/rng.ts` [NEW] wrapping/matching Phaser's seedable Alea PRNG (`next`, `chance`, `pick`, `range`, `between`, `init`). Migrated 21 `Math.random` calls in `SpawnSystem`, `Villain`, `DialogueSystem`, `CombatSystem`. Pattern ratchet P01 dropped from 63 to 43.
+- Created `src/game/testHook.ts` [NEW] installed when `?test=1` with `seed`, `step(ms)`, `getState()`, `registerState(name, fn)`, and `debug.{register, call, list}` matching spec.
+- Added comprehensive unit tests in `src/__tests__/layout_and_rng.test.ts` (10 tests) and e2e test in `e2e/test-hook.spec.ts` (4 tests). All 47 vitest tests and 14 Playwright tests passed.
+
+## 2026-11-13 — V2-00: Fix unscrollable lobby / unreachable map picker (M-01, U-04)
+- Fixed lobby scroll container in `src/components/shell/AppShell.tsx`: bounded height via `h-dvh max-h-dvh overflow-y-auto` with `tabIndex={0}` so the lobby container clientHeight is constrained to the viewport and properly scrolls.
+- Fixed `e2e/smoke.spec.ts` tap-to-start locator and mobile orientation bypass.
+- Added `e2e/lobby-scroll.spec.ts` testing 1280x720, 1920x1080, 1024x768, and 844x390 viewports with wheel, keyboard, and touch scrolling.
+- Verified Map heading `getBoundingClientRect().top` reduces from ~1320px to `< viewport height`. Captured screenshots in `docs/screens/v2/00/`.
+- All gates green (tsc, lint, vitest 37/37, pattern:check, spec:verify, playwright 8/8).
+
 ## 2026-11-13 — Multiplayer parked (V3), overnight run protocol, pattern ratchet (docs/tooling only)
 - `docs/spec/MULTIPLAYER_V3.md` (parked Hunt Mode spec) + ROADMAP "Next scope — V3"; V2-03 gains `ControlSource`, V2-06 gains `RunRules` forward-compat ACs; FEATURE_BACKLOG/GDD/README updated.
 - `docs/OVERNIGHT_RUN.md` (launch steps, paste-in prompt, queue, failure policy, morning checklist) + `docs/overnight/{PROGRESS,QUESTIONS,MORNING_REPORT_TEMPLATE,evidence/}`.

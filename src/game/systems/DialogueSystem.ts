@@ -3,6 +3,7 @@ import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { DIALOGUE_GROUPS, DialogueLine } from "@/config/dialogue";
 import { gameBus } from "@/game/bus";
+import { rng } from "@/lib/rng";
 import { useGameStore } from "@/store/useGameStore";
 
 interface SpeechBubble {
@@ -44,8 +45,8 @@ export class DialogueSystem {
 
   private handleCombatHit = () => {
     // 35% chance to trigger dialogue on hit
-    if (Math.random() < 0.35) {
-      if (Math.random() < 0.6) {
+    if (rng.chance(0.35)) {
+      if (rng.chance(0.6)) {
         this.triggerLine("villain", "villain_hit");
       } else {
         this.triggerLine("chaser", "chaser_hit");
@@ -84,7 +85,7 @@ export class DialogueSystem {
 
     // Pick random without immediate repeat
     const lastIdx = this.lastLineIndex[groupKey] ?? -1;
-    let newIdx = Math.floor(Math.random() * list.length);
+    let newIdx = rng.between(0, list.length - 1);
     if (list.length > 1 && newIdx === lastIdx) {
       newIdx = (newIdx + 1) % list.length;
     }
@@ -219,8 +220,8 @@ export class DialogueSystem {
     // 2. Periodic idle banter every 8-12 seconds
     this.idleChatterTimer -= delta;
     if (this.idleChatterTimer <= 0) {
-      this.idleChatterTimer = 8000 + Math.random() * 5000;
-      if (Math.random() < 0.5) {
+      this.idleChatterTimer = 8000 + rng.range(0, 5000);
+      if (rng.chance(0.5)) {
         this.triggerLine("villain", "villain_taunt");
       } else {
         this.triggerLine("chaser", "chaser_taunt");
