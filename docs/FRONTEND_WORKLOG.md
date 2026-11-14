@@ -194,3 +194,9 @@ Review the simplified lobby on a physical phone (portrait setup and landscape to
 - Final checks passed: TypeScript, full lint, all 98 unit tests, pattern check, spec verification (429 references), production build, and diff whitespace check. Earlier browser screenshots/checks remain the evidence for final compact layout and face visibility; no new browser run needed for branch-reference documentation and whitespace changes.
 - PR scope: compact face-first lobby, optional setup, responsive/keyboard/readability improvements, portrait setup, villain face framing, documentation and browser evidence. Full gameplay e2e, real-device touch, actual photo upload and mask-slip runtime remain unverified as described above.
 - Next action: push the reviewed commit and open a PR against master; leave merging to a separate request.
+
+### 2026-11-14 — Published frontend PR
+- Committed implementation/evidence as `0862492` (feat(frontend): simplify lobby setup and reveal villain faces) and pushed `feat/frontend-ui-ux`.
+- Opened PR #7 against master: https://github.com/hamzahossainX/pera-nai-chill/pull/7 — Improve face-first lobby setup and villain face visibility. PR includes screenshots, checks, scope and unverified items. Not merged.
+- This follow-up records the successful remote actions only; no application changes or additional tests required. All required local checks and build passed before publication.
+- Next action: review PR #7 and perform the remaining physical-phone/upload acceptance checks before merge.
