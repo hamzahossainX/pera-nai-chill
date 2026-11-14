@@ -137,7 +137,8 @@ export class ParallaxSystem {
     sprite
       .setPosition(BALANCE.LOGICAL_WIDTH + 140, def.yOffset)
       .setDepth(def.depth)
-      .setOrigin(0.5, 1.0);
+      .setOrigin(0.5, 1.0)
+      .setFlipX(def.id === "rickshaw");
 
     this.activeObjects.push({
       sprite,
