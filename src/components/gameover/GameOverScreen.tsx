@@ -8,9 +8,11 @@ import { MAP_ORDER, MAP_SCENARIOS } from "@/config/maps";
 import { getNextMapId, getStarRating } from "@/config/progression";
 import { Trophy, RotateCcw, User, FileText, Home, ArrowRight } from "lucide-react";
 import { WantedPosterModal } from "@/components/game/WantedPosterModal";
+import { useI18n } from "@/i18n";
 
 export function GameOverScreen() {
   const [isPosterOpen, setIsPosterOpen] = useState(false);
+  const { t, language } = useI18n();
   const {
     villainHp,
     targetName,
@@ -75,7 +77,7 @@ export function GameOverScreen() {
             isWin ? "bg-emerald-500 text-black" : "bg-rose-500 text-white"
           }`}
         >
-          {isWin ? "MISSION ACCOMPLISHED!" : "TARGET ESCAPED!"}
+          {isWin ? t("missionAccomplished") : t("targetEscaped")}
         </div>
 
         {/* Performance stars */}
@@ -104,7 +106,13 @@ export function GameOverScreen() {
               isWin ? "text-yellow-300" : "text-rose-400"
             }`}
           >
-            {isWin ? "ধরা খাইছে!" : "পালাইছে!"}
+            {isWin
+              ? language === "bn"
+                ? "ধরা খাইছে!"
+                : "VICTORY!"
+              : language === "bn"
+              ? "পালাইছে!"
+              : "DEFEAT!"}
           </h2>
           <p className="font-bangla mt-1 text-sm font-semibold text-slate-300">
             {isWin
@@ -142,7 +150,7 @@ export function GameOverScreen() {
         <div className="grid grid-cols-3 gap-2 w-full">
           <div className="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
             <span className="text-[10px] font-mono text-slate-400 uppercase">
-              Rage Score
+              {t("score")}
             </span>
             <div className="font-mono text-base sm:text-lg font-bold text-rose-400">
               {rageScore}
@@ -151,7 +159,7 @@ export function GameOverScreen() {
 
           <div className="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
             <span className="text-[10px] font-mono text-slate-400 uppercase">
-              Combo
+              COMBO
             </span>
             <div className="font-mono text-base sm:text-lg font-bold text-yellow-300">
               {combo}x
@@ -160,7 +168,7 @@ export function GameOverScreen() {
 
           <div className="rounded-xl border border-slate-800 bg-slate-950 p-2.5">
             <span className="text-[10px] font-mono text-slate-400 uppercase">
-              Taka
+              {t("taka")}
             </span>
             <div className="font-mono text-base sm:text-lg font-bold text-emerald-400">
               ৳{taka}
@@ -171,9 +179,9 @@ export function GameOverScreen() {
         {/* Map progression */}
         <div className="w-full rounded-xl border border-slate-700 bg-slate-950/80 p-3 text-left">
           <div className="mb-2 flex items-center justify-between">
-            <span className="font-comic text-xs text-slate-300">MAP PROGRESS</span>
+            <span className="font-comic text-xs text-slate-300">{t("mapProgress")}</span>
             <span className="font-mono text-[10px] text-slate-500">
-              {completedMapIds.length}/{MAP_ORDER.length} CLEARED
+              {completedMapIds.length}/{MAP_ORDER.length} {t("cleared")}
             </span>
           </div>
           <div className="grid grid-cols-3 gap-1.5">
@@ -207,14 +215,14 @@ export function GameOverScreen() {
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-emerald-500 py-3.5 font-comic text-lg text-black shadow-lg hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none"
           >
             <ArrowRight className="h-5 w-5" />
-            {hasNextMap ? `NEXT MAP / ${nextMap?.name.en}` : "ALL MAPS CLEARED"}
+            {hasNextMap ? `${t("nextMap")} / ${nextMap?.name[language]}` : t("allMapsCleared")}
           </button>
 
           <button
             onClick={handleRetry}
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-gradient-to-r from-amber-500 to-yellow-400 py-3.5 font-comic text-xl text-black shadow-lg hover:from-amber-400 hover:to-yellow-300"
           >
-            <RotateCcw className="h-5 w-5" /> REPLAY
+            <RotateCcw className="h-5 w-5" /> {t("replay")}
           </button>
 
           <button
@@ -228,14 +236,14 @@ export function GameOverScreen() {
             onClick={handleLobby}
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-slate-800 py-3 font-comic text-sm text-slate-200 hover:bg-slate-700 hover:text-white"
           >
-            <Home className="h-4 w-4" /> LOBBY
+            <Home className="h-4 w-4" /> {t("lobby")}
           </button>
 
           <button
             onClick={handleChangeFace}
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-slate-900 py-2.5 font-comic text-xs text-slate-400 hover:bg-slate-800 hover:text-white"
           >
-            <User className="h-4 w-4" /> CHANGE TARGET / নতুন মুখ
+            <User className="h-4 w-4" /> {t("changeTarget")}
           </button>
         </div>
       </motion.div>

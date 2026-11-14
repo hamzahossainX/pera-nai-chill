@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { audioService } from "@/services/audio";
 import { faceService } from "@/services/faceService";
+import { useI18n } from "@/i18n";
 
 export function AppShell() {
   const {
@@ -42,6 +43,7 @@ export function AppShell() {
     setTargetFace,
     setDebugOpen,
     setDemoMode,
+    hydrateSettings,
     hydrateMapProgress,
   } = useGameStore();
 
@@ -50,8 +52,14 @@ export function AppShell() {
   const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
   const [isPosterOpen, setIsPosterOpen] = useState(false);
   const logoTapRef = useRef(0);
+  const { t } = useI18n();
 
   // Check URL parameters for ?debug=1 and ?demo=1
+  useEffect(() => {
+    hydrateSettings();
+    audioService.setMuted(!useGameStore.getState().settings.sound);
+  }, [hydrateSettings]);
+
   useEffect(() => {
     hydrateMapProgress();
   }, [hydrateMapProgress]);
@@ -142,7 +150,7 @@ export function AppShell() {
                 title="Shop"
               >
                 <ShoppingBag className="h-4 w-4" />
-                <span className="hidden sm:inline">দোকান / SHOP</span>
+                <span className="hidden sm:inline">{t("shop")}</span>
               </button>
 
               <button
@@ -154,7 +162,7 @@ export function AppShell() {
                 title="Achievements"
               >
                 <Trophy className="h-4 w-4" />
-                <span className="hidden sm:inline">অর্জন</span>
+                <span className="hidden sm:inline">{t("achievements")}</span>
               </button>
 
               <button
@@ -166,7 +174,7 @@ export function AppShell() {
                 title="Wanted Poster Maker"
               >
                 <FileText className="h-4 w-4" />
-                <span className="hidden sm:inline">পোস্টার</span>
+                <span className="hidden sm:inline">{t("poster")}</span>
               </button>
 
               <button
@@ -185,7 +193,7 @@ export function AppShell() {
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="font-comic text-xs tracking-[0.2em] text-yellow-300">
-                    READY TO RUN
+                    {t("stageRun")}
                   </p>
                   <h2 className="mt-1 font-comic text-3xl text-white">
                     {selectedMap?.name.en ?? "Dhaka Route"}
@@ -200,7 +208,7 @@ export function AppShell() {
                       {timeOfDay}
                     </span>
                     <span className="rounded-full bg-slate-950/70 px-2.5 py-1">
-                      STAGE RUN
+                      {t("stageRun")}
                     </span>
                   </div>
                 </div>
@@ -209,7 +217,7 @@ export function AppShell() {
                   className="flex min-h-14 items-center justify-center gap-2 rounded-2xl border-2 border-black bg-gradient-to-r from-amber-400 to-rose-500 px-6 font-comic text-xl text-slate-950 shadow-[0_4px_0_rgba(0,0,0,1)] transition-transform active:translate-y-1 active:shadow-none"
                 >
                   <Play className="h-6 w-6 fill-current" />
-                  PLAY NOW
+                  {t("playNow")}
                 </button>
               </div>
             </section>
@@ -218,7 +226,7 @@ export function AppShell() {
 
             <details className="lobby-advanced rounded-2xl border-2 border-slate-700 bg-slate-900/70">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 font-comic text-lg text-yellow-300 [&::-webkit-details-marker]:hidden">
-                <span>Customize target & environment</span>
+                <span>{t("customize")}</span>
                 <ChevronDown className="h-5 w-5 transition-transform" />
               </summary>
               <div className="grid grid-cols-1 gap-6 border-t border-slate-700 p-4 md:grid-cols-2">
@@ -230,7 +238,7 @@ export function AppShell() {
 
             <details className="lobby-advanced rounded-2xl border-2 border-slate-700 bg-slate-900/70">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 font-comic text-lg text-yellow-300 [&::-webkit-details-marker]:hidden">
-                <span>Arsenal & loadout</span>
+                <span>{t("arsenal")}</span>
                 <ChevronDown className="h-5 w-5" />
               </summary>
               <div className="border-t border-slate-700 p-4">
@@ -261,7 +269,7 @@ export function AppShell() {
                 className="flex w-full items-center justify-center gap-3 rounded-2xl border-4 border-black bg-gradient-to-r from-amber-500 via-rose-500 to-rose-600 py-3.5 font-comic text-2xl tracking-wider text-white shadow-[0_5px_0px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-1 active:shadow-none"
               >
                 <Play className="h-7 w-7 fill-white" />
-                <span>রাস্তায় নামাও (START RUN)</span>
+                <span>{t("startRun")}</span>
               </button>
             </div>
           </footer>

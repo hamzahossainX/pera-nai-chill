@@ -12,6 +12,7 @@ export type WeatherEffect = WeatherType;
 
 class AudioService {
   private ctx: AudioContext | null = null;
+  private masterGain: GainNode | null = null;
   private isUnlocked = false;
   private muted = false;
   private activeVoices = 0;
@@ -23,6 +24,7 @@ class AudioService {
   private isBgmDucked = false;
   private bgmFilterState: BgmFilterType = "normal";
   private bgmInterval: ReturnType<typeof setInterval> | null = null;
+  private shouldPlayBgm = false;
   private nextBgmNoteTime = 0;
   private currentBgmStep = 0;
 
@@ -45,6 +47,11 @@ class AudioService {
       if (!this.ctx) {
         this.ctx = new AudioContextClass();
       }
+      if (!this.masterGain) {
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.value = this.muted ? 0 : 1;
+        this.masterGain.connect(this.ctx.destination);
+      }
       if (this.ctx.state === "suspended") {
         await this.ctx.resume();
       }
@@ -54,7 +61,7 @@ class AudioService {
       const buffer = this.ctx.createBuffer(1, 1, 22050);
       const source = this.ctx.createBufferSource();
       source.buffer = buffer;
-      source.connect(this.ctx.destination);
+      source.connect(this.masterGain ?? this.ctx.destination);
       source.start(0);
 
       this.startAmbientLoop();
@@ -65,11 +72,27 @@ class AudioService {
 
   public setMuted(muted: boolean): void {
     this.muted = muted;
+    if (this.masterGain && this.ctx) {
+      this.masterGain.gain.setTargetAtTime(
+        muted ? 0 : 1,
+        this.ctx.currentTime,
+        0.015,
+      );
+    }
     if (this.bgmGain) {
       this.bgmGain.gain.value = muted ? 0 : this.isBgmDucked ? 0.025 : 0.07;
     }
     if (this.rainGainNode) {
       this.rainGainNode.gain.value = muted ? 0 : 0.035;
+    }
+    if (
+      !muted &&
+      this.shouldPlayBgm &&
+      this.ctx &&
+      this.ctx.state === "running" &&
+      !this.bgmInterval
+    ) {
+      this.playBgm();
     }
   }
 
@@ -168,11 +191,11 @@ class AudioService {
     };
 
     try {
-      let dest: AudioNode = this.ctx.destination;
+      let dest: AudioNode = this.masterGain ?? this.ctx.destination;
       if (this.ctx.createStereoPanner) {
         const panner = this.ctx.createStereoPanner();
         panner.pan.value = Math.max(-1, Math.min(1, pan));
-        panner.connect(this.ctx.destination);
+        panner.connect(this.masterGain ?? this.ctx.destination);
         dest = panner;
       }
       this.playSynth(name, options, done, dest);
@@ -189,7 +212,7 @@ class AudioService {
   ): void {
     if (!this.ctx) return;
     const ctx = this.ctx;
-    const dest = outputDestination || ctx.destination;
+    const dest = outputDestination || this.masterGain || ctx.destination;
     const now = ctx.currentTime;
     const pitchOffset = (Math.random() - 0.5) * 0.16; // Randomize pitch +/- 8%
     const baseVolume = (options.volume ?? 1.0) * 0.35;
@@ -810,6 +833,7 @@ class AudioService {
 
   // --- Dynamic Procedural Slapstick BGM ---
   public playBgm(): void {
+    this.shouldPlayBgm = true;
     if (this.muted || !this.ctx || this.bgmInterval) return;
     try {
       this.bgmFilter = this.ctx.createBiquadFilter();
@@ -828,7 +852,7 @@ class AudioService {
       );
 
       this.bgmFilter.connect(this.bgmGain);
-      this.bgmGain.connect(this.ctx.destination);
+      this.bgmGain.connect(this.masterGain ?? this.ctx.destination);
 
       this.nextBgmNoteTime = this.ctx.currentTime + 0.05;
       this.currentBgmStep = 0;
@@ -925,6 +949,7 @@ class AudioService {
   }
 
   public stopBgm(): void {
+    this.shouldPlayBgm = false;
     if (this.bgmInterval) {
       clearInterval(this.bgmInterval);
       this.bgmInterval = null;
@@ -962,7 +987,7 @@ class AudioService {
           gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + 0.04);
 
           osc.connect(gain);
-          gain.connect(this.ctx.destination);
+          gain.connect(this.masterGain ?? this.ctx.destination);
           osc.start(now + i * 0.08);
           osc.stop(now + i * 0.08 + 0.05);
         }
@@ -980,7 +1005,7 @@ class AudioService {
         gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.masterGain ?? this.ctx.destination);
         osc.start(now);
         osc.stop(now + 0.14);
       }
@@ -1012,7 +1037,7 @@ class AudioService {
 
         noise.connect(filter);
         filter.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.masterGain ?? this.ctx.destination);
         noise.start(0);
 
         this.rainNoiseNode = noise;

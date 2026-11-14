@@ -5,15 +5,18 @@ import { useGameStore } from "@/store/useGameStore";
 import { isMapUnlocked, MAP_SCENARIOS, MapScenario } from "@/config/maps";
 import { MapPin, AlertTriangle, Building2, Check, Lock } from "lucide-react";
 import { audioService } from "@/services/audio";
+import { useI18n } from "@/i18n";
 
 export function MapSelector() {
   const {
     currentMapId,
     timeOfDay,
+    settings,
     completedMapIds,
     setMapId,
     setTimeOfDay,
   } = useGameStore();
+  const { t } = useI18n();
 
   const handleSelect = (map: MapScenario) => {
     if (!isMapUnlocked(map.id, completedMapIds)) return;
@@ -28,13 +31,13 @@ export function MapSelector() {
         <div className="flex items-center gap-2">
           <MapPin className="h-5 w-5 text-amber-400" />
           <h3 className="font-comic text-xl text-yellow-300 tracking-wide">
-            3. DHAKA SCENARIO / ঢাকার রুট নির্বাচন
+            {t("mapSelection")}
           </h3>
         </div>
         <p className="font-bangla text-xs text-slate-400">
-          নির্বাচিত রুট: <strong className="text-yellow-300">{MAP_SCENARIOS.find((m) => m.id === currentMapId)?.name.bn}</strong>
+          {t("selectedRoute")}: <strong className="text-yellow-300">{MAP_SCENARIOS.find((m) => m.id === currentMapId)?.name[settings.lang]}</strong>
           <span className="mx-1 text-slate-600">•</span>
-          সময়: <strong className="text-sky-300">{timeOfDay}</strong>
+          {t("time")}: <strong className="text-sky-300">{timeOfDay}</strong>
         </p>
         <span className="rounded-full bg-amber-400/20 px-2.5 py-0.5 text-xs font-bold text-amber-300">
           ৩টি স্পেশাল জোন
@@ -84,7 +87,7 @@ export function MapSelector() {
               {!isUnlocked && (
                 <span className="absolute inset-0 flex items-center justify-center rounded-xl bg-slate-950/45">
                   <span className="flex items-center gap-1 rounded-full border border-slate-500 bg-slate-950/90 px-2.5 py-1 font-comic text-xs text-slate-200">
-                    <Lock className="h-3.5 w-3.5" /> COMPLETE PREVIOUS MAP
+                    <Lock className="h-3.5 w-3.5" /> {t("mapProgress")}
                   </span>
                 </span>
               )}
@@ -94,12 +97,12 @@ export function MapSelector() {
                   {m.badgeText}
                 </span>
                 <span className="font-bangla text-base font-bold text-white truncate">
-                  {m.name.bn}
+                  {m.name[settings.lang]}
                 </span>
               </div>
 
               <p className="mt-1 font-bangla text-xs text-slate-300 line-clamp-2">
-                {m.tagline.bn}
+                {m.tagline[settings.lang]}
               </p>
 
               {/* Hazards & Landmarks */}

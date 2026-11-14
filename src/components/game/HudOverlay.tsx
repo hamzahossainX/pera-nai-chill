@@ -29,6 +29,7 @@ import {
   Megaphone,
 } from "lucide-react";
 import { COMBO_NAMES, COMMENTATOR_TICKER, ComboTier } from "@/config/dialogue";
+import { useI18n } from "@/i18n";
 
 export function HudOverlay() {
   const {
@@ -61,6 +62,7 @@ export function HudOverlay() {
     CRIMES.find((c) => c.id === crimeId) || CRIMES[0];
   const currentMap =
     MAP_SCENARIOS.find((m) => m.id === currentMapId) || MAP_SCENARIOS[0];
+  const { t } = useI18n();
 
   const [isPaused, setIsPaused] = useState(false);
   const [lagHp, setLagHp] = useState(villainHp);
@@ -460,14 +462,14 @@ export function HudOverlay() {
         <div className="flex items-center gap-1.5 rounded-xl border border-black/80 bg-slate-900/85 px-3 py-1.5 shadow-md backdrop-blur-md">
           <span className="text-base text-amber-400">৳</span>
           <span className="font-mono text-sm sm:text-base font-bold text-yellow-300">
-            {taka} Taka
+            {taka} {t("taka")}
           </span>
         </div>
 
         {/* Stamina Bar */}
         <div className="flex flex-col gap-0.5 rounded-xl border border-black/80 bg-slate-900/85 px-2.5 py-1.5 shadow-md backdrop-blur-md">
           <div className="flex items-center justify-between text-[10px] font-mono text-slate-300">
-            <span>STAMINA</span>
+            <span>{t("stamina")}</span>
             <span>{Math.round(stamina)}%</span>
           </div>
           <div className="relative h-2 w-full overflow-hidden rounded-full border border-black bg-slate-950">
@@ -528,7 +530,7 @@ export function HudOverlay() {
         {/* Red Breaking Badge */}
         <div className="flex items-center gap-1 bg-red-600 px-2 py-0.5 rounded-md font-comic text-[10px] sm:text-xs font-black text-white shrink-0 shadow animate-pulse">
           <span className="h-1.5 w-1.5 rounded-full bg-white" />
-          <span>ব্রেকিং NEWS</span>
+          <span>{t("breakingNews")}</span>
         </div>
         {/* Ticker Text */}
         <div className="flex-1 overflow-hidden px-2">
@@ -554,29 +556,31 @@ export function HudOverlay() {
       {isPaused && (
         <div className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm">
           <div className="flex w-full max-w-xs flex-col items-center gap-4 rounded-3xl border-4 border-yellow-400 bg-slate-900 p-6 shadow-2xl text-center">
-            <h2 className="font-comic text-3xl text-yellow-300">PAUSED</h2>
-            <p className="font-bangla text-sm text-slate-300">সাময়িক বিরতি</p>
+            <h2 className="font-comic text-3xl text-yellow-300">{t("pause")}</h2>
+            <p className="font-bangla text-sm text-slate-300">
+              {settings.lang === "bn" ? "সাময়িক বিরতি" : "Game paused"}
+            </p>
 
             <div className="flex w-full flex-col gap-2.5 mt-2">
               <button
                 onClick={togglePause}
                 className="flex items-center justify-center gap-2 rounded-xl border-2 border-black bg-emerald-500 py-3 font-comic text-base text-black shadow-md hover:bg-emerald-400"
               >
-                <Play className="h-5 w-5 fill-black" /> RESUME / চালিয়ে যান
+                <Play className="h-5 w-5 fill-black" /> {t("resume")}
               </button>
 
               <button
                 onClick={handleRestart}
                 className="flex items-center justify-center gap-2 rounded-xl border-2 border-black bg-amber-500 py-3 font-comic text-base text-black shadow-md hover:bg-amber-400"
               >
-                <RotateCcw className="h-5 w-5" /> RESTART / পুনরায় শুরু
+                <RotateCcw className="h-5 w-5" /> {t("restart")}
               </button>
 
               <button
                 onClick={handleBackToLobby}
                 className="flex items-center justify-center gap-2 rounded-xl border-2 border-black bg-slate-700 py-2.5 font-comic text-sm text-white hover:bg-slate-600"
               >
-                <Home className="h-4 w-4" /> LOBBY / লবি
+                <Home className="h-4 w-4" /> {t("lobby")}
               </button>
             </div>
           </div>

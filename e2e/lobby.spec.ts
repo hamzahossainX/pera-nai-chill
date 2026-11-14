@@ -9,7 +9,7 @@ test.describe("Lobby navigation", () => {
     await tapStartBtn.click({ force: true });
 
     const mapHeading = page.getByRole("heading", {
-      name: /DHAKA SCENARIO/i,
+      name: /MAP SELECTION|DHAKA SCENARIO|ম্যাপ নির্বাচন/i,
     });
     await expect(mapHeading).toBeAttached();
 

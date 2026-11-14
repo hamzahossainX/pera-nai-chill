@@ -6,6 +6,7 @@ import { DEFAULT_CRIME } from "@/config/crimes";
 import { DEFAULT_MAP, MapId } from "@/config/maps";
 import { WorldEvent } from "@/services/eventService";
 import { gameBus } from "@/game/bus";
+import { audioService } from "@/services/audio";
 
 const MAP_PROGRESS_KEY = "pera-nai-chill:completed-maps";
 
@@ -52,6 +53,44 @@ export interface GameSettings {
   quality: "high" | "low";
   lang: "en" | "bn";
   reducedMotion: boolean;
+}
+
+const SETTINGS_KEY = "pera-nai-chill:settings";
+const DEFAULT_SETTINGS: GameSettings = {
+  sound: true,
+  haptics: true,
+  quality: "high",
+  lang: "bn",
+  reducedMotion: false,
+};
+
+function readSavedSettings(): Partial<GameSettings> {
+  if (typeof window === "undefined") return {};
+
+  try {
+    const stored = JSON.parse(
+      window.localStorage.getItem(SETTINGS_KEY) ?? "{}",
+    ) as Partial<GameSettings>;
+    const saved: Partial<GameSettings> = {};
+    if (typeof stored.sound === "boolean") saved.sound = stored.sound;
+    if (typeof stored.haptics === "boolean") saved.haptics = stored.haptics;
+    if (stored.quality === "low" || stored.quality === "high") {
+      saved.quality = stored.quality;
+    }
+    if (stored.lang === "en" || stored.lang === "bn") saved.lang = stored.lang;
+    if (typeof stored.reducedMotion === "boolean") {
+      saved.reducedMotion = stored.reducedMotion;
+    }
+    return saved;
+  } catch {
+    return {};
+  }
+}
+
+function persistSettings(settings: GameSettings) {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  }
 }
 
 export interface GameState {
@@ -125,6 +164,7 @@ export interface GameState {
   decrementEventTimer: (delta: number) => void;
   resetRun: () => void;
   updateSettings: (partial: Partial<GameSettings>) => void;
+  hydrateSettings: () => void;
   setDebugOpen: (open: boolean) => void;
   toggleDebug: () => void;
   setDemoMode: (active: boolean) => void;
@@ -166,13 +206,7 @@ export const useGameStore = create<GameState>()(
     activeEvent: null,
     eventTimeLeft: 0,
 
-    settings: {
-      sound: true,
-      haptics: true,
-      quality: "high",
-      lang: "bn",
-      reducedMotion: false,
-    },
+    settings: { ...DEFAULT_SETTINGS, ...readSavedSettings() },
 
     isDebugOpen: false,
     isDemoMode: false,
@@ -350,8 +384,19 @@ export const useGameStore = create<GameState>()(
         eventTimeLeft: 0,
       }),
 
-    updateSettings: (partial) =>
-      set((state) => ({ settings: { ...state.settings, ...partial } })),
+    updateSettings: (partial) => {
+      const settings = { ...get().settings, ...partial };
+      set({ settings });
+      persistSettings(settings);
+      if (partial.sound !== undefined) {
+        audioService.setMuted(!settings.sound);
+      }
+    },
+    hydrateSettings: () => {
+      const settings = { ...DEFAULT_SETTINGS, ...readSavedSettings() };
+      set({ settings });
+      audioService.setMuted(!settings.sound);
+    },
 
     setDebugOpen: (open) => set({ isDebugOpen: open }),
     toggleDebug: () => set((state) => ({ isDebugOpen: !state.isDebugOpen })),

@@ -109,6 +109,7 @@ export function LoadingScreen() {
   }, [displayProgress]);
 
   const handleStart = () => {
+    audioService.setMuted(!settings.sound);
     void audioService.unlock();
     audioService.play("click");
     if (typeof window !== "undefined") {
