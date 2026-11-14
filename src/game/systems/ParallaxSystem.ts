@@ -65,7 +65,7 @@ export class ParallaxSystem {
       .setDepth(1);
 
     // Layer 2.5: Elevated Metro Track
-    if (mapScenario?.visualProfile === "residential" && this.scene.textures.exists("prop-metro-track")) {
+    if (mapScenario?.visualProfile !== "market" && this.scene.textures.exists("prop-metro-track")) {
       this.metroTrackTile = this.scene.add
         .tileSprite(0, 100, W, 50, "prop-metro-track")
         .setOrigin(0, 0)
@@ -73,7 +73,7 @@ export class ParallaxSystem {
     }
 
     // Metro Train MRT-6
-    if (mapScenario?.visualProfile === "residential" && this.scene.textures.exists("prop-metro-train")) {
+    if (mapScenario?.visualProfile !== "market" && this.scene.textures.exists("prop-metro-train")) {
       this.metroTrainSprite = this.scene.add
         .sprite(W + 400, 112, "prop-metro-train")
         .setOrigin(0, 0.5)
