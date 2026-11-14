@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Luckiest_Guy, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegister } from "@/components/shell/ServiceWorkerRegister";
-import { OrientationGuard } from "@/components/shell/OrientationGuard";
 
 const comicFont = Luckiest_Guy({
   weight: "400",
@@ -60,7 +59,6 @@ export default function RootLayout({
     >
       <body className="h-full w-full overflow-hidden select-none bg-slate-900 text-slate-100 font-sans">
         <ServiceWorkerRegister />
-        <OrientationGuard />
         {children}
       </body>
     </html>
