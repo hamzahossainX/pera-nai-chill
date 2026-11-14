@@ -4,7 +4,9 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useGameStore } from "@/store/useGameStore";
 import { audioService } from "@/services/audio";
-import { Trophy, RotateCcw, User, FileText } from "lucide-react";
+import { MAP_ORDER, MAP_SCENARIOS } from "@/config/maps";
+import { getNextMapId, getStarRating } from "@/config/progression";
+import { Trophy, RotateCcw, User, FileText, Home, ArrowRight } from "lucide-react";
 import { WantedPosterModal } from "@/components/game/WantedPosterModal";
 
 export function GameOverScreen() {
@@ -16,11 +18,20 @@ export function GameOverScreen() {
     rageScore,
     combo,
     taka,
+    currentMapId,
+    completedMapIds,
     startGame,
+    setMapId,
     resetRun,
   } = useGameStore();
 
   const isWin = villainHp === 0;
+  const starCount = getStarRating(isWin, combo);
+  const nextMapId = getNextMapId(currentMapId);
+  const nextMap = MAP_SCENARIOS.find((map) => map.id === nextMapId);
+  const hasNextMap = Boolean(
+    isWin && nextMap && completedMapIds.includes(currentMapId),
+  );
 
   const rankTitle = isWin
     ? "মহাচোর দমনকারী (Master Hunter)"
@@ -38,13 +49,25 @@ export function GameOverScreen() {
     resetRun();
   };
 
+  const handleNextMap = () => {
+    if (!nextMap || !hasNextMap) return;
+    audioService.play("click");
+    setMapId(nextMap.id);
+    startGame();
+  };
+
+  const handleLobby = () => {
+    audioService.play("click");
+    resetRun();
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md select-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/85 p-3 backdrop-blur-md select-none sm:p-4">
       <motion.div
         initial={{ scale: 0.7, opacity: 0, y: 30 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 220, damping: 20 }}
-        className="flex w-full max-w-md flex-col items-center gap-5 rounded-3xl border-4 border-yellow-400 bg-slate-900 p-6 sm:p-8 text-center shadow-[0_0_50px_rgba(245,158,11,0.4)]"
+        className="my-auto flex w-full max-w-md flex-col items-center gap-4 rounded-3xl border-4 border-yellow-400 bg-slate-900 p-4 text-center shadow-[0_0_50px_rgba(245,158,11,0.4)] sm:gap-5 sm:p-8"
       >
         {/* Result Header Badge */}
         <div
@@ -53,6 +76,25 @@ export function GameOverScreen() {
           }`}
         >
           {isWin ? "MISSION ACCOMPLISHED!" : "TARGET ESCAPED!"}
+        </div>
+
+        {/* Performance stars */}
+        <div className="flex items-center gap-2" aria-label={`${starCount} out of 3 stars`}>
+          {[1, 2, 3].map((star) => (
+            <motion.span
+              key={star}
+              initial={{ scale: 0, rotate: -25, opacity: 0 }}
+              animate={{ scale: 1, rotate: 0, opacity: 1 }}
+              transition={{ delay: 0.35 + star * 0.15, type: "spring" }}
+              className={`text-4xl leading-none ${
+                star <= starCount
+                  ? "text-yellow-300 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]"
+                  : "text-slate-700"
+              }`}
+            >
+              ★
+            </motion.span>
+          ))}
         </div>
 
         {/* Big Bengali Headline */}
@@ -126,13 +168,53 @@ export function GameOverScreen() {
           </div>
         </div>
 
+        {/* Map progression */}
+        <div className="w-full rounded-xl border border-slate-700 bg-slate-950/80 p-3 text-left">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-comic text-xs text-slate-300">MAP PROGRESS</span>
+            <span className="font-mono text-[10px] text-slate-500">
+              {completedMapIds.length}/{MAP_ORDER.length} CLEARED
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-1.5">
+            {MAP_ORDER.map((mapId) => {
+              const map = MAP_SCENARIOS.find((scenario) => scenario.id === mapId);
+              const completed = completedMapIds.includes(mapId);
+              const active = mapId === currentMapId;
+              return (
+                <div
+                  key={mapId}
+                  className={`rounded-lg border px-1.5 py-1.5 text-center text-[10px] ${
+                    completed
+                      ? "border-emerald-500/60 bg-emerald-500/15 text-emerald-300"
+                      : active
+                      ? "border-yellow-400/70 bg-yellow-400/10 text-yellow-200"
+                      : "border-slate-800 bg-slate-900 text-slate-500"
+                  }`}
+                >
+                  {map?.name.en}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Action Buttons */}
         <div className="flex w-full flex-col gap-2.5 mt-2">
+          <button
+            onClick={handleNextMap}
+            disabled={!hasNextMap}
+            className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-emerald-500 py-3.5 font-comic text-lg text-black shadow-lg hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none"
+          >
+            <ArrowRight className="h-5 w-5" />
+            {hasNextMap ? `NEXT MAP / ${nextMap?.name.en}` : "ALL MAPS CLEARED"}
+          </button>
+
           <button
             onClick={handleRetry}
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-gradient-to-r from-amber-500 to-yellow-400 py-3.5 font-comic text-xl text-black shadow-lg hover:from-amber-400 hover:to-yellow-300"
           >
-            <RotateCcw className="h-6 w-6" /> আবার পেটান (RETRY)
+            <RotateCcw className="h-5 w-5" /> REPLAY
           </button>
 
           <button
@@ -143,8 +225,15 @@ export function GameOverScreen() {
           </button>
 
           <button
-            onClick={handleChangeFace}
+            onClick={handleLobby}
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-slate-800 py-3 font-comic text-sm text-slate-200 hover:bg-slate-700 hover:text-white"
+          >
+            <Home className="h-4 w-4" /> LOBBY
+          </button>
+
+          <button
+            onClick={handleChangeFace}
+            className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-slate-900 py-2.5 font-comic text-xs text-slate-400 hover:bg-slate-800 hover:text-white"
           >
             <User className="h-4 w-4" /> CHANGE TARGET / নতুন মুখ
           </button>

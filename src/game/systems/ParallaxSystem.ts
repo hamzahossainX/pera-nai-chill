@@ -47,19 +47,10 @@ export class ParallaxSystem {
     const mapId = useGameStore.getState().currentMapId || "mirpur";
     const mapScenario = MAP_SCENARIOS.find((m) => m.id === mapId);
 
-    const skyKey =
-      mapId === "farmgate"
-        ? "bg-sky-farmgate"
-        : mapId === "newmarket"
-        ? "bg-sky-newmarket"
-        : "bg-sky-mirpur";
-
-    const nearKey =
-      mapId === "farmgate"
-        ? "bg-near-farmgate"
-        : mapId === "newmarket"
-        ? "bg-near-newmarket"
-        : "bg-near-buildings";
+    const skyKey = mapScenario?.skyKey || "bg-sky";
+    const farKey = mapScenario?.farKey || "bg-far-buildings";
+    const nearKey = mapScenario?.nearKey || "bg-near-buildings";
+    const roadKey = mapScenario?.roadKey || "bg-road";
 
     // Layer 1: Sky (speed 0.1)
     this.skyTile = this.scene.add
@@ -69,12 +60,12 @@ export class ParallaxSystem {
 
     // Layer 2: Far Skyline Silhouettes (speed 0.3)
     this.farBuildingsTile = this.scene.add
-      .tileSprite(0, 140, W, 300, "bg-far-buildings")
+      .tileSprite(0, 140, W, 300, this.scene.textures.exists(farKey) ? farKey : "bg-far-buildings")
       .setOrigin(0, 0)
       .setDepth(1);
 
     // Layer 2.5: Elevated Metro Track
-    if (this.scene.textures.exists("prop-metro-track")) {
+    if (mapScenario?.visualProfile === "residential" && this.scene.textures.exists("prop-metro-track")) {
       this.metroTrackTile = this.scene.add
         .tileSprite(0, 100, W, 50, "prop-metro-track")
         .setOrigin(0, 0)
@@ -82,7 +73,7 @@ export class ParallaxSystem {
     }
 
     // Metro Train MRT-6
-    if (this.scene.textures.exists("prop-metro-train")) {
+    if (mapScenario?.visualProfile === "residential" && this.scene.textures.exists("prop-metro-train")) {
       this.metroTrainSprite = this.scene.add
         .sprite(W + 400, 112, "prop-metro-train")
         .setOrigin(0, 0.5)
@@ -97,7 +88,7 @@ export class ParallaxSystem {
 
     // Layer 4: Asphalt Road (3 Lanes - speed 1.0)
     this.roadTile = this.scene.add
-      .tileSprite(0, 350, W, 370, "bg-road")
+      .tileSprite(0, 350, W, 370, this.scene.textures.exists(roadKey) ? roadKey : "bg-road")
       .setOrigin(0, 0)
       .setDepth(3);
 
@@ -108,7 +99,7 @@ export class ParallaxSystem {
       .setDepth(100);
 
     // Apply time of day tint
-    const timeOfDay = mapScenario?.timeOfDay || "noon";
+    const timeOfDay = useGameStore.getState().timeOfDay || mapScenario?.defaultTimeOfDay || "noon";
     this.applyTimeOfDay(timeOfDay);
 
     // Animated Life: Crows on wires
@@ -146,7 +137,8 @@ export class ParallaxSystem {
     sprite
       .setPosition(BALANCE.LOGICAL_WIDTH + 140, def.yOffset)
       .setDepth(def.depth)
-      .setOrigin(0.5, 1.0);
+      .setOrigin(0.5, 1.0)
+      .setFlipX(def.id === "rickshaw");
 
     this.activeObjects.push({
       sprite,
@@ -257,7 +249,7 @@ export class ParallaxSystem {
 
   public applyTimeOfDay(timeOfDay: TimeOfDay) {
     switch (timeOfDay) {
-      case "sunset":
+      case "goldenHour":
         this.setSkyTint(0xffd1a4);
         this.setAmbientTint(0xffc285);
         break;

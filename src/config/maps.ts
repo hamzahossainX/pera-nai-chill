@@ -1,7 +1,8 @@
-export type TimeOfDay = "noon" | "sunset" | "night" | "dawn";
+export type TimeOfDay = "noon" | "goldenHour" | "night" | "dawn";
+export type MapId = "mirpur" | "farmgate" | "newmarket";
 
 export interface MapScenario {
-  id: "mirpur" | "farmgate" | "newmarket";
+  id: MapId;
   name: {
     bn: string;
     en: string;
@@ -14,9 +15,12 @@ export interface MapScenario {
   accentColor: string;
   badgeText: string;
   skyKey: string;
+  farKey: string;
   nearKey: string;
   roadKey: string;
-  timeOfDay?: TimeOfDay;
+  defaultTimeOfDay: TimeOfDay;
+  supportedTimeOfDay: TimeOfDay[];
+  visualProfile: "residential" | "commercial" | "market";
   ambientEvent: string;
   hazards: {
     primary: string;
@@ -45,9 +49,12 @@ export const MAP_SCENARIOS: MapScenario[] = [
     accentColor: "#f59e0b",
     badgeText: "মিরপুর ১০",
     skyKey: "bg-sky-mirpur",
+    farKey: "bg-far-mirpur",
     nearKey: "bg-near-mirpur",
-    roadKey: "bg-road",
-    timeOfDay: "noon",
+    roadKey: "bg-road-mirpur",
+    defaultTimeOfDay: "noon",
+    supportedTimeOfDay: ["dawn", "noon", "goldenHour", "night"],
+    visualProfile: "residential",
     ambientEvent: "ধূলাবালি ও ম্যানহোল",
     hazards: {
       primary: "ভাঙা রাস্তা ও গর্ত",
@@ -77,9 +84,12 @@ export const MAP_SCENARIOS: MapScenario[] = [
     accentColor: "#ef4444",
     badgeText: "ফার্মগেট",
     skyKey: "bg-sky-farmgate",
+    farKey: "bg-far-farmgate",
     nearKey: "bg-near-farmgate",
-    roadKey: "bg-road",
-    timeOfDay: "sunset",
+    roadKey: "bg-road-farmgate",
+    defaultTimeOfDay: "goldenHour",
+    supportedTimeOfDay: ["dawn", "noon", "goldenHour", "night"],
+    visualProfile: "commercial",
     ambientEvent: "বাসের হর্ন ও জ্যাম",
     hazards: {
       primary: "চলন্ত হলুদ বাস ও লেগুনা",
@@ -109,9 +119,12 @@ export const MAP_SCENARIOS: MapScenario[] = [
     accentColor: "#8b5cf6",
     badgeText: "নিউ মার্কেট",
     skyKey: "bg-sky-newmarket",
+    farKey: "bg-far-newmarket",
     nearKey: "bg-near-newmarket",
-    roadKey: "bg-road",
-    timeOfDay: "night",
+    roadKey: "bg-road-newmarket",
+    defaultTimeOfDay: "night",
+    supportedTimeOfDay: ["dawn", "noon", "goldenHour", "night"],
+    visualProfile: "market",
     ambientEvent: "১০০ টাকা সেল ও ফুচকা",
     hazards: {
       primary: "ফুচকা-চটপটি ভ্যান",
@@ -130,3 +143,13 @@ export const MAP_SCENARIOS: MapScenario[] = [
 ];
 
 export const DEFAULT_MAP = MAP_SCENARIOS[0];
+export const MAP_ORDER: MapId[] = ["mirpur", "farmgate", "newmarket"];
+
+export function isMapUnlocked(mapId: MapId, completedMapIds: MapId[]) {
+  const mapIndex = MAP_ORDER.indexOf(mapId);
+  const highestCompleted = completedMapIds.reduce(
+    (highest, completedId) => Math.max(highest, MAP_ORDER.indexOf(completedId)),
+    -1,
+  );
+  return mapIndex <= highestCompleted + 1;
+}

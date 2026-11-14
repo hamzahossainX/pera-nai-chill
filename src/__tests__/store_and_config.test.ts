@@ -3,7 +3,8 @@ import { useGameStore } from "@/store/useGameStore";
 import { calculateComboMultiplier } from "@/config/balance";
 import { eventService, validateEvents } from "@/services/eventService";
 import { CRIMES, DEFAULT_CRIME } from "@/config/crimes";
-import { MAP_SCENARIOS, DEFAULT_MAP } from "@/config/maps";
+import { isMapUnlocked, MAP_SCENARIOS, DEFAULT_MAP } from "@/config/maps";
+import { getNextMapId, getStarRating } from "@/config/progression";
 
 describe("T01: Core State & Config", () => {
   beforeEach(() => {
@@ -151,6 +152,10 @@ describe("T01: Core State & Config", () => {
         expect(map.name.bn).toBeTruthy();
         expect(map.tagline.bn).toBeTruthy();
         expect(map.billboards.length).toBeGreaterThan(0);
+        expect(map.farKey).not.toBe(map.nearKey);
+        expect(map.roadKey).toContain(map.id);
+        expect(map.supportedTimeOfDay).toEqual(["dawn", "noon", "goldenHour", "night"]);
+        expect(map.supportedTimeOfDay).toContain(map.defaultTimeOfDay);
       }
     });
 
@@ -160,6 +165,22 @@ describe("T01: Core State & Config", () => {
 
       store.setMapId("farmgate");
       expect(useGameStore.getState().currentMapId).toBe("farmgate");
+    });
+
+    it("locks maps until the previous route is completed", () => {
+      expect(isMapUnlocked("mirpur", [])).toBe(true);
+      expect(isMapUnlocked("farmgate", [])).toBe(false);
+      expect(isMapUnlocked("farmgate", ["mirpur"])).toBe(true);
+      expect(isMapUnlocked("newmarket", ["mirpur"])).toBe(false);
+    });
+
+    it("calculates result stars from tracked completion and combo data", () => {
+      expect(getStarRating(false, 20)).toBe(0);
+      expect(getStarRating(true, 2)).toBe(1);
+      expect(getStarRating(true, 5)).toBe(2);
+      expect(getStarRating(true, 10)).toBe(3);
+      expect(getNextMapId("mirpur")).toBe("farmgate");
+      expect(getNextMapId("newmarket")).toBeUndefined();
     });
 
     it("supports setting and clearing active counter-buff", () => {

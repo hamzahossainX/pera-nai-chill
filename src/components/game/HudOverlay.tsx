@@ -209,18 +209,18 @@ export function HudOverlay() {
   const comboMultiplier = calculateComboMultiplier(combo);
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-30 flex flex-col justify-between p-3 sm:p-5 select-none">
+    <div className="hud-shell pointer-events-none absolute inset-0 z-30 flex flex-col justify-between p-2 sm:p-5 select-none">
       {/* Top Header Bar */}
-      <div className="flex items-start justify-between w-full">
+      <div className="hud-topbar flex items-start justify-between w-full gap-1">
         {/* Top-Left: Target Avatar & HP Bar */}
         <div className="flex flex-col gap-1.5 items-start">
           <div
             onClick={handleAvatarTap}
-            className="pointer-events-auto flex items-center gap-3 rounded-2xl border-2 border-black/80 bg-slate-900/80 p-2.5 shadow-xl backdrop-blur-md cursor-pointer active:scale-95 transition-transform"
+            className="hud-target-card pointer-events-auto flex items-center gap-3 rounded-2xl border-2 border-black/80 bg-slate-900/80 p-2.5 shadow-xl backdrop-blur-md cursor-pointer active:scale-95 transition-transform"
             title="Tap 5 times to open debug god mode"
           >
             {/* Face Thumbnail */}
-            <div className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-full border-2 border-yellow-400 bg-slate-800 shadow-md">
+            <div className="hud-target-avatar h-12 w-12 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-full border-2 border-yellow-400 bg-slate-800 shadow-md">
               {targetFaceUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -232,7 +232,7 @@ export function HudOverlay() {
             </div>
 
             {/* Name & Dual Health Bar */}
-            <div className="flex flex-col gap-1 w-36 sm:w-52">
+            <div className="hud-target-details flex flex-col gap-1 w-36 sm:w-52">
               <div className="flex items-center justify-between">
                 <span className="font-bangla text-xs sm:text-sm font-bold text-yellow-300 truncate">
                   {targetName}
@@ -303,15 +303,15 @@ export function HudOverlay() {
         </div>
 
         {/* Top-Center: World Event Banner */}
-        <div className="flex justify-center flex-1 px-2">
+        <div className="hud-event flex justify-center flex-1 px-2">
           <EventBanner />
         </div>
 
         {/* Top-Right: Sound, Fullscreen & Pause Controls */}
-        <div className="pointer-events-auto flex items-center gap-2">
+        <div className="hud-controls pointer-events-auto flex items-center gap-2">
           <button
             onClick={toggleFullscreen}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-slate-900/80 text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"
+            className="hud-control-button flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-slate-900/80 text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"
             title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
           >
             {isFullscreen ? (
@@ -323,7 +323,7 @@ export function HudOverlay() {
 
           <button
             onClick={handleSoundToggle}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-slate-900/80 text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"
+            className="hud-control-button flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-slate-900/80 text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"
             title="Toggle Sound"
           >
             {settings.sound ? (
@@ -335,7 +335,7 @@ export function HudOverlay() {
 
           <button
             onClick={togglePause}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-slate-900/80 text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"
+            className="hud-control-button flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-slate-900/80 text-yellow-300 shadow-md backdrop-blur-md hover:bg-slate-800"
             title="Pause Game"
           >
             <Pause className="h-5 w-5" />
@@ -455,7 +455,7 @@ export function HudOverlay() {
       </div>
 
       {/* Bottom-Left: Taka Wallet & Stamina Bar */}
-      <div className="pointer-events-auto flex flex-col gap-1.5 w-36 sm:w-44">
+      <div className="hud-resource-panel pointer-events-auto flex flex-col gap-1.5 w-36 sm:w-44">
         {/* Taka Wallet Counter */}
         <div className="flex items-center gap-1.5 rounded-xl border border-black/80 bg-slate-900/85 px-3 py-1.5 shadow-md backdrop-blur-md">
           <span className="text-base text-amber-400">৳</span>
@@ -507,7 +507,7 @@ export function HudOverlay() {
       </AnimatePresence>
 
       {/* Taunt Button (P2-10) */}
-      <div className="pointer-events-auto absolute bottom-24 right-4 sm:bottom-28 sm:right-6 flex flex-col items-center z-40">
+      <div className="hud-taunt pointer-events-auto absolute bottom-24 right-4 sm:bottom-28 sm:right-6 flex flex-col items-center z-40">
         <button
           onClick={handleTaunt}
           disabled={tauntCooldown > 0}
@@ -524,7 +524,7 @@ export function HudOverlay() {
       </div>
 
       {/* Dhaka TV Style Commentator Breaking News Ticker (P2-10) */}
-      <div className="pointer-events-auto fixed bottom-0 left-0 right-0 z-40 flex items-center bg-slate-950/95 border-t-2 border-yellow-400 shadow-2xl backdrop-blur-md h-7 sm:h-8 px-2 overflow-hidden">
+      <div className="hud-ticker pointer-events-auto fixed bottom-0 left-0 right-0 z-40 flex items-center bg-slate-950/95 border-t-2 border-yellow-400 shadow-2xl backdrop-blur-md h-7 sm:h-8 px-2 overflow-hidden">
         {/* Red Breaking Badge */}
         <div className="flex items-center gap-1 bg-red-600 px-2 py-0.5 rounded-md font-comic text-[10px] sm:text-xs font-black text-white shrink-0 shadow animate-pulse">
           <span className="h-1.5 w-1.5 rounded-full bg-white" />

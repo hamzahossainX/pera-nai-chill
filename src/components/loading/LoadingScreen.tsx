@@ -108,8 +108,8 @@ export function LoadingScreen() {
     }
   }, [displayProgress]);
 
-  const handleStart = async () => {
-    await audioService.unlock();
+  const handleStart = () => {
+    void audioService.unlock();
     audioService.play("click");
     if (typeof window !== "undefined") {
       try {
@@ -126,6 +126,7 @@ export function LoadingScreen() {
 
   const titleWords = ["PERA", "NAI", "CHILL!"];
   const currentTip = LOADING_TIPS[currentTipIndex];
+  const progress = Math.min(100, Math.max(0, displayProgress));
 
   return (
     <div className="relative flex h-screen w-screen flex-col items-center justify-between overflow-hidden bg-gradient-to-b from-amber-500 via-amber-600 to-yellow-700 p-6 text-slate-900 select-none">
@@ -216,17 +217,22 @@ export function LoadingScreen() {
 
             {/* Filled Progress Bar */}
             <motion.div
-              className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-yellow-400 transition-all duration-150 ease-out"
-              style={{ width: `${displayProgress}%` }}
+              className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-yellow-400"
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
             />
           </div>
 
           {/* Running Rickshaw / Chappal Marker positioned on the bar */}
           <motion.div
-            className="pointer-events-none absolute -top-4 text-2xl transition-all duration-150 ease-out"
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-4 text-2xl"
             style={{
-              left: `calc(${displayProgress}% - 14px)`,
+              left: `${progress}%`,
+              transform: "translateX(-50%) scaleX(-1)",
             }}
+            animate={{ left: `${progress}%` }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
           >
             🛺
           </motion.div>
@@ -234,8 +240,8 @@ export function LoadingScreen() {
 
         {/* Progress Percentage Display */}
         <div className="flex w-full items-center justify-between text-xs font-mono font-bold text-slate-900">
-          <span>{displayProgress < 100 ? "LOADING ASSETS..." : "READY!"}</span>
-          <span>{displayProgress}%</span>
+          <span>{progress < 100 ? "LOADING ASSETS..." : "READY!"}</span>
+          <span>{progress}%</span>
         </div>
 
         {/* Rotating Loading Tip */}

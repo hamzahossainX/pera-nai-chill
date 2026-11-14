@@ -9,14 +9,20 @@ test.describe("Pera Nai Chill Game Smoke Test", () => {
     await expect(page).toHaveTitle(/Pera Nai Chill/);
 
     // 3. Wait for tap to start or progress
-    const tapStartBtn = page.getByRole("button", { name: /শুরু করতে ট্যাপ করুন|TAP TO START/i });
-    if (await tapStartBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await tapStartBtn.click();
+    const tapStartBtn = page.getByRole("button", { name: /শুরু করুন|TAP TO START/i });
+    await tapStartBtn.waitFor({ state: "visible", timeout: 10000 }).catch(() => undefined);
+    if (await tapStartBtn.isVisible()) {
+      await tapStartBtn.click({ force: true });
     }
 
     // 4. Verify Lobby components render
-    await expect(page.getByText(/PERA NAI CHILL/i)).toBeVisible();
-    await expect(page.getByText(/লবি কন্ট্রোল|START RUN|রাস্তায় নামাও/i)).toBeVisible();
+    const portraitOverride = page.getByRole("button", { name: /Play in portrait anyway/i });
+    if (await portraitOverride.isVisible().catch(() => false)) {
+      await portraitOverride.click();
+    }
+    const lobbyHeader = page.getByRole("banner");
+    await expect(lobbyHeader.getByRole("heading", { name: "PERA NAI CHILL", exact: true })).toBeVisible();
+    await expect(lobbyHeader.getByText(/লবি কন্ট্রোল/i)).toBeVisible();
 
     // 5. Start game
     const startRunBtn = page.getByRole("button", { name: /রাস্তায় নামাও|START RUN/i });

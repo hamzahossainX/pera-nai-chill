@@ -18,7 +18,17 @@ import { WeaponDock } from "@/components/game/WeaponDock";
 import { GameOverScreen } from "@/components/gameover/GameOverScreen";
 import { DebugBar } from "@/components/game/DebugBar";
 import { DemoRunner } from "@/components/game/DemoRunner";
-import { Settings, Play, ShoppingBag, Trophy, FileText } from "lucide-react";
+import { MAP_SCENARIOS } from "@/config/maps";
+import {
+  Settings,
+  Play,
+  ShoppingBag,
+  Trophy,
+  FileText,
+  MapPin,
+  Clock3,
+  ChevronDown,
+} from "lucide-react";
 import { audioService } from "@/services/audio";
 import { faceService } from "@/services/faceService";
 
@@ -27,9 +37,12 @@ export function AppShell() {
     screen,
     startGame,
     targetFaceUrl,
+    currentMapId,
+    timeOfDay,
     setTargetFace,
     setDebugOpen,
     setDemoMode,
+    hydrateMapProgress,
   } = useGameStore();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -39,6 +52,10 @@ export function AppShell() {
   const logoTapRef = useRef(0);
 
   // Check URL parameters for ?debug=1 and ?demo=1
+  useEffect(() => {
+    hydrateMapProgress();
+  }, [hydrateMapProgress]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -69,6 +86,8 @@ export function AppShell() {
     startGame();
   };
 
+  const selectedMap = MAP_SCENARIOS.find((map) => map.id === currentMapId);
+
   return (
     <>
       <DebugBar />
@@ -92,14 +111,14 @@ export function AppShell() {
       )}
 
       {screen === "LOBBY" && (
-        <div className="relative min-h-screen w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6 select-none">
+        <div className="relative h-dvh min-h-0 w-screen overflow-x-hidden overflow-y-auto overscroll-contain bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 [touch-action:pan-y] sm:p-6 select-none">
           <SettingsSheet
             isOpen={isSettingsOpen}
             onClose={() => setIsSettingsOpen(false)}
           />
 
           {/* Top Bar */}
-          <header className="mx-auto flex max-w-4xl items-center justify-between py-2">
+          <header className="sticky top-0 z-20 mx-auto flex max-w-4xl items-center justify-between bg-slate-950/85 py-2 backdrop-blur-md">
             <div
               onClick={handleLogoTap}
               className="cursor-pointer select-none active:scale-95 transition-transform"
@@ -160,18 +179,64 @@ export function AppShell() {
             </div>
           </header>
 
-          {/* Main Lobby Form Sections */}
-          <main className="mx-auto mt-4 flex max-w-4xl flex-col gap-6 pb-28">
-            <DailyChallengeCard />
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FaceUploader />
-              <VillainPreview />
-            </div>
+          {/* Main Lobby: quick start first, advanced controls below */}
+          <main className="mx-auto mt-4 flex max-w-4xl flex-col gap-5 pb-40">
+            <section className="rounded-3xl border-4 border-yellow-400 bg-gradient-to-br from-amber-500/20 via-slate-900 to-rose-900/30 p-4 shadow-xl sm:p-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-comic text-xs tracking-[0.2em] text-yellow-300">
+                    READY TO RUN
+                  </p>
+                  <h2 className="mt-1 font-comic text-3xl text-white">
+                    {selectedMap?.name.en ?? "Dhaka Route"}
+                  </h2>
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs font-bold text-slate-300">
+                    <span className="flex items-center gap-1 rounded-full bg-slate-950/70 px-2.5 py-1">
+                      <MapPin className="h-3.5 w-3.5 text-amber-300" />
+                      {selectedMap?.name.bn}
+                    </span>
+                    <span className="flex items-center gap-1 rounded-full bg-slate-950/70 px-2.5 py-1">
+                      <Clock3 className="h-3.5 w-3.5 text-sky-300" />
+                      {timeOfDay}
+                    </span>
+                    <span className="rounded-full bg-slate-950/70 px-2.5 py-1">
+                      STAGE RUN
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={handleStartGame}
+                  className="flex min-h-14 items-center justify-center gap-2 rounded-2xl border-2 border-black bg-gradient-to-r from-amber-400 to-rose-500 px-6 font-comic text-xl text-slate-950 shadow-[0_4px_0_rgba(0,0,0,1)] transition-transform active:translate-y-1 active:shadow-none"
+                >
+                  <Play className="h-6 w-6 fill-current" />
+                  PLAY NOW
+                </button>
+              </div>
+            </section>
 
             <MapSelector />
 
-            <WeaponSelector />
+            <details className="lobby-advanced rounded-2xl border-2 border-slate-700 bg-slate-900/70">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 font-comic text-lg text-yellow-300 [&::-webkit-details-marker]:hidden">
+                <span>Customize target & environment</span>
+                <ChevronDown className="h-5 w-5 transition-transform" />
+              </summary>
+              <div className="grid grid-cols-1 gap-6 border-t border-slate-700 p-4 md:grid-cols-2">
+                <DailyChallengeCard />
+                <FaceUploader />
+                <VillainPreview />
+              </div>
+            </details>
+
+            <details className="lobby-advanced rounded-2xl border-2 border-slate-700 bg-slate-900/70">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 font-comic text-lg text-yellow-300 [&::-webkit-details-marker]:hidden">
+                <span>Arsenal & loadout</span>
+                <ChevronDown className="h-5 w-5" />
+              </summary>
+              <div className="border-t border-slate-700 p-4">
+                <WeaponSelector />
+              </div>
+            </details>
           </main>
 
           {/* Modals */}

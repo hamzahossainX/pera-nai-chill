@@ -48,6 +48,7 @@ export class Obstacle extends Phaser.GameObjects.Sprite {
         : "projectile-brick";
 
     this.setTexture(textureKey);
+    this.setFlipX(type === "rickshaw");
     this.setPosition(startX, BALANCE.LANES_Y[lane] - 15);
     this.setScale(BALANCE.LANE_SCALES[lane]);
     this.setDepth(lane + 8);
