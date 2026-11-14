@@ -3,9 +3,35 @@ import { subscribeWithSelector } from "zustand/middleware";
 import { BALANCE } from "@/config/balance";
 import { VILLAINS, DEFAULT_VILLAIN } from "@/config/villains";
 import { DEFAULT_CRIME } from "@/config/crimes";
-import { DEFAULT_MAP } from "@/config/maps";
+import { DEFAULT_MAP, MapId } from "@/config/maps";
 import { WorldEvent } from "@/services/eventService";
 import { gameBus } from "@/game/bus";
+
+const MAP_PROGRESS_KEY = "pera-nai-chill:completed-maps";
+
+function readCompletedMaps(): MapId[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const stored = JSON.parse(
+      window.localStorage.getItem(MAP_PROGRESS_KEY) ?? "[]",
+    ) as unknown;
+    return Array.isArray(stored)
+      ? stored.filter(
+          (id): id is MapId =>
+            id === "mirpur" || id === "farmgate" || id === "newmarket",
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistCompletedMaps(mapIds: MapId[]) {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(MAP_PROGRESS_KEY, JSON.stringify(mapIds));
+  }
+}
 
 export type GameScreen = "BOOT" | "LOBBY" | "PLAYING" | "PAUSED" | "GAME_OVER";
 export type TimeOfDay = "noon" | "goldenHour" | "night" | "dawn";
@@ -38,7 +64,8 @@ export interface GameState {
   targetName: string;
   villainId: string;
   crimeId: string;
-  currentMapId: "mirpur" | "farmgate" | "newmarket";
+  currentMapId: MapId;
+  completedMapIds: MapId[];
   selectedChappalId: string;
   timeOfDay: TimeOfDay;
   weather: WeatherType;
@@ -71,7 +98,9 @@ export interface GameState {
   setTargetName: (name: string) => void;
   setVillainId: (id: string) => void;
   setCrimeId: (id: string) => void;
-  setMapId: (id: "mirpur" | "farmgate" | "newmarket") => void;
+  setMapId: (id: MapId) => void;
+  hydrateMapProgress: () => void;
+  markMapCompleted: (id: MapId) => void;
   setSelectedChappalId: (id: string) => void;
   setTimeOfDay: (tod: TimeOfDay) => void;
   setWeather: (w: WeatherType) => void;
@@ -118,6 +147,7 @@ export const useGameStore = create<GameState>()(
     villainId: DEFAULT_VILLAIN.id,
     crimeId: DEFAULT_CRIME.id,
     currentMapId: DEFAULT_MAP.id,
+    completedMapIds: [],
     selectedChappalId: "chappal-bata",
     timeOfDay: "noon",
     weather: "clear",
@@ -177,6 +207,14 @@ export const useGameStore = create<GameState>()(
     setVillainId: (id) => set({ villainId: id }),
     setCrimeId: (id) => set({ crimeId: id }),
     setMapId: (id) => set({ currentMapId: id }),
+    hydrateMapProgress: () => set({ completedMapIds: readCompletedMaps() }),
+    markMapCompleted: (id) =>
+      set((state) => {
+        if (state.completedMapIds.includes(id)) return state;
+        const completedMapIds = [...state.completedMapIds, id];
+        persistCompletedMaps(completedMapIds);
+        return { completedMapIds };
+      }),
     setSelectedChappalId: (id) => set({ selectedChappalId: id }),
     setTimeOfDay: (tod) => set({ timeOfDay: tod }),
     setWeather: (w) => set({ weather: w }),
@@ -205,6 +243,7 @@ export const useGameStore = create<GameState>()(
         screen: "PLAYING",
         villainHp: BALANCE.INITIAL_VILLAIN_HP,
         villainMaxHp: BALANCE.INITIAL_VILLAIN_HP,
+        rageScore: 0,
         villainMorale: 100,
         rage: 0,
         combo: 0,
@@ -225,6 +264,7 @@ export const useGameStore = create<GameState>()(
       });
 
       if (isDead) {
+        get().markMapCompleted(get().currentMapId);
         gameBus.emit("villain:dead", { score: get().rageScore });
         setTimeout(() => {
           set({ screen: "GAME_OVER" });

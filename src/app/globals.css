@@ -36,6 +36,147 @@
     -webkit-touch-callout: none;
   }
 
+  @media (max-width: 640px) {
+    .hud-shell {
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+    padding-left: max(0.5rem, env(safe-area-inset-left));
+    padding-right: max(0.5rem, env(safe-area-inset-right));
+    }
+
+    .hud-target-card {
+    gap: 0.4rem;
+    padding: 0.35rem;
+    border-radius: 0.85rem;
+    }
+
+    .hud-target-avatar {
+    height: 2rem;
+    width: 2rem;
+    }
+
+    .hud-target-details {
+    width: clamp(7rem, 34vw, 10rem);
+    gap: 0.2rem;
+    }
+
+    .hud-target-details .h-3\.5 {
+    height: 0.35rem;
+    }
+
+    .hud-event {
+    display: none;
+    }
+
+    .hud-controls {
+    gap: 0.25rem;
+    }
+
+    .hud-control-button {
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 0.75rem;
+    }
+
+    .hud-control-button svg {
+    height: 1rem;
+    width: 1rem;
+    }
+
+    .hud-resource-panel {
+    position: fixed;
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    left: max(0.5rem, env(safe-area-inset-left));
+    z-index: 35;
+    width: 7.5rem;
+    gap: 0.25rem;
+    }
+
+    .hud-resource-panel > div {
+    padding: 0.3rem 0.45rem;
+    border-radius: 0.6rem;
+    }
+
+    .hud-resource-panel .font-mono {
+    font-size: 0.65rem;
+    }
+
+    .hud-taunt {
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    right: max(0.5rem, env(safe-area-inset-right));
+    }
+
+    .hud-taunt button {
+    min-height: 2.5rem;
+    width: 2.5rem;
+    justify-content: center;
+    padding: 0.45rem;
+    }
+
+    .hud-taunt button span {
+    display: none;
+    }
+
+    .hud-ticker {
+    bottom: env(safe-area-inset-bottom);
+    padding-left: max(0.35rem, env(safe-area-inset-left));
+    padding-right: max(0.35rem, env(safe-area-inset-right));
+    }
+
+    .hud-ticker .font-bangla {
+    font-size: 0.68rem;
+    }
+
+    .hud-shell > .flex.items-center.justify-between {
+    padding-bottom: 4.5rem;
+    }
+
+    .weapon-dock {
+      bottom: calc(1.75rem + env(safe-area-inset-bottom));
+      gap: 0.35rem;
+    }
+
+    .weapon-buttons {
+      max-width: 100%;
+      gap: 0.3rem;
+    }
+
+    .weapon-button {
+      height: 3rem;
+      width: 3rem;
+      min-height: 3rem;
+      min-width: 3rem;
+      border-width: 2px;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 1);
+    }
+
+    .weapon-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .weapon-damage {
+      display: none;
+    }
+
+    .weapon-button .top-1 {
+      top: 0.15rem;
+      left: 0.2rem;
+      font-size: 0.5rem;
+    }
+
+    .weapon-ultimate {
+      max-width: min(94vw, 23rem);
+      gap: 0.4rem;
+      border-width: 2px;
+      padding: 0.55rem 0.8rem;
+    }
+
+    .weapon-ultimate span {
+      font-size: 0.8rem;
+    }
+  }
+
   .map-preview {
     position: relative;
     height: 92px;

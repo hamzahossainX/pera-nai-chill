@@ -125,7 +125,7 @@ export function WeaponDock() {
   }, [screen, triggerWeapon, triggerUltimate]);
 
   return (
-    <div className="pointer-events-none absolute bottom-4 left-0 right-0 z-30 flex flex-col items-center gap-3 px-4">
+    <div className="weapon-dock pointer-events-none absolute bottom-4 left-0 right-0 z-30 flex flex-col items-center gap-3 px-2 sm:px-4">
       {/* Ultimate Chappal Storm Button (Appears when Rage is 100%) */}
       <AnimatePresence>
         {rage >= 100 && (
@@ -142,7 +142,7 @@ export function WeaponDock() {
             }}
             whileTap={{ scale: 0.95 }}
             onPointerDown={triggerUltimate}
-            className="pointer-events-auto flex items-center gap-3 rounded-2xl border-4 border-yellow-300 bg-gradient-to-r from-amber-500 via-rose-600 to-red-600 px-7 py-3 shadow-[0_0_30px_rgba(244,63,94,0.8)] active:scale-95"
+            className="weapon-ultimate pointer-events-auto flex items-center gap-3 rounded-2xl border-4 border-yellow-300 bg-gradient-to-r from-amber-500 via-rose-600 to-red-600 px-7 py-3 shadow-[0_0_30px_rgba(244,63,94,0.8)] active:scale-95"
           >
             <Zap className="h-6 w-6 fill-yellow-300 text-yellow-300 animate-bounce" />
             <span className="font-comic text-xl text-yellow-200 tracking-wider drop-shadow-md sm:text-2xl">
@@ -170,7 +170,7 @@ export function WeaponDock() {
       </AnimatePresence>
 
       {/* 4 Arcade Weapon Buttons */}
-      <div className="pointer-events-auto flex items-center gap-2.5 sm:gap-4">
+      <div className="weapon-buttons pointer-events-auto flex items-center gap-2.5 sm:gap-4">
         {WEAPONS.map((w) => {
           const cdLeft = cooldowns[w.id] ?? 0;
           const cdRatio = cdLeft / (w.cooldownSec * 1000);
@@ -185,7 +185,7 @@ export function WeaponDock() {
                 e.preventDefault();
                 triggerWeapon(w);
               }}
-              className={`relative flex h-16 w-16 sm:h-20 sm:w-20 flex-col items-center justify-center rounded-2xl border-4 border-black p-1 shadow-[0_4px_0_0_rgba(0,0,0,1)] transition-transform select-none active:translate-y-1 active:shadow-none disabled:opacity-60 ${
+              className={`weapon-button relative flex h-16 w-16 sm:h-20 sm:w-20 flex-col items-center justify-center rounded-2xl border-4 border-black p-1 shadow-[0_4px_0_0_rgba(0,0,0,1)] transition-transform select-none active:translate-y-1 active:shadow-none disabled:opacity-60 ${
                 w.id === "chappal"
                   ? "bg-amber-500"
                   : w.id === "kick"
@@ -210,7 +210,7 @@ export function WeaponDock() {
               )}
 
               {/* Weapon Icon */}
-              <span className="text-2xl sm:text-3xl drop-shadow-md">
+              <span className="weapon-icon text-2xl sm:text-3xl drop-shadow-md">
                 {w.id === "slap"
                   ? "🖐️"
                   : w.id === "punch"
@@ -230,7 +230,7 @@ export function WeaponDock() {
               </span>
 
               {/* Damage Tag */}
-              <span className="font-comic text-[10px] text-white drop-shadow-sm sm:text-xs">
+              <span className="weapon-damage font-comic text-[10px] text-white drop-shadow-sm sm:text-xs">
                 {w.id === "chappal" ? activeChappal.damage : w.damage}
               </span>
             </button>

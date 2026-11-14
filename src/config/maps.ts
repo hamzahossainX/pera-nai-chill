@@ -1,7 +1,8 @@
 export type TimeOfDay = "noon" | "goldenHour" | "night" | "dawn";
+export type MapId = "mirpur" | "farmgate" | "newmarket";
 
 export interface MapScenario {
-  id: "mirpur" | "farmgate" | "newmarket";
+  id: MapId;
   name: {
     bn: string;
     en: string;
@@ -142,3 +143,13 @@ export const MAP_SCENARIOS: MapScenario[] = [
 ];
 
 export const DEFAULT_MAP = MAP_SCENARIOS[0];
+export const MAP_ORDER: MapId[] = ["mirpur", "farmgate", "newmarket"];
+
+export function isMapUnlocked(mapId: MapId, completedMapIds: MapId[]) {
+  const mapIndex = MAP_ORDER.indexOf(mapId);
+  const highestCompleted = completedMapIds.reduce(
+    (highest, completedId) => Math.max(highest, MAP_ORDER.indexOf(completedId)),
+    -1,
+  );
+  return mapIndex <= highestCompleted + 1;
+}
