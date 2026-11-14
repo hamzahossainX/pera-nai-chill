@@ -2133,20 +2133,20 @@ export class BootScene extends Phaser.Scene {
     const profiles = [
       {
         id: "mirpur",
-        colors: ["#26364a", "#3d5367", "#566b7a", "#1e3a5f"],
-        skyline: "#112b45",
+        colors: ["#1e293b", "#334155", "#475569", "#1e3a5f"],
+        skyline: "#0f2742",
         road: { curb: "#059669", stripe: "#facc15", detail: "#b45309" },
       },
       {
         id: "farmgate",
-        colors: ["#3a3f4b", "#4b5563", "#5b6470", "#28364d"],
-        skyline: "#202938",
+        colors: ["#292524", "#44403c", "#57534e", "#312e81"],
+        skyline: "#292524",
         road: { curb: "#dc2626", stripe: "#f8fafc", detail: "#f59e0b" },
       },
       {
         id: "newmarket",
-        colors: ["#69452f", "#855b3c", "#9b6b43", "#4c3566"],
-        skyline: "#3d294f",
+        colors: ["#3f1d38", "#581c87", "#7e22ce", "#172554"],
+        skyline: "#2e1065",
         road: { curb: "#db2777", stripe: "#facc15", detail: "#ea580c" },
       },
     ] as const;
@@ -2182,40 +2182,25 @@ export class BootScene extends Phaser.Scene {
     canvas.height = 300;
     const ctx = canvas.getContext("2d")!;
     ctx.fillStyle = color;
-    ctx.globalAlpha = 0.88;
+    ctx.globalAlpha = 0.8;
 
-    const widths =
-      profile === "farmgate"
-        ? [72, 150, 88, 185, 110, 230]
-        : profile === "newmarket"
-        ? [95, 120, 82, 145, 105]
-        : [110, 155, 88, 135, 175];
+    const widths = profile === "farmgate" ? [80, 145, 55, 180] : profile === "newmarket" ? [110, 75, 120, 95] : [135, 90, 160, 70];
     let x = 0;
     let index = 0;
     while (x < BALANCE.LOGICAL_WIDTH) {
       const width = widths[index % widths.length];
       const height =
         profile === "farmgate"
-          ? 125 + (index % 5) * 30
+          ? 105 + (index % 4) * 28
           : profile === "newmarket"
-          ? 82 + (index % 3) * 18
-          : 120 + (index % 4) * 28;
+          ? 90 + (index % 3) * 22
+          : 120 + (index % 3) * 30;
       ctx.fillRect(x, 300 - height, width - 5, height);
       ctx.globalAlpha = 1;
-      ctx.fillStyle =
-        profile === "farmgate" && index % 3 === 0 ? "#b97745" : color;
+      ctx.fillStyle = profile === "farmgate" && index % 3 === 0 ? "#f59e0b" : color;
       for (let wy = 300 - height + 18; wy < 285; wy += 28) {
-        for (let wx = x + 12; wx < x + width - 22; wx += 28) {
-          ctx.fillStyle =
-            profile === "newmarket"
-              ? index % 2
-                ? "#f8c56d"
-                : "#80c7bd"
-              : profile === "farmgate" && index % 3 === 0
-              ? "#f2b36b"
-              : "#a8d1d8";
-          ctx.fillRect(wx, wy, 10, 12);
-        }
+        ctx.fillRect(x + 12, wy, 10, 12);
+        if (width > 100) ctx.fillRect(x + width - 28, wy, 10, 12);
       }
       ctx.globalAlpha = 0.8;
       ctx.fillStyle = color;
@@ -2223,119 +2208,28 @@ export class BootScene extends Phaser.Scene {
       index++;
     }
 
-    ctx.globalAlpha = 1;
-    if (profile === "mirpur") {
-      // MRT Line 6 viaduct, station box, and the Mirpur 10 circle landmark.
-      ctx.fillStyle = "#697b88";
-      ctx.fillRect(0, 118, 1280, 16);
-      ctx.fillStyle = "#475569";
-      for (let pillarX = 55; pillarX < 1280; pillarX += 170) {
-        ctx.fillRect(pillarX, 134, 22, 166);
-        ctx.fillRect(pillarX - 10, 134, 42, 8);
-      }
-      ctx.fillStyle = "#0f172a";
-      ctx.fillRect(480, 78, 320, 42);
-      ctx.fillStyle = "#0ea5e9";
-      ctx.fillRect(495, 87, 290, 12);
-      ctx.fillStyle = "#facc15";
-      ctx.font = "bold 16px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("MIRPUR 10 MRT", 640, 111);
-      ctx.fillStyle = "#94a3b8";
-      ctx.beginPath();
-      ctx.arc(640, 248, 72, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#334155";
-      ctx.beginPath();
-      ctx.arc(640, 248, 53, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#65a30d";
-      ctx.beginPath();
-      ctx.arc(640, 248, 22, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#f8fafc";
-      ctx.fillRect(565, 208, 150, 7);
-      ctx.fillRect(565, 281, 150, 7);
-      ctx.fillStyle = "#f59e0b";
-      ctx.fillRect(632, 176, 16, 145);
-      ctx.fillRect(548, 240, 184, 12);
-      ctx.fillRect(572, 202, 136, 8);
-      ctx.fillStyle = "#1f2937";
-      ctx.fillRect(590, 220, 100, 8);
-    } else if (profile === "farmgate") {
-      // Large commercial transit silhouette and a raised road crossing.
-      ctx.fillStyle = "#59636f";
-      ctx.fillRect(0, 104, 1280, 18);
-      for (let pillarX = 95; pillarX < 1280; pillarX += 210) {
-        ctx.fillRect(pillarX, 122, 24, 178);
-      }
-      ctx.fillStyle = "#263342";
-      ctx.fillRect(235, 62, 300, 58);
-      ctx.fillStyle = "#ef4444";
-      ctx.fillRect(250, 74, 270, 12);
-      ctx.fillStyle = "#f8fafc";
-      ctx.font = "bold 15px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("FARMGATE MRT", 385, 104);
+    if (profile === "farmgate") {
+      ctx.globalAlpha = 1;
       ctx.fillStyle = "#64748b";
-      ctx.beginPath();
-      ctx.moveTo(0, 190);
-      ctx.lineTo(1280, 150);
-      ctx.lineTo(1280, 170);
-      ctx.lineTo(0, 210);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = "#f59e0b";
-      ctx.fillRect(40, 214, 230, 15);
-      ctx.fillStyle = "#f8fafc";
-      ctx.fillRect(805, 184, 260, 10);
-      ctx.fillRect(870, 194, 12, 72);
-      ctx.fillRect(990, 194, 12, 72);
-      ctx.strokeStyle = "#f8fafc";
-      ctx.lineWidth = 6;
-      ctx.beginPath();
-      ctx.arc(935, 190, 65, Math.PI, 0);
-      ctx.stroke();
-      ctx.fillStyle = "#f59e0b";
-      ctx.font = "bold 12px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("FARMGATE FOOTBRIDGE", 935, 180);
-      ctx.fillStyle = "#166534";
-      ctx.fillRect(1010, 190, 210, 110);
-      ctx.fillStyle = "#86efac";
-      for (let treeX = 1030; treeX < 1200; treeX += 38) {
-        ctx.beginPath();
-        ctx.arc(treeX, 190 + (treeX % 3) * 8, 24, 0, Math.PI * 2);
-        ctx.fill();
+      ctx.fillRect(80, 150, 1120, 14);
+      for (let pillarX = 120; pillarX < 1200; pillarX += 180) {
+        ctx.fillRect(pillarX, 164, 18, 136);
       }
-      ctx.fillStyle = "#f8fafc";
-      ctx.font = "bold 14px sans-serif";
-      ctx.fillText("ANWARA UDYAN", 1110, 286);
+    } else if (profile === "newmarket") {
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#facc15";
+      ctx.fillRect(420, 105, 440, 16);
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(435, 121, 410, 10);
     } else {
-      // New Market's low triangular roof and three-arched gate.
-      ctx.fillStyle = "#d5a35b";
-      ctx.beginPath();
-      ctx.moveTo(350, 218);
-      ctx.lineTo(640, 62);
-      ctx.lineTo(930, 218);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = "#6b3f2a";
-      ctx.lineWidth = 8;
-      ctx.stroke();
-      ctx.fillStyle = "#7c2d12";
-      for (const gateX of [470, 610, 750]) {
-        ctx.fillRect(gateX, 166, 56, 90);
-        ctx.beginPath();
-        ctx.arc(gateX + 28, 166, 28, Math.PI, 0);
-        ctx.fill();
-      }
-      ctx.fillStyle = "#fff7ed";
-      ctx.font = "bold 18px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("ঢাকা নিউ মার্কেট", 640, 145);
-      ctx.font = "bold 12px sans-serif";
-      ctx.fillText("NEW MARKET • CHANDNI CHOWK • GAUSIA", 640, 282);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#f59e0b";
+      ctx.fillRect(520, 82, 180, 90);
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(536, 98, 148, 58);
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(548, 108, 48, 36);
+      ctx.fillRect(610, 108, 58, 36);
     }
 
     this.textures.addCanvas(key, canvas);
@@ -2365,19 +2259,6 @@ export class BootScene extends Phaser.Scene {
       }
       ctx.fillStyle = "#f59e0b";
       for (let x = 45; x < canvas.width; x += 210) ctx.fillRect(x, 214, 100, 8);
-      ctx.fillStyle = "#475569";
-      ctx.fillRect(0, 245, canvas.width, 22);
-      ctx.fillStyle = "#f8fafc";
-      for (let x = 20; x < canvas.width; x += 120) {
-        ctx.fillRect(x, 250, 64, 5);
-      }
-      ctx.fillStyle = "#dc2626";
-      for (let x = 80; x < canvas.width; x += 260) {
-        ctx.fillRect(x, 18, 12, 72);
-        ctx.fillStyle = "#f8fafc";
-        ctx.fillRect(x - 15, 20, 42, 18);
-        ctx.fillStyle = "#dc2626";
-      }
     } else if (profile === "newmarket") {
       for (let x = 0; x < canvas.width; x += 56) {
         ctx.fillRect(x, 104, 28, 5);
@@ -2385,19 +2266,6 @@ export class BootScene extends Phaser.Scene {
       }
       ctx.fillStyle = "#ea580c";
       ctx.fillRect(0, 28, canvas.width, 7);
-      ctx.fillStyle = "#d6b27a";
-      ctx.fillRect(0, 238, canvas.width, 34);
-      ctx.fillStyle = "#7c2d12";
-      for (let x = 12; x < canvas.width; x += 96) {
-        ctx.fillRect(x, 242, 4, 26);
-      }
-      ctx.fillStyle = "#fef3c7";
-      for (let x = 24; x < canvas.width; x += 150) {
-        ctx.fillRect(x, 275, 84, 34);
-        ctx.fillStyle = ["#e11d48", "#2563eb", "#16a34a"][x % 3];
-        ctx.fillRect(x + 8, 280, 68, 8);
-        ctx.fillStyle = "#fef3c7";
-      }
     } else {
       for (let x = 0; x < canvas.width; x += 70) {
         ctx.fillRect(x, 107, 40, 5);
@@ -2405,13 +2273,6 @@ export class BootScene extends Phaser.Scene {
       }
       ctx.fillStyle = "#b45309";
       for (let x = 30; x < canvas.width; x += 240) ctx.fillRect(x, 38, 90, 5);
-      ctx.fillStyle = "#64748b";
-      for (let x = 60; x < canvas.width; x += 220) {
-        ctx.fillRect(x, 25, 5, 65);
-        ctx.fillStyle = "#facc15";
-        ctx.fillRect(x - 18, 25, 42, 6);
-        ctx.fillStyle = "#64748b";
-      }
     }
     this.textures.addCanvas(key, canvas);
   }
@@ -2428,16 +2289,15 @@ export class BootScene extends Phaser.Scene {
     const ctx = canvas.getContext("2d")!;
 
     let bbIndex = 0;
-    const blockWidth =
-      profile === "newmarket" ? 145 : profile === "farmgate" ? 155 : 132;
+    const blockWidth = profile === "newmarket" ? 170 : profile === "farmgate" ? 150 : 130;
     for (let x = 0; x < BALANCE.LOGICAL_WIDTH; x += blockWidth) {
       const col = buildingColors[Math.floor(x / blockWidth) % buildingColors.length];
       const h =
         profile === "farmgate"
-          ? 185 + ((x * 11) % 95)
+          ? 165 + ((x * 11) % 90)
           : profile === "newmarket"
-          ? 112 + ((x * 7) % 48)
-          : 195 + ((x * 17) % 125);
+          ? 145 + ((x * 7) % 75)
+          : 190 + ((x * 17) % 130);
 
       // Building facade
       ctx.fillStyle = col;
@@ -2447,12 +2307,7 @@ export class BootScene extends Phaser.Scene {
       ctx.strokeRect(x, 360 - h, blockWidth - 10, h);
 
       // Windows
-      ctx.fillStyle =
-        profile === "newmarket"
-          ? "rgba(255, 226, 150, 0.8)"
-          : x % 260 === 0
-          ? "rgba(56, 189, 248, 0.7)"
-          : "rgba(254, 240, 138, 0.75)";
+      ctx.fillStyle = (x % 260 === 0) ? "rgba(56, 189, 248, 0.7)" : "rgba(254, 240, 138, 0.75)";
       for (let wy = 360 - h + 30; wy < 340; wy += 32) {
         for (let wx = x + 16; wx < x + blockWidth - 20; wx += 28) {
           ctx.fillRect(wx, wy, 16, 18);
@@ -2467,7 +2322,7 @@ export class BootScene extends Phaser.Scene {
       bbIndex++;
 
       const bbWidth = 110;
-      const bbHeight = profile === "newmarket" ? 42 : 36;
+      const bbHeight = 36;
       const bbX = x + 5;
       const bbY = 360 - h + 10;
 
@@ -2490,16 +2345,6 @@ export class BootScene extends Phaser.Scene {
       ctx.fillStyle = "#ffffff";
       ctx.fillText(bb.sub, bbX + bbWidth / 2, bbY + 28);
 
-      if (profile === "mirpur") {
-        // Ground-floor pharmacies, eateries, and apartment balconies.
-        ctx.fillStyle = x % 264 === 0 ? "#0f766e" : "#7c2d12";
-        ctx.fillRect(x + 4, 319, blockWidth - 18, 38);
-        ctx.fillStyle = "#fef3c7";
-        ctx.font = "bold 8px sans-serif";
-        ctx.fillText(x % 264 === 0 ? "ফার্মেসি" : "চা • ভাত • নাস্তা", x + blockWidth / 2, 342);
-        ctx.fillStyle = "#64748b";
-        ctx.fillRect(x + blockWidth - 22, 240, 5, 85);
-      }
       if (profile === "farmgate" && x % 300 === 0) {
         ctx.fillStyle = "#f59e0b";
         ctx.fillRect(x + 16, 318, blockWidth - 34, 20);
@@ -2507,49 +2352,13 @@ export class BootScene extends Phaser.Scene {
         ctx.font = "bold 9px sans-serif";
         ctx.fillText("BUS STOP", x + blockWidth / 2, 332);
       }
-      if (profile === "farmgate" && x % 465 === 0) {
-        ctx.fillStyle = "#94a3b8";
-        ctx.fillRect(x + 22, 178, 8, 142);
+      if (profile === "newmarket" && x % 340 === 0) {
         ctx.fillStyle = "#facc15";
-        ctx.fillRect(x + 12, 176, 28, 8);
+        ctx.fillRect(x + 2, 300, blockWidth - 14, 58);
+        ctx.fillStyle = "#dc2626";
+        ctx.font = "bold 12px 'Hind Siliguri', sans-serif";
+        ctx.fillText("১০০ টাকা", x + blockWidth / 2, 326);
       }
-      if (profile === "newmarket") {
-        // Low arcade storefronts with varied awnings and Bengali shop lettering.
-        const awning = ["#e11d48", "#2563eb", "#16a34a", "#f59e0b"][bbIndex % 4];
-        ctx.fillStyle = awning;
-        ctx.fillRect(x + 2, 302, blockWidth - 14, 18);
-        ctx.fillStyle = "#fff7ed";
-        ctx.font = "bold 9px sans-serif";
-        ctx.fillText(
-          ["জামা", "জুতা", "বই", "কাপড়"][bbIndex % 4],
-          x + blockWidth / 2,
-          315,
-        );
-        ctx.fillStyle = "#facc15";
-        ctx.fillRect(x + 4, 326, blockWidth - 18, 28);
-        ctx.fillStyle = "#7c2d12";
-        ctx.font = "bold 10px sans-serif";
-        ctx.fillText("SALE • ১০০ টাকা", x + blockWidth / 2, 345);
-      }
-    }
-
-    ctx.fillStyle = "rgba(15, 23, 42, 0.8)";
-    ctx.fillRect(0, 352, BALANCE.LOGICAL_WIDTH, 8);
-    if (profile === "newmarket") {
-      ctx.fillStyle = "#d5a35b";
-      ctx.beginPath();
-      ctx.moveTo(500, 300);
-      ctx.lineTo(640, 218);
-      ctx.lineTo(780, 300);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = "#7c2d12";
-      ctx.lineWidth = 5;
-      ctx.stroke();
-      ctx.fillStyle = "#fff7ed";
-      ctx.font = "bold 12px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("MARKET GATE", 640, 292);
     }
 
     this.textures.addCanvas(key, canvas);
