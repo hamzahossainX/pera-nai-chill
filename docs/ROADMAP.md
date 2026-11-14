@@ -37,7 +37,8 @@
 - [ ] V2-37b — Settings UI: voice, subtitles, Calm mode, Friendly toggle [tags:ui]
 - [ ] V2-38 — Localization engine (dialect resolver, per-map mix, subtitle modes, CSV v2, import + release gate) [tags:audio,game,ui][spec:LOCALIZATION_AND_DIALECTS]
 - [ ] V2-39 — Dialect-gap gag `S8_ki_koila` [tags:game,content]
-- [x] V2-40a — In-engine bot harness (after V2-06) · [x] V2-40 — Balance port (`src/config/balance.v2.ts`, assist ladder, bands from GDD §7, masher = 0 %, monotonic hazard cadence) [tags:test,game][spec:GDD §9] (tag: v2-40-done)
+- [x] V2-40a — **⚠ judge 2026-11-14: partial** (BotHarness is a standalone model, not the real engine — see GAME_AUDIT T-09; real-engine bot = V2-40b) — In-engine bot harness (after V2-06) · [x] V2-40 — Balance port (`src/config/balance.v2.ts`, assist ladder, bands from GDD §7, masher = 0 %, monotonic hazard cadence) [tags:test,game][spec:GDD §9] (tag: v2-40-done)
+- [ ] V2-40b — **Real in-engine bot** (judge-added 2026-11-14): bots drive the actual `RunScene` via `window.__game.step` + `ControlSource`; reproduce GDD §7 bands within ±10 points; masher = 0 %; report in `docs/balance/BALANCE_REPORT.md` [tags:test,game][audit:T-09]
 - [ ] V2-40c — **Owner/native content task (not AI):** dialect packs phase 1 (Dhakaiya, Chittagonian, Sylheti) via `docs/spec/dialect/translation_sheet.csv`; record clips; fill `docs/audio/ASSET_LEDGER.csv`
 - [ ] V2-41 — Post-launch: phase-2 regions (maps + dialects `mym`,`noa`,`bar`,`rng`,`khl`)
 

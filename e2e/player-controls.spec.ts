@@ -33,7 +33,16 @@ test.describe("V2-03 Player Controls (lanes, dash, jump & TouchControls)", () =>
 
     // Wait for canvas
     await expect(page.locator("#phaser-container canvas")).toBeVisible({ timeout: 10000 });
-    await page.waitForTimeout(1000);
+    // Wait for the scene to expose the chaser (state, not wall-clock): boot takes ~1.5–2 s on software GL
+    await page.waitForFunction(
+      () => {
+        const g = (window as unknown as { __game?: { getState(): { chaser?: unknown } } }).__game;
+        const s = g ? g.getState() : null;
+        return !!(s && s.chaser);
+      },
+      null,
+      { timeout: 30000 }
+    );
 
     // Initial state check: chaser starts at middle lane (lane 1)
     const initialState = await page.evaluate(() => {
