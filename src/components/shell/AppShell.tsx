@@ -2,6 +2,10 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useGameStore } from "@/store/useGameStore";
+import { OrientationGuard } from "@/components/shell/OrientationGuard";
+import { VILLAINS } from "@/config/villains";
+import { MAP_SCENARIOS } from "@/config/maps";
+import "./Lobby.css";
 import { LoadingScreen } from "@/components/loading/LoadingScreen";
 import { FaceUploader } from "@/components/lobby/FaceUploader";
 import { VillainPreview } from "@/components/lobby/VillainPreview";
@@ -26,6 +30,8 @@ import { faceService } from "@/services/faceService";
 export function AppShell() {
   const {
     screen,
+    villainId,
+    currentMapId,
     startGame,
     targetFaceUrl,
     setTargetFace,
@@ -82,6 +88,7 @@ export function AppShell() {
           <GameHost />
           {(screen === "PLAYING" || screen === "PAUSED") && (
             <>
+              <OrientationGuard />
               <HudOverlay />
               <WeaponDock />
               <TouchControls />
@@ -92,115 +99,45 @@ export function AppShell() {
       )}
 
       {screen === "LOBBY" && (
-        <div
-          tabIndex={0}
-          className="relative h-dvh max-h-dvh w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6 select-none focus:outline-none"
-        >
-          <SettingsSheet
-            isOpen={isSettingsOpen}
-            onClose={() => setIsSettingsOpen(false)}
-          />
-
-          {/* Top Bar */}
-          <header className="mx-auto flex max-w-4xl items-center justify-between py-2">
-            <div
-              onClick={handleLogoTap}
-              className="cursor-pointer select-none active:scale-95 transition-transform"
-              title="Tap 5 times to open debug panel"
-            >
-              <h1 className="font-comic text-3xl tracking-wider text-amber-400 drop-shadow-[0_2px_0_rgba(0,0,0,1)] sm:text-4xl">
-                PERA NAI CHILL
-              </h1>
-              <p className="font-bangla text-xs font-bold text-rose-400">
-                ঢাকা রেজ রানার &bull; লবি কন্ট্রোল
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  audioService.play("click");
-                  setIsShopOpen(true);
-                }}
-                className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-500 px-3 py-2 text-slate-950 font-comic text-xs font-bold shadow-md hover:bg-amber-400 active:scale-95"
-                title="Shop"
-              >
-                <ShoppingBag className="h-4 w-4" />
-                <span className="hidden sm:inline">দোকান / SHOP</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  audioService.play("click");
-                  setIsAchievementsOpen(true);
-                }}
-                className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-yellow-400 px-3 py-2 text-slate-950 font-comic text-xs font-bold shadow-md hover:bg-yellow-300 active:scale-95"
-                title="Achievements"
-              >
-                <Trophy className="h-4 w-4" />
-                <span className="hidden sm:inline">অর্জন</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  audioService.play("click");
-                  setIsPosterOpen(true);
-                }}
-                className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-emerald-500 px-3 py-2 text-slate-950 font-comic text-xs font-bold shadow-md hover:bg-emerald-400 active:scale-95"
-                title="Wanted Poster Maker"
-              >
-                <FileText className="h-4 w-4" />
-                <span className="hidden sm:inline">পোস্টার</span>
-              </button>
-
-              <button
-                onClick={() => setIsSettingsOpen(true)}
-                className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-slate-800 p-2 text-slate-300 shadow-md hover:bg-slate-700 hover:text-white"
-                title="Settings"
-              >
-                <Settings className="h-5 w-5" />
-              </button>
-            </div>
+        <div className="pnc-lobby">
+          <SettingsSheet isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+          <header className="pnc-header">
+            <button onClick={handleLogoTap} className="pnc-brand" aria-label="Pera Nai Chill — tap five times for debug">
+              <span className="font-comic">PERA NAI CHILL</span>
+              <span>ঢাকার রাস্তায়, নিজের ছন্দে।</span>
+            </button>
+            <nav aria-label="লবি মেনু" className="pnc-nav">
+              <button onClick={() => setIsShopOpen(true)} aria-label="দোকান / Shop"><ShoppingBag /><span>দোকান</span></button>
+              <button onClick={() => setIsAchievementsOpen(true)} aria-label="অর্জন / Achievements"><Trophy /><span>অর্জন</span></button>
+              <button onClick={() => setIsPosterOpen(true)} aria-label="পোস্টার / Wanted poster"><FileText /><span>পোস্টার</span></button>
+              <button onClick={() => setIsSettingsOpen(true)} aria-label="সেটিংস / Settings"><Settings /></button>
+            </nav>
           </header>
-
-          {/* Main Lobby Form Sections */}
-          <main className="mx-auto mt-4 flex max-w-4xl flex-col gap-6 pb-28">
-            <DailyChallengeCard />
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FaceUploader />
-              <VillainPreview />
+          <main className="pnc-main">
+            <div className="pnc-intro">
+              <h1>মুখের ছবি দিন। রুট ঠিক করুন।</h1>
+              <p>নিজের ছবি দিন বা তৈরি মুখ রাখুন। তারপর ভিলেন আর রুট বেছে নিন।</p>
             </div>
-
-            <MapSelector />
-
-            <WeaponSelector />
+            <div className="pnc-face-section"><FaceUploader /></div>
+            <div className="pnc-setup">
+              <VillainPreview />
+              <div className="pnc-routeColumn">
+                <MapSelector />
+                <DailyChallengeCard />
+              </div>
+            </div>
+            <details className="pnc-optional">
+              <summary>নিজের মতো সাজান <span>লোডআউট · ঐচ্ছিক</span></summary>
+              <div className="pnc-extras"><WeaponSelector /></div>
+            </details>
           </main>
-
-          {/* Modals */}
-          <ShopModal
-            isOpen={isShopOpen}
-            onClose={() => setIsShopOpen(false)}
-          />
-          <AchievementsModal
-            isOpen={isAchievementsOpen}
-            onClose={() => setIsAchievementsOpen(false)}
-          />
-          <WantedPosterModal
-            isOpen={isPosterOpen}
-            onClose={() => setIsPosterOpen(false)}
-          />
-
-          {/* Fixed Bottom Launch Bar */}
-          <footer className="fixed bottom-0 left-0 right-0 z-30 border-t-4 border-black bg-slate-950/95 p-3.5 backdrop-blur-md">
-            <div className="mx-auto flex max-w-md items-center justify-center">
-              <button
-                onClick={handleStartGame}
-                className="flex w-full items-center justify-center gap-3 rounded-2xl border-4 border-black bg-gradient-to-r from-amber-500 via-rose-500 to-rose-600 py-3.5 font-comic text-2xl tracking-wider text-white shadow-[0_5px_0px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-1 active:shadow-none"
-              >
-                <Play className="h-7 w-7 fill-white" />
-                <span>রাস্তায় নামাও (START RUN)</span>
-              </button>
+          <ShopModal isOpen={isShopOpen} onClose={() => setIsShopOpen(false)} />
+          <AchievementsModal isOpen={isAchievementsOpen} onClose={() => setIsAchievementsOpen(false)} />
+          <WantedPosterModal isOpen={isPosterOpen} onClose={() => setIsPosterOpen(false)} />
+          <footer className="pnc-launch">
+            <div>
+              <p aria-live="polite">{VILLAINS.find(v => v.id === villainId)?.name.bn} <span> / </span> {MAP_SCENARIOS.find(m => m.id === currentMapId)?.name.bn}</p>
+              <button onClick={handleStartGame} className="pnc-start"><Play aria-hidden="true" /><span>রাস্তায় নামুন <small>Start run</small></span></button>
             </div>
           </footer>
         </div>
