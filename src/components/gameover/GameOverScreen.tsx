@@ -15,12 +15,33 @@ export function GameOverScreen() {
     targetFaceUrl,
     rageScore,
     combo,
+    bestCombo,
+    patience,
     taka,
+    starsResult,
+    currentMapId,
+    setMapId,
+    failReason,
     startGame,
     resetRun,
   } = useGameStore();
 
   const isWin = villainHp === 0;
+  const isPatienceFail = !isWin && failReason === "patience_zero";
+
+  const MAP_ORDER = ["mirpur", "farmgate", "newmarket"] as const;
+  const currentMapIndex = MAP_ORDER.indexOf(currentMapId as "mirpur" | "farmgate" | "newmarket");
+  const nextMapId =
+    currentMapIndex >= 0 && currentMapIndex < MAP_ORDER.length - 1
+      ? MAP_ORDER[currentMapIndex + 1]
+      : null;
+
+  const handleNextStage = () => {
+    if (!nextMapId) return;
+    audioService.play("click");
+    setMapId(nextMapId);
+    startGame();
+  };
 
   const rankTitle = isWin
     ? "মহাচোর দমনকারী (Master Hunter)"
@@ -49,24 +70,38 @@ export function GameOverScreen() {
         {/* Result Header Badge */}
         <div
           className={`rounded-full px-5 py-1.5 font-comic text-sm tracking-wider uppercase shadow-md ${
-            isWin ? "bg-emerald-500 text-black" : "bg-rose-500 text-white"
+            isWin
+              ? "bg-emerald-500 text-black"
+              : isPatienceFail
+              ? "bg-amber-500 text-black"
+              : "bg-rose-500 text-white"
           }`}
         >
-          {isWin ? "MISSION ACCOMPLISHED!" : "TARGET ESCAPED!"}
+          {isWin
+            ? "MISSION ACCOMPLISHED!"
+            : isPatienceFail
+            ? "OUT OF PATIENCE!"
+            : "TARGET ESCAPED!"}
         </div>
 
         {/* Big Bengali Headline */}
         <div>
           <h2
             className={`font-comic text-4xl sm:text-5xl tracking-wide drop-shadow-md ${
-              isWin ? "text-yellow-300" : "text-rose-400"
+              isWin
+                ? "text-yellow-300"
+                : isPatienceFail
+                ? "text-amber-400"
+                : "text-rose-400"
             }`}
           >
-            {isWin ? "ধরা খাইছে!" : "পালাইছে!"}
+            {isWin ? "ধরা খাইছে!" : isPatienceFail ? "হাল ছেড়ে দিলে?!" : "পালাইছে!"}
           </h2>
           <p className="font-bangla mt-1 text-sm font-semibold text-slate-300">
             {isWin
               ? `${targetName}-কে উচিৎ শিক্ষা দেওয়া হয়েছে!`
+              : isPatienceFail
+              ? `${targetName}-কে ধরার ধৈর্য শেষ হয়ে গেছে!`
               : `${targetName} টাকা নিয়ে চম্পট দিয়েছে!`}
           </p>
         </div>
@@ -95,6 +130,52 @@ export function GameOverScreen() {
             {rankTitle}
           </span>
         </div>
+
+        {/* Stars Section (Result Screen Skeleton for Stage Mode) */}
+        {isWin && (
+          <div className="flex flex-col items-center gap-1.5 w-full rounded-2xl border border-yellow-400/40 bg-slate-950/80 p-3 shadow-inner">
+            <div className="flex items-center gap-2 text-3xl font-bold">
+              <span
+                className={
+                  starsResult?.caughtVillain
+                    ? "text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]"
+                    : "text-slate-600"
+                }
+              >
+                ★
+              </span>
+              <span
+                className={
+                  starsResult?.patienceOverHalf
+                    ? "text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]"
+                    : "text-slate-600"
+                }
+              >
+                ★
+              </span>
+              <span
+                className={
+                  starsResult?.comboTargetReached
+                    ? "text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]"
+                    : "text-slate-600"
+                }
+              >
+                ★
+              </span>
+            </div>
+            <div className="flex flex-col gap-0.5 text-[11px] font-bangla text-slate-300">
+              <span className={starsResult?.caughtVillain ? "text-emerald-400" : "text-slate-500"}>
+                {starsResult?.caughtVillain ? "✓" : "✗"} চোর ধরা পড়েছে (Caught)
+              </span>
+              <span className={starsResult?.patienceOverHalf ? "text-emerald-400" : "text-slate-500"}>
+                {starsResult?.patienceOverHalf ? "✓" : "✗"} ধৈর্য ৫০%+ ছিল ({patience}%)
+              </span>
+              <span className={starsResult?.comboTargetReached ? "text-emerald-400" : "text-slate-500"}>
+                {starsResult?.comboTargetReached ? "✓" : "✗"} ১০x কম্বো অর্জিত ({bestCombo}x)
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-2 w-full">
@@ -128,6 +209,15 @@ export function GameOverScreen() {
 
         {/* Action Buttons */}
         <div className="flex w-full flex-col gap-2.5 mt-2">
+          {isWin && nextMapId && (
+            <button
+              onClick={handleNextStage}
+              className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-gradient-to-r from-emerald-500 to-teal-400 py-3.5 font-comic text-xl text-black shadow-lg hover:from-emerald-400 hover:to-teal-300"
+            >
+              পরবর্তী স্টেজ / NEXT STAGE →
+            </button>
+          )}
+
           <button
             onClick={handleRetry}
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-black bg-gradient-to-r from-amber-500 to-yellow-400 py-3.5 font-comic text-xl text-black shadow-lg hover:from-amber-400 hover:to-yellow-300"

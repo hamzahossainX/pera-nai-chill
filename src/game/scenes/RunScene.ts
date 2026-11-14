@@ -5,6 +5,7 @@ import { WeatherSystem } from "@/game/systems/WeatherSystem";
 import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { FxSystem } from "@/game/systems/FxSystem";
+import { GapSystem } from "@/game/systems/GapSystem";
 import { CombatSystem } from "@/game/systems/CombatSystem";
 import { SpawnSystem } from "@/game/systems/SpawnSystem";
 import { DialogueSystem } from "@/game/systems/DialogueSystem";
@@ -13,7 +14,10 @@ import { DifficultySystem } from "@/game/systems/DifficultySystem";
 import { BALANCE } from "@/config/balance";
 import { gameBus } from "@/game/bus";
 import { audioService } from "@/services/audio";
+import { STAGE_CONFIG } from "@/config/rules";
 import { useGameStore } from "@/store/useGameStore";
+import { ControlSource, InputCommand } from "@/game/input/ControlSource";
+import { KeyboardTouchSource } from "@/game/input/KeyboardTouchSource";
 
 export class RunScene extends Phaser.Scene {
   public parallaxSystem!: ParallaxSystem;
@@ -22,11 +26,14 @@ export class RunScene extends Phaser.Scene {
   public villain!: Villain;
   public chaser!: Chaser;
   public fxSystem!: FxSystem;
+  public gapSystem!: GapSystem;
   public combatSystem!: CombatSystem;
   public spawnSystem!: SpawnSystem;
   public eventSystem!: EventSystem;
   public dialogueSystem!: DialogueSystem;
   public difficultySystem!: DifficultySystem;
+  public controlSource!: ControlSource;
+  private unbindControlSource?: () => void;
 
   private isPaused = false;
   private lastFpsReport = 0;
@@ -38,24 +45,6 @@ export class RunScene extends Phaser.Scene {
   }
 
   create() {
-    // Boss Check: Every 3rd run triggers Chor-er Sardar Boss Fight
-    let runCount = 1;
-    if (typeof window !== "undefined") {
-      try {
-        runCount = Number(localStorage.getItem("dhaka_runner_run_count") || "0") + 1;
-        localStorage.setItem("dhaka_runner_run_count", String(runCount));
-      } catch {}
-    }
-
-    const isBossRun = runCount % 3 === 0;
-    if (isBossRun) {
-      useGameStore.setState({
-        villainId: "chorSardar",
-        villainHp: 500,
-        villainMaxHp: 500,
-      });
-    }
-
     // 1. Initialize Parallax Background & Day/Night Lighting & Weather
     this.parallaxSystem = new ParallaxSystem(this);
     this.timeOfDaySystem = new TimeOfDaySystem(this, this.parallaxSystem);
@@ -65,9 +54,10 @@ export class RunScene extends Phaser.Scene {
     this.chaser = new Chaser(this);
     this.villain = new Villain(this);
 
-    // 3. Initialize FX, Combat, Spawn, Event & Difficulty Systems
+    // 3. Initialize FX, Gap, Combat, Spawn, Event & Difficulty Systems
     this.fxSystem = new FxSystem(this);
     this.difficultySystem = new DifficultySystem();
+    this.gapSystem = new GapSystem(this, this.villain, this.chaser);
     this.spawnSystem = new SpawnSystem(
       this,
       this.villain,
@@ -78,7 +68,9 @@ export class RunScene extends Phaser.Scene {
       this,
       this.villain,
       this.chaser,
-      this.fxSystem
+      this.fxSystem,
+      this.gapSystem,
+      this.spawnSystem
     );
     this.eventSystem = new EventSystem(
       this,
@@ -103,6 +95,26 @@ export class RunScene extends Phaser.Scene {
     gameBus.on("debug:timeScale", this.handleDebugTimeScale);
     gameBus.on("villain:dead", this.handleVillainDead);
 
+    // 7. Setup Player Control Source (A11 abstraction)
+    this.setControlSource(new KeyboardTouchSource(this));
+
+    // 8. Register test hook state providers & debug controls if test hook installed
+    if (typeof window !== "undefined" && window.__game) {
+      window.__game.registerState("gap", () => this.gapSystem.getGap());
+      window.__game.registerState("patience", () => useGameStore.getState().patience);
+      window.__game.debug.register("setGap", (g: unknown) => {
+        if (typeof g === "number") this.gapSystem.setGap(g);
+      });
+      window.__game.debug.register("drainPatience", (n: unknown) => {
+        if (typeof n === "number") useGameStore.getState().drainPatience(n);
+      });
+      window.__game.debug.register("slowChaser", (mult: unknown, sec: unknown) => {
+        if (typeof mult === "number" && typeof sec === "number") {
+          this.gapSystem.slowChaser(mult, sec);
+        }
+      });
+    }
+
     // Clean up bus listeners on scene shutdown or destroy
     const cleanup = () => {
       audioService.stopBgm();
@@ -112,7 +124,10 @@ export class RunScene extends Phaser.Scene {
       gameBus.off("debug:spawnObstacle", this.handleDebugSpawnObstacle);
       gameBus.off("debug:timeScale", this.handleDebugTimeScale);
       gameBus.off("villain:dead", this.handleVillainDead);
+      this.unbindControlSource?.();
+      this.controlSource?.destroy();
       this.combatSystem.destroy();
+      this.gapSystem.destroy();
       this.fxSystem.destroy();
       this.timeOfDaySystem.destroy();
       this.weatherSystem.destroy();
@@ -232,6 +247,51 @@ export class RunScene extends Phaser.Scene {
     this.physics.world.timeScale = Math.max(0.05, Math.min(3.0, data.scale));
   };
 
+  public setControlSource(source: ControlSource): void {
+    if (this.unbindControlSource) {
+      this.unbindControlSource();
+    }
+    if (this.controlSource && this.controlSource !== source) {
+      this.controlSource.destroy();
+    }
+    this.controlSource = source;
+    this.unbindControlSource = this.controlSource.onCommand((cmd) => {
+      this.handleInputCommand(cmd);
+    });
+  }
+
+  public handleInputCommand(cmd: InputCommand): void {
+    if (this.isPaused || !this.chaser) return;
+
+    switch (cmd.type) {
+      case "LANE_UP":
+        this.chaser.laneUp();
+        break;
+      case "LANE_DOWN":
+        this.chaser.laneDown();
+        break;
+      case "JUMP":
+        this.chaser.jump();
+        break;
+      case "DASH":
+        if (this.chaser.dash()) {
+          this.gapSystem.reduceGap(160);
+        }
+        break;
+      case "ATTACK":
+        if (cmd.weaponId) {
+          gameBus.emit("weapon:use", { weaponId: cmd.weaponId, timestamp: Date.now() });
+        }
+        break;
+      case "ULTIMATE":
+        gameBus.emit("weapon:use", { weaponId: "ultimate-chappal-storm", timestamp: Date.now() });
+        break;
+      case "TAUNT":
+        gameBus.emit("player:taunt");
+        break;
+    }
+  }
+
   private handlePause = (data: { paused: boolean }) => {
     this.isPaused = data.paused;
     audioService.setBgmFilter(data.paused ? "muffled" : "normal");
@@ -273,18 +333,22 @@ export class RunScene extends Phaser.Scene {
     // Update parallax scenery
     this.parallaxSystem.update(time, clampedDelta, baseRampedSpeed);
 
+    // Update stage distance progress
+    const distanceDelta = effectiveSpeed * (clampedDelta * 0.001) * STAGE_CONFIG.METERS_PER_PIXEL;
+    useGameStore.getState().addDistance(distanceDelta);
+
     // Update villain, chaser, and combat projectiles
-    this.villain.update(time, clampedDelta);
+    this.villain.update(time, clampedDelta, (lane, type, x) =>
+      this.spawnSystem.spawnObstacle(lane, type, x)
+    );
     this.chaser.update(time, clampedDelta);
+    this.gapSystem.update(time, clampedDelta);
     this.combatSystem.update(time, clampedDelta);
     this.spawnSystem.update(time, clampedDelta, effectiveSpeed);
     this.eventSystem.update(time, clampedDelta);
     this.dialogueSystem.update(time, clampedDelta);
     this.timeOfDaySystem.update(time, clampedDelta);
     this.weatherSystem.update(time, clampedDelta);
-
-    // Keep chaser following villain's lane smoothly
-    this.chaser.followLane(this.villain.currentLane);
 
     // Periodically report actual FPS
     if (time - this.lastFpsReport > 500) {

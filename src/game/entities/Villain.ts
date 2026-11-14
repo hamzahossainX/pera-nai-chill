@@ -1,9 +1,11 @@
 import Phaser from "phaser";
 import { CharacterRig } from "./CharacterRig";
-import { BALANCE } from "@/config/balance";
+import { getLaneY, getLaneScale, getLaneCount } from "@/config/layout";
+import { rng } from "@/lib/rng";
 import { VILLAINS } from "@/config/villains";
 import { OUTFITS } from "@/config/outfits";
 import { useGameStore } from "@/store/useGameStore";
+import type { ObstacleType } from "./Obstacle";
 
 export class Villain {
   public scene: Phaser.Scene;
@@ -11,20 +13,26 @@ export class Villain {
   public archetype: (typeof VILLAINS)[number];
   public currentLane = 1; // 0, 1, or 2 (middle lane default)
   public isDead = false;
+  public isDodging = false;
+  public hasShield = false;
   private laneChangeTimer = 0;
-  private isBossPhase2 = false;
+  private counterMoveTimer = 0;
+  public isBossPhase2 = false;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
 
-    const initialY = BALANCE.LANES_Y[this.currentLane];
-    const initialScale = BALANCE.LANE_SCALES[this.currentLane];
+    const initialY = getLaneY(this.currentLane);
+    const initialScale = getLaneScale(this.currentLane);
 
     const villainConfig =
       VILLAINS.find((v) => v.id === useGameStore.getState().villainId) ||
       VILLAINS[0];
 
     this.archetype = villainConfig;
+    if (villainConfig.id === "manholeChor") {
+      this.hasShield = true;
+    }
 
     const outfit = OUTFITS[villainConfig.outfitId] || OUTFITS.phoneSnatcher;
 
@@ -45,25 +53,24 @@ export class Villain {
   }
 
   public setLane(laneIndex: number) {
-    if (laneIndex < 0 || laneIndex >= BALANCE.LANES_Y.length || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
+    if (laneIndex < 0 || laneIndex >= getLaneCount() || !this.rig || !this.rig.scene) return;
     this.currentLane = laneIndex;
 
-    const targetY = BALANCE.LANES_Y[laneIndex];
-    const targetScale = BALANCE.LANE_SCALES[laneIndex];
+    const targetY = getLaneY(laneIndex);
+    const targetScale = getLaneScale(laneIndex);
 
-    this.scene.tweens.add({
-      targets: this.rig,
-      y: targetY,
-      scaleX: targetScale,
-      scaleY: targetScale,
-      duration: 220,
-      ease: "Quad.Out",
-      onUpdate: () => {
-        if (this.rig && this.rig.scene) {
-          this.rig.setDepth(this.currentLane + 10);
-        }
-      },
-    });
+    this.rig.motion.setLaneY(targetY);
+    this.rig.setDepth(this.currentLane + 10);
+
+    if (this.scene && this.scene.tweens) {
+      this.scene.tweens.add({
+        targets: this.rig,
+        scaleX: targetScale,
+        scaleY: targetScale,
+        duration: 220,
+        ease: "Quad.Out",
+      });
+    }
   }
 
   public hit(damage: number, knockback: number = 35, isCrit: boolean = false) {
@@ -109,25 +116,25 @@ export class Villain {
   public isHiding = false;
 
   public vault() {
-    if (this.isVaulting || !this.scene || !this.scene.tweens || !this.rig || !this.rig.scene) return;
+    if (this.isVaulting || !this.rig || !this.rig.scene) return;
     this.isVaulting = true;
-    const currentY = this.rig.y;
 
-    this.scene.tweens.add({
-      targets: this.rig,
-      y: currentY - 50,
-      rotation: -0.25,
-      duration: 200,
-      yoyo: true,
-      ease: "Quad.Out",
-      onComplete: () => {
-        if (this.rig && this.rig.scene) {
-          this.rig.rotation = 0;
-          this.rig.y = currentY;
-        }
-        this.isVaulting = false;
-      },
+    this.rig.motion.vault(50, 400, () => {
+      if (this.rig && this.rig.scene) {
+        this.rig.rotation = 0;
+      }
+      this.isVaulting = false;
     });
+
+    if (this.scene && this.scene.tweens) {
+      this.scene.tweens.add({
+        targets: this.rig,
+        rotation: -0.25,
+        duration: 200,
+        yoyo: true,
+        ease: "Quad.Out",
+      });
+    }
   }
 
   public hideBehindVehicle() {
@@ -147,6 +154,85 @@ export class Villain {
     });
   }
 
+  public dodge(onComplete?: () => void) {
+    if (this.isDodging || this.isDead || !this.rig || !this.rig.scene) return;
+    this.isDodging = true;
+
+    // Quick side-step roll / wiggle animation (150ms telegraph + recovery)
+    if (this.scene && this.scene.tweens) {
+      this.scene.tweens.add({
+        targets: this.rig,
+        rotation: -0.22,
+        duration: 90,
+        yoyo: true,
+        ease: "Quad.Out",
+        onComplete: () => {
+          this.isDodging = false;
+          if (this.rig && this.rig.scene) {
+            this.rig.rotation = 0;
+          }
+          onComplete?.();
+        },
+      });
+    } else {
+      this.isDodging = false;
+      onComplete?.();
+    }
+  }
+
+  public executeCounterMove(spawnObstacleFn?: (lane: number, type: ObstacleType, x?: number) => void) {
+    if (this.isDead || !this.rig || !this.rig.scene || this.rig.stateName !== "RUN") return;
+
+    switch (this.archetype.id) {
+      case "phoneSnatcher": {
+        // Zig-zag: switches lane immediately + dodge burst
+        const nextLane = this.currentLane === 1 ? (rng.chance(0.5) ? 0 : 2) : 1;
+        this.setLane(nextLane);
+        this.dodge();
+        break;
+      }
+      case "pickpocket": {
+        // Drops fake wallet bait
+        spawnObstacleFn?.(this.currentLane, "fake-wallet", this.rig.x - 50);
+        break;
+      }
+      case "cableChor": {
+        // Swings wire coil hazard in his lane
+        spawnObstacleFn?.(this.currentLane, "wire-coil", this.rig.x - 40);
+        break;
+      }
+      case "manholeChor": {
+        // Raises manhole cover as shield (blocks next projectile)
+        this.hasShield = true;
+        if (this.scene && this.scene.tweens) {
+          this.scene.tweens.add({
+            targets: this.rig,
+            scaleY: this.rig.scaleY * 1.15,
+            duration: 120,
+            yoyo: true,
+          });
+        }
+        break;
+      }
+      case "eidMarketChor": {
+        // Tosses shopping bags that slow the chaser
+        spawnObstacleFn?.(this.currentLane, "shopping-bag", this.rig.x - 60);
+        break;
+      }
+      case "chickenChor": {
+        // Chicken flies out
+        this.dodge();
+        break;
+      }
+      case "chorSardar": {
+        // Boss summons goon / barricade hazard
+        const goonLane = this.currentLane === 0 ? 1 : 0;
+        spawnObstacleFn?.(goonLane, "barricade", this.rig.x - 40);
+        break;
+      }
+    }
+  }
+
   public die(onComplete?: () => void) {
     this.isDead = true;
     if (this.rig && this.rig.scene) {
@@ -154,25 +240,33 @@ export class Villain {
     }
   }
 
-  public update(time: number, delta: number) {
+  public update(time: number, delta: number, spawnObstacleFn?: (lane: number, type: ObstacleType, x?: number) => void) {
     this.rig.update(time, delta);
 
-    // AI Lane Dodging: changes lane every 4 to 8 seconds (faster in boss phase 2)
+    // 1. AI Lane Dodging: changes lane every 4 to 8 seconds (faster in boss phase 2)
     this.laneChangeTimer += delta;
     const threshold = this.isBossPhase2 ? 2200 : 4500;
     if (this.laneChangeTimer > threshold) {
       this.laneChangeTimer = 0;
-      if (Math.random() < (this.isBossPhase2 ? 0.8 : 0.6)) {
+      if (rng.chance(this.isBossPhase2 ? 0.8 : 0.6)) {
         const nextLane =
           this.currentLane === 0
             ? 1
             : this.currentLane === 2
             ? 1
-            : Math.random() < 0.5
+            : rng.chance(0.5)
             ? 0
             : 2;
         this.setLane(nextLane);
       }
+    }
+
+    // 2. Archetype Counter-Move: executes signature counter-move every 6 to 9 seconds
+    this.counterMoveTimer += delta;
+    const counterThreshold = this.isBossPhase2 ? 5000 : 7500;
+    if (this.counterMoveTimer > counterThreshold) {
+      this.counterMoveTimer = 0;
+      this.executeCounterMove(spawnObstacleFn);
     }
   }
 }

@@ -15,6 +15,7 @@ import { DailyChallengeCard } from "@/components/game/DailyChallengeCard";
 import { GameHost } from "@/components/game/GameHost";
 import { HudOverlay } from "@/components/game/HudOverlay";
 import { WeaponDock } from "@/components/game/WeaponDock";
+import { TouchControls } from "@/components/game/TouchControls";
 import { GameOverScreen } from "@/components/gameover/GameOverScreen";
 import { DebugBar } from "@/components/game/DebugBar";
 import { DemoRunner } from "@/components/game/DemoRunner";
@@ -76,23 +77,25 @@ export function AppShell() {
 
       {screen === "BOOT" && <LoadingScreen />}
 
-      {(screen === "PLAYING" || screen === "PAUSED") && (
+      {(screen === "PLAYING" || screen === "PAUSED" || screen === "GAME_OVER") && (
         <div className="relative h-screen w-screen overflow-hidden bg-black select-none">
           <GameHost />
-          <HudOverlay />
-          <WeaponDock />
-        </div>
-      )}
-
-      {screen === "GAME_OVER" && (
-        <div className="relative h-screen w-screen overflow-hidden bg-black select-none">
-          <GameHost />
-          <GameOverScreen />
+          {(screen === "PLAYING" || screen === "PAUSED") && (
+            <>
+              <HudOverlay />
+              <WeaponDock />
+              <TouchControls />
+            </>
+          )}
+          {screen === "GAME_OVER" && <GameOverScreen />}
         </div>
       )}
 
       {screen === "LOBBY" && (
-        <div className="relative min-h-screen w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6 select-none">
+        <div
+          tabIndex={0}
+          className="relative h-dvh max-h-dvh w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6 select-none focus:outline-none"
+        >
           <SettingsSheet
             isOpen={isSettingsOpen}
             onClose={() => setIsSettingsOpen(false)}

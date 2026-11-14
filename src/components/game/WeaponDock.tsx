@@ -107,7 +107,7 @@ export function WeaponDock() {
       if (screen !== "PLAYING") return;
       if (e.repeat) return;
 
-      if (e.code === "Space") {
+      if (e.code === "KeyE") {
         e.preventDefault();
         triggerUltimate();
         return;
