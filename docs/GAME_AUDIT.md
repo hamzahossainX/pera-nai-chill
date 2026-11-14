@@ -121,3 +121,45 @@ Severity: **S0** = game is broken or the feature is effectively absent · **S1**
 | `lobby-top-1280x720.png`, `lobby-after-wheel-1280x720.png` | M-01 no scroll after 6 wheel events |
 | `lobby-mobile-portrait.png` | U-04 orientation guard |
 | `drift-after-16/32-slaps.png` | **Inconclusive** (software GL, only 1 hit registered — HP 985/1000); kept only as a record of the repro attempt |
+
+---
+
+## Re-audit 2026-11-14 (waves 0–1: V2-00…V2-06, V2-40a/40) — judge: system-architect
+
+**What I ran myself** (not the builder's report): `tsc` ✅ · `lint` ✅ · vitest **98/98** ✅ · `npm run build` ✅ (first attempt was OOM-killed — exit 137 — and passed with `NODE_OPTIONS=--max-old-space-size=3072`) · `spec:verify` ✅ · `pattern:check` ✅ (P01 63→43, P02 5→0, P03 18→0) · Playwright (software-GL machine): **first full run 17/22** (builder reported 22/22) → targeted re-run of the 5 failures: 4 passed, 1 still failed (Mobile `player-controls`) → root cause = **test used a fixed 1 s sleep; the scene exposes the chaser after 1.46–1.89 s (measured)** → fixed with a state-based wait (`e2e/player-controls.spec.ts`) → desktop + mobile **2/2 pass**. The other 3 first-run failures (`lobby-scroll` 1280×720 ×2, `fail-states` escape) were load-sensitive timeouts and passed in isolation.
+**Not verified (be honest):** fps/feel on a real GPU `[?]`; fun/humour (needs a human playtest) `[?]`; art quality `[?]`.
+
+| ID | Status | Proving artefact |
+|---|---|---|
+| M-01 lobby unscrollable / map picker unreachable | ✅ fixed | `e2e/lobby-scroll.spec.ts` passes at 1920×1080, 1024×768, 844×390, and 1280×720 (in isolation); screenshots `docs/screens/v2/00/` |
+| C-01 villain knockback drift | ✅ fixed | `e2e/knockback-drift.spec.ts` (60 s attacks, bounds) + `src/__tests__/entity_motion.test.ts`; pattern P02 = 0 |
+| C-03 y/rotation snapshot race | ✅ fixed (by construction) | EntityMotion channels + P02 = 0; no dedicated visual repro `[?]` |
+| G-01 no fail state | ✅ fixed | `e2e/fail-states.spec.ts` (patience_zero, escape) + `gap_and_patience.test.ts` |
+| G-02 player can't move | ✅ fixed | `e2e/player-controls.spec.ts` (after the wait fix) + `player_controls.test.ts`; HUD shows ▲▼ / dash / jump buttons (`docs/screens/v2/audit/run-*.png`) |
+| G-03 static chase / melee from afar | ✅ fixed | `GapSystem.isMeleeInRange()` gates melee (`CombatSystem.ts:239`); read in code + unit tests |
+| G-04 archetype stats decorative | ✅ fixed (code) | `baseHp`/`dodgeRate` now read in `CombatSystem.ts` and the store (grep); not observed in play `[?]` |
+| G-05 hidden every-3rd-run boss | ✅ fixed | no boss/run-count logic left in `RunScene.ts` (grep) |
+| G-06 obstacles are rewards | ⚠ partial `[?]` | telegraph + counters implemented per builder/unit tests; feel unverified |
+| G-07 no objective/stars | ✅ implemented | `src/config/rules.ts` stars + distance bar visible in HUD screenshot; Result screen not viewed `[?]` |
+| G-08 daily reward outlier | ✅ fixed | `dailyChallenge.ts` `rewardTaka: 150` |
+| M-02 maps are palette swaps · M-03 time-of-day · M-04 no "place" | ❌ open | scheduled W3 (V2-16/17); screenshots still show the same skyline |
+| C-02 characters hunched/tangled | ❌ open | visible in `docs/screens/v2/audit/run-1280x720.png`; scheduled W2 |
+| U-01 HUD/dock covers lanes on phones | ❌ open | `run-844x390.png`: weapon-dock top ≈ 18 px below the chaser's feet (law: ≥ 28 px); V2-24 |
+| U-02 bottom-left collision | ❌ open | ticker + stamina + Taka panel still stacked |
+| T-01 cannot test gameplay | ⚠ mitigated | `?test=1` hook + fixed-step works; scene readiness 1.5–1.9 s on this machine |
+| T-05 `/dev/characters` in production | ❌ open | still listed in the `next build` route table |
+| T-07 hit banter never fires | ❌ open | `DialogueSystem` still listens to never-emitted `combat:hit` (V2-35) |
+| P01 `Math.random` | ⚠ 43 left | pattern ratchet baseline 43 (cosmetic + legacy) |
+
+### New problems found by this audit
+| ID | Sev | Tag | Finding |
+|---|---|---|---|
+| U-08 | S1 | V | **New touch controls collide with the stamina/patience panel:** the ▲▼ lane buttons overlap the "STAMINA/PATIENCE" labels at 1280×720 and 844×390 (`docs/screens/v2/audit/run-*.png`). Introduced by V2-03. Fix in V2-24 (thumb-zone layout). |
+| T-08 | S1 | V | **E2E brittleness:** fixed sleeps / first-test cold-start timeouts made 5/22 specs fail on a loaded machine; builder's "22/22" did not reproduce. `player-controls` fixed (state-based wait); `lobby-scroll` is load-sensitive. Rule: tests wait on state (`waitForFunction`), never on `waitForTimeout`. |
+| T-09 | S1 | C | **The "in-engine" bot is not in the engine:** `src/game/bot/BotHarness.ts` does not import Phaser or use `GapSystem`; it is a standalone re-implementation of the balance model (same family as `scripts/balance/sim.mjs`). Its win rates (masher 0 %, novice 18 %, average 82–86 %, expert 98 %) land almost exactly on the targets, i.e. they are tuned numbers, **not evidence about the real game**. V2-40a's AC ("reproduce in the real engine") is **not met** → ticket **V2-40b** added. |
+| T-10 | S2 | C | Builder's morning report mislabels audit IDs (e.g. calls G-03 "chaser has no stamina", G-05 "hazards lack telegraph"); the statuses above use the original audit definitions. |
+| T-11 | S2 | V | Playwright browser path: tests need `chromium_headless_shell-1254`; this machine only had 1248 → all 22 failed until it was linked (no download). Document in CONTRIBUTING / CI setup (`npx playwright install chromium`). |
+
+### Verdict: **SHIP-WAVE (merge W0+W1 into master) with follow-ups**
+Reasons: all S0 defects of the audit that wave 0–1 targeted (M-01, C-01, G-01/02/03) are fixed with passing proofs; gates and ratchets are green; no hidden files or trailers. Caveats are tracked below, none block a development branch.
+**Follow-ups (ordered):** (1) **V2-40b real in-engine bot** using `window.__game.step` + the actual scene (T-09) — before trusting any balance number; (2) **V2-24** must fix U-01/U-02/U-08 together; (3) V2-35 fixes T-07; (4) gate `/dev/characters` (T-05); (5) human **Playtest #1** per PRODUCTION_PLAN §6 (the M1 exit gate) — still outstanding; (6) wave 2 (characters) is next, then W3.
