@@ -7,7 +7,7 @@ export interface AudioPlayOptions {
 }
 
 export type BgmFilterType = "normal" | "underwater" | "loadshedding" | "muffled";
-export type TimeOfDayPhase = TimeOfDay | "sunset";
+export type TimeOfDayPhase = TimeOfDay;
 export type WeatherEffect = WeatherType;
 
 class AudioService {

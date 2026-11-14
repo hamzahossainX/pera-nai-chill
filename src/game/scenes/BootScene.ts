@@ -1054,7 +1054,7 @@ export class BootScene extends Phaser.Scene {
       this.textures.addCanvas("obstacle-rickshaw", canvas);
     }
 
-    // 26. Scenario Maps: Sky & Near Buildings for Farmgate & New Market
+    // 26. Scenario Maps: distinct sky, skyline, buildings and road composition
     if (!this.textures.exists("bg-sky-mirpur")) {
       const g = this.make.graphics({ x: 0, y: 0 });
       g.fillGradientStyle(0x1e1b4b, 0x311042, 0xd97706, 0xf59e0b, 1);
@@ -1079,21 +1079,7 @@ export class BootScene extends Phaser.Scene {
       g.destroy();
     }
 
-    // Near buildings for Farmgate
-    if (!this.textures.exists("bg-near-farmgate")) {
-      const farmgateMap = MAP_SCENARIOS.find((m) => m.id === "farmgate")!;
-      this.generateNearBuildingsTexture("bg-near-farmgate", farmgateMap.billboards, [
-        "#1c1917", "#292524", "#44403c", "#1e1b4b", "#312e81"
-      ]);
-    }
-
-    // Near buildings for New Market
-    if (!this.textures.exists("bg-near-newmarket")) {
-      const newmarketMap = MAP_SCENARIOS.find((m) => m.id === "newmarket")!;
-      this.generateNearBuildingsTexture("bg-near-newmarket", newmarketMap.billboards, [
-        "#3f1d38", "#1e1b4b", "#4a044e", "#172554", "#2e1065"
-      ]);
-    }
+    this.generateMapEnvironmentTextures();
 
     // 27. Comic Face Reaction Props (Dizzy Stars, Band-Aid, Anime Tears, Shocked Eyes)
     if (!this.textures.exists("prop-dizzy-stars")) {
@@ -2143,10 +2129,159 @@ export class BootScene extends Phaser.Scene {
     }
   }
 
+  private generateMapEnvironmentTextures() {
+    const profiles = [
+      {
+        id: "mirpur",
+        colors: ["#1e293b", "#334155", "#475569", "#1e3a5f"],
+        skyline: "#0f2742",
+        road: { curb: "#059669", stripe: "#facc15", detail: "#b45309" },
+      },
+      {
+        id: "farmgate",
+        colors: ["#292524", "#44403c", "#57534e", "#312e81"],
+        skyline: "#292524",
+        road: { curb: "#dc2626", stripe: "#f8fafc", detail: "#f59e0b" },
+      },
+      {
+        id: "newmarket",
+        colors: ["#3f1d38", "#581c87", "#7e22ce", "#172554"],
+        skyline: "#2e1065",
+        road: { curb: "#db2777", stripe: "#facc15", detail: "#ea580c" },
+      },
+    ] as const;
+
+    for (const profile of profiles) {
+      const map = MAP_SCENARIOS.find((item) => item.id === profile.id);
+      if (!map) continue;
+
+      if (!this.textures.exists(map.farKey)) {
+        this.generateFarBuildingsTexture(map.farKey, profile.id, profile.skyline);
+      }
+      if (!this.textures.exists(map.nearKey)) {
+        this.generateNearBuildingsTexture(
+          map.nearKey,
+          map.billboards,
+          profile.colors,
+          profile.id,
+        );
+      }
+      if (!this.textures.exists(map.roadKey)) {
+        this.generateRoadTexture(map.roadKey, profile.id, profile.road);
+      }
+    }
+  }
+
+  private generateFarBuildingsTexture(
+    key: string,
+    profile: "mirpur" | "farmgate" | "newmarket",
+    color: string,
+  ) {
+    const canvas = document.createElement("canvas");
+    canvas.width = BALANCE.LOGICAL_WIDTH;
+    canvas.height = 300;
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.8;
+
+    const widths = profile === "farmgate" ? [80, 145, 55, 180] : profile === "newmarket" ? [110, 75, 120, 95] : [135, 90, 160, 70];
+    let x = 0;
+    let index = 0;
+    while (x < BALANCE.LOGICAL_WIDTH) {
+      const width = widths[index % widths.length];
+      const height =
+        profile === "farmgate"
+          ? 105 + (index % 4) * 28
+          : profile === "newmarket"
+          ? 90 + (index % 3) * 22
+          : 120 + (index % 3) * 30;
+      ctx.fillRect(x, 300 - height, width - 5, height);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = profile === "farmgate" && index % 3 === 0 ? "#f59e0b" : color;
+      for (let wy = 300 - height + 18; wy < 285; wy += 28) {
+        ctx.fillRect(x + 12, wy, 10, 12);
+        if (width > 100) ctx.fillRect(x + width - 28, wy, 10, 12);
+      }
+      ctx.globalAlpha = 0.8;
+      ctx.fillStyle = color;
+      x += width;
+      index++;
+    }
+
+    if (profile === "farmgate") {
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#64748b";
+      ctx.fillRect(80, 150, 1120, 14);
+      for (let pillarX = 120; pillarX < 1200; pillarX += 180) {
+        ctx.fillRect(pillarX, 164, 18, 136);
+      }
+    } else if (profile === "newmarket") {
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#facc15";
+      ctx.fillRect(420, 105, 440, 16);
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(435, 121, 410, 10);
+    } else {
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#f59e0b";
+      ctx.fillRect(520, 82, 180, 90);
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(536, 98, 148, 58);
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(548, 108, 48, 36);
+      ctx.fillRect(610, 108, 58, 36);
+    }
+
+    this.textures.addCanvas(key, canvas);
+  }
+
+  private generateRoadTexture(
+    key: string,
+    profile: "mirpur" | "farmgate" | "newmarket",
+    colors: { curb: string; stripe: string; detail: string },
+  ) {
+    const canvas = document.createElement("canvas");
+    canvas.width = BALANCE.LOGICAL_WIDTH;
+    canvas.height = 370;
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = profile === "farmgate" ? "#292524" : profile === "newmarket" ? "#3f3f46" : "#0f172a";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = colors.curb;
+    ctx.fillRect(0, 0, canvas.width, 10);
+    ctx.fillStyle = colors.detail;
+    ctx.fillRect(0, 10, canvas.width, 7);
+    ctx.fillStyle = colors.stripe;
+
+    if (profile === "farmgate") {
+      for (let x = 0; x < canvas.width; x += 84) {
+        ctx.fillRect(x, 105, 46, 5);
+        ctx.fillRect(x + 25, 160, 46, 5);
+      }
+      ctx.fillStyle = "#f59e0b";
+      for (let x = 45; x < canvas.width; x += 210) ctx.fillRect(x, 214, 100, 8);
+    } else if (profile === "newmarket") {
+      for (let x = 0; x < canvas.width; x += 56) {
+        ctx.fillRect(x, 104, 28, 5);
+        ctx.fillRect(x + 10, 160, 28, 5);
+      }
+      ctx.fillStyle = "#ea580c";
+      ctx.fillRect(0, 28, canvas.width, 7);
+    } else {
+      for (let x = 0; x < canvas.width; x += 70) {
+        ctx.fillRect(x, 107, 40, 5);
+        ctx.fillRect(x, 162, 40, 5);
+      }
+      ctx.fillStyle = "#b45309";
+      for (let x = 30; x < canvas.width; x += 240) ctx.fillRect(x, 38, 90, 5);
+    }
+    this.textures.addCanvas(key, canvas);
+  }
+
   private generateNearBuildingsTexture(
     key: string,
     billboards: Array<{ main: string; sub: string; bg: string; fg: string }>,
-    buildingColors: string[]
+    buildingColors: readonly string[],
+    profile: "mirpur" | "farmgate" | "newmarket" = "mirpur",
   ) {
     const canvas = document.createElement("canvas");
     canvas.width = BALANCE.LOGICAL_WIDTH;
@@ -2154,21 +2289,27 @@ export class BootScene extends Phaser.Scene {
     const ctx = canvas.getContext("2d")!;
 
     let bbIndex = 0;
-    for (let x = 0; x < BALANCE.LOGICAL_WIDTH; x += 130) {
-      const col = buildingColors[(x / 130) % buildingColors.length];
-      const h = 190 + ((x * 17) % 130);
+    const blockWidth = profile === "newmarket" ? 170 : profile === "farmgate" ? 150 : 130;
+    for (let x = 0; x < BALANCE.LOGICAL_WIDTH; x += blockWidth) {
+      const col = buildingColors[Math.floor(x / blockWidth) % buildingColors.length];
+      const h =
+        profile === "farmgate"
+          ? 165 + ((x * 11) % 90)
+          : profile === "newmarket"
+          ? 145 + ((x * 7) % 75)
+          : 190 + ((x * 17) % 130);
 
       // Building facade
       ctx.fillStyle = col;
-      ctx.fillRect(x, 360 - h, 120, h);
+      ctx.fillRect(x, 360 - h, blockWidth - 10, h);
       ctx.strokeStyle = "#000000";
       ctx.lineWidth = 3;
-      ctx.strokeRect(x, 360 - h, 120, h);
+      ctx.strokeRect(x, 360 - h, blockWidth - 10, h);
 
       // Windows
       ctx.fillStyle = (x % 260 === 0) ? "rgba(56, 189, 248, 0.7)" : "rgba(254, 240, 138, 0.75)";
       for (let wy = 360 - h + 30; wy < 340; wy += 32) {
-        for (let wx = x + 16; wx < x + 105; wx += 28) {
+        for (let wx = x + 16; wx < x + blockWidth - 20; wx += 28) {
           ctx.fillRect(wx, wy, 16, 18);
           ctx.strokeStyle = "#0f172a";
           ctx.lineWidth = 1.5;
@@ -2203,6 +2344,21 @@ export class BootScene extends Phaser.Scene {
       ctx.font = "bold 7px 'Luckiest Guy', Impact, sans-serif";
       ctx.fillStyle = "#ffffff";
       ctx.fillText(bb.sub, bbX + bbWidth / 2, bbY + 28);
+
+      if (profile === "farmgate" && x % 300 === 0) {
+        ctx.fillStyle = "#f59e0b";
+        ctx.fillRect(x + 16, 318, blockWidth - 34, 20);
+        ctx.fillStyle = "#020617";
+        ctx.font = "bold 9px sans-serif";
+        ctx.fillText("BUS STOP", x + blockWidth / 2, 332);
+      }
+      if (profile === "newmarket" && x % 340 === 0) {
+        ctx.fillStyle = "#facc15";
+        ctx.fillRect(x + 2, 300, blockWidth - 14, 58);
+        ctx.fillStyle = "#dc2626";
+        ctx.font = "bold 12px 'Hind Siliguri', sans-serif";
+        ctx.fillText("১০০ টাকা", x + blockWidth / 2, 326);
+      }
     }
 
     this.textures.addCanvas(key, canvas);

@@ -151,6 +151,10 @@ describe("T01: Core State & Config", () => {
         expect(map.name.bn).toBeTruthy();
         expect(map.tagline.bn).toBeTruthy();
         expect(map.billboards.length).toBeGreaterThan(0);
+        expect(map.farKey).not.toBe(map.nearKey);
+        expect(map.roadKey).toContain(map.id);
+        expect(map.supportedTimeOfDay).toEqual(["dawn", "noon", "goldenHour", "night"]);
+        expect(map.supportedTimeOfDay).toContain(map.defaultTimeOfDay);
       }
     });
 

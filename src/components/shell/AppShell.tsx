@@ -92,14 +92,14 @@ export function AppShell() {
       )}
 
       {screen === "LOBBY" && (
-        <div className="relative min-h-screen w-screen overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 sm:p-6 select-none">
+        <div className="relative h-dvh min-h-0 w-screen overflow-x-hidden overflow-y-auto overscroll-contain bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 text-slate-100 [touch-action:pan-y] sm:p-6 select-none">
           <SettingsSheet
             isOpen={isSettingsOpen}
             onClose={() => setIsSettingsOpen(false)}
           />
 
           {/* Top Bar */}
-          <header className="mx-auto flex max-w-4xl items-center justify-between py-2">
+          <header className="sticky top-0 z-20 mx-auto flex max-w-4xl items-center justify-between bg-slate-950/85 py-2 backdrop-blur-md">
             <div
               onClick={handleLogoTap}
               className="cursor-pointer select-none active:scale-95 transition-transform"
@@ -161,7 +161,7 @@ export function AppShell() {
           </header>
 
           {/* Main Lobby Form Sections */}
-          <main className="mx-auto mt-4 flex max-w-4xl flex-col gap-6 pb-28">
+          <main className="mx-auto mt-4 flex max-w-4xl flex-col gap-6 pb-40">
             <DailyChallengeCard />
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

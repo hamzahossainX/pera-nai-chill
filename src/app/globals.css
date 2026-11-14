@@ -27,8 +27,127 @@
     color: #f8fafc;
   }
 
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
   * {
     -webkit-touch-callout: none;
+  }
+
+  .map-preview {
+    position: relative;
+    height: 92px;
+    margin: 10px 0 4px;
+    overflow: hidden;
+    border: 2px solid rgba(15, 23, 42, 0.9);
+    border-radius: 0.75rem;
+    background: linear-gradient(180deg, #38bdf8 0%, #bae6fd 58%, #334155 59%, #0f172a 100%);
+  }
+
+  .map-preview::before,
+  .map-preview::after {
+    position: absolute;
+    bottom: 30px;
+    content: "";
+    width: 20%;
+    border: 2px solid #020617;
+    background: #475569;
+  }
+
+  .map-preview::before {
+    left: 7%;
+    height: 48px;
+  }
+
+  .map-preview::after {
+    right: 8%;
+    height: 62px;
+  }
+
+  .map-preview-farmgate {
+    background: linear-gradient(180deg, #f59e0b 0%, #fed7aa 58%, #57534e 59%, #1c1917 100%);
+  }
+
+  .map-preview-newmarket {
+    background: linear-gradient(180deg, #312e81 0%, #c026d3 58%, #7c2d12 59%, #292524 100%);
+  }
+
+  .map-preview-commercial::before {
+    left: 0;
+    bottom: 56px;
+    width: 100%;
+    height: 10px;
+    border-width: 3px 0;
+    background: #64748b;
+  }
+
+  .map-preview-commercial::after {
+    right: 12%;
+    height: 38px;
+    background: #b45309;
+  }
+
+  .map-preview-market::before {
+    left: 4%;
+    width: 38%;
+    height: 42px;
+    background: #9333ea;
+  }
+
+  .map-preview-market::after {
+    right: 4%;
+    width: 38%;
+    height: 42px;
+    background: #db2777;
+  }
+
+  .map-preview-landmark {
+    position: absolute;
+    z-index: 1;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 2px solid #020617;
+    border-radius: 4px;
+    background: #facc15;
+    padding: 2px 5px;
+    color: #020617;
+    font: 700 9px var(--font-comic), sans-serif;
+    white-space: nowrap;
+  }
+
+  .map-preview-road {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    left: 0;
+    height: 3px;
+    background: repeating-linear-gradient(90deg, #facc15 0 24px, transparent 24px 42px);
+  }
+
+  .map-preview-detail {
+    position: absolute;
+    right: 12%;
+    bottom: 19px;
+    width: 20px;
+    height: 14px;
+    border: 2px solid #020617;
+    border-radius: 50% 50% 2px 2px;
+    background: #ef4444;
+  }
+
+  .map-preview-dawn {
+    filter: sepia(0.25) saturate(1.15);
+  }
+
+  .map-preview-goldenHour {
+    filter: saturate(1.25) contrast(1.05);
+  }
+
+  .map-preview-night {
+    filter: brightness(0.62) saturate(1.25);
   }
 }
 
