@@ -1,6 +1,6 @@
 # OVERNIGHT_RUN.md — Let Antigravity build for hours while you sleep (and what you will find in the morning)
 
-**Written:** 2026-11-13 · **For:** the owner (to launch) and the builder AI (to obey) · **Run length:** as long as it takes, soft budget **10 h** · **Repo branch to start from:** `docs/v2-audit-and-plan` (the plan docs are not on `master` yet).
+**Written:** 2026-11-13 · **For:** the owner (to launch) and the builder AI (to obey) · **Run length:** as long as it takes, soft budget **10 h** · **Repo branch to start from:** `refs/heads/docs/v2-audit-and-plan` (the plan docs are not on `master` yet).
 
 ## 1. Before you go to sleep (5 minutes, owner)
 

@@ -141,10 +141,10 @@ export function FaceUploader() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 rounded-2xl border-4 border-black bg-slate-900/90 p-5 shadow-xl backdrop-blur-md">
-      <div className="flex items-center justify-between w-full">
-        <h3 className="font-comic text-xl text-yellow-300 tracking-wide">
-          1. CHOOSE TARGET FACE / মুখ সিলেক্ট করুন
+    <div className="pnc-face-panel">
+      <div className="pnc-face-heading">
+        <h3 className="font-bangla text-xl font-bold">
+          মুখের ছবি
         </h3>
         {targetFaceUrl && (
           <span className="flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-bold text-emerald-400">
@@ -200,10 +200,10 @@ export function FaceUploader() {
         </div>
       ) : (
         /* Regular Face Display & Action Buttons */
-        <div className="flex flex-col items-center gap-4 w-full">
+        <div className="pnc-face-row">
           {/* Target Face Avatar */}
           <div className="relative group">
-            <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-yellow-400 bg-slate-800 shadow-[0_0_20px_rgba(245,158,11,0.3)] flex items-center justify-center">
+            <div className="pnc-face-avatar">
               {targetFaceUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -215,20 +215,10 @@ export function FaceUploader() {
                 <Smile className="h-14 w-14 text-slate-500" />
               )}
             </div>
-
-            {targetFaceUrl && (
-              <button
-                onClick={() => setIsManualCropOpen(true)}
-                title="Adjust Crop"
-                className="absolute -bottom-1 -right-1 rounded-full border-2 border-black bg-yellow-400 p-1.5 text-black shadow-md hover:bg-yellow-300"
-              >
-                <Scissors className="h-3.5 w-3.5" />
-              </button>
-            )}
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap justify-center gap-2 w-full">
+          <div className="pnc-face-actions">
             <input
               ref={fileInputRef}
               type="file"
@@ -244,7 +234,7 @@ export function FaceUploader() {
               className="flex items-center gap-2 rounded-xl border-2 border-black bg-yellow-400 px-3.5 py-2 font-comic text-xs tracking-wider text-black shadow-md hover:bg-yellow-300 disabled:opacity-50"
             >
               <Upload className="h-4 w-4" />
-              {isProcessing ? "PROCESSING..." : "UPLOAD PHOTO"}
+              {isProcessing ? "প্রসেসিং..." : "ছবি দিন"}
             </button>
 
             <button
@@ -258,7 +248,7 @@ export function FaceUploader() {
               className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-rose-500 px-3 py-2 font-comic text-xs tracking-wider text-white shadow-md hover:bg-rose-600 disabled:opacity-50"
             >
               <Camera className="h-4 w-4" />
-              CAMERA
+              ক্যামেরা
             </button>
 
             <button
@@ -266,8 +256,17 @@ export function FaceUploader() {
               className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-teal-500 px-3 py-2 font-comic text-xs tracking-wider text-black shadow-md hover:bg-teal-400"
             >
               <RefreshCw className="h-3.5 w-3.5" />
-              DEFAULT CARTOON
+              কার্টুন
             </button>
+            {targetFaceUrl && (
+              <button
+                onClick={() => setIsManualCropOpen(true)}
+                title="Adjust Crop"
+                className="pnc-face-crop"
+              >
+                <Scissors className="h-4 w-4" /> কাটছাঁট
+              </button>
+            )}
           </div>
         </div>
       )}

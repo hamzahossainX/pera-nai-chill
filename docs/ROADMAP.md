@@ -18,6 +18,7 @@
 
 **W2 — Characters (rig fix first; archetype redraws file-disjoint → parallel, cap 5)**
 - [ ] V2-07 — Instrument + fix rig pose math; pose-sheet gate at `/dev/characters?frames=1` [tags:art,game][audit:C-02] — AC: silhouette test passes (bbox ≤160×220, head within ±14 px of neck joint) for every pose; dev route gated out of production.
+  - 2026-11-14: focused Phone Snatcher face-visibility fix frames mask accessories around the photo; desktop/landscape captures in FRONTEND_WORKLOG. Full rig/pose acceptance remains pending.
 - [ ] V2-08 — Chaser redraw to art direction (DESIGN §1, PLAN §4.1) [tags:art,design][audit:C-02,C-04]
 - [ ] V2-09…V2-15 — Redraw + counter-move gag + mask/hood slots, one ticket per archetype: 09 Phone Snatcher · 10 Pickpocket · 11 Cable Chor · 12 Manhole Chor · 13 Eid-Market Chor · 14 Chicken Chor · 15 Chor-er Sardar (boss) [tags:art,design][audit:C-02,C-05] — AC each: pose sheet + in-game screenshots at 3 viewports; `/design-review` ≥ 8/10.
 
@@ -47,6 +48,7 @@
 
 **W5 — UI/UX rebuild (sequential; after mechanics settle)**
 - [ ] V2-23 — Home + Setup stepper (Face/Villain · Map carousel · Loadout) [tags:ui,design][audit:U-05,M-01]
+  - 2026-11-14: user-authorized lobby subset implemented: face upload first (user follow-up), then preview/routes, optional loadout, compact daily banner, Bangla-first labels, keyboard selection, scoped portrait guard and launch summary. Full Home/stepper/carousel remains open; see `docs/FRONTEND_WORKLOG.md` for browser evidence and limits.
 - [ ] V2-24 — In-run HUD + thumb-zone controls; remove dock/ticker overlap; ≤ 22 % UI area at 844×390 [tags:ui,design][audit:U-01,U-02]
 - [ ] V2-25 — Result (stars/next map), Shop (cosmetics only), Settings, Achievements restyle [tags:ui][audit:U-07]
 

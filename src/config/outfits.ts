@@ -21,6 +21,10 @@ export interface OutfitDefinition {
   id: string;
   name: { bn: string; en: string };
   slots: RigSlotTextures;
+  faceAccessories?: {
+    upper: { y: number; width: number; height: number };
+    lower: { y: number; width: number; height: number };
+  };
   defaultColors?: {
     outfit?: number;
     pants?: number;
@@ -52,6 +56,11 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
   phoneSnatcher: {
     id: "phoneSnatcher",
     name: { bn: "ছিনতাইকারী হুডি", en: "Snatcher Hoodie" },
+    // Frame the 58px photo; texture resolution must not determine mask coverage.
+    faceAccessories: {
+      upper: { y: -28, width: 64, height: 20 },
+      lower: { y: 28, width: 64, height: 24 },
+    },
     slots: {
       neck: "rig-neck",
       headBack: "snatcher-hood-back",

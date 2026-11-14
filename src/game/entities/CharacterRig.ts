@@ -261,6 +261,10 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       this.maskUpperSprite = this.scene.add
         .sprite(0, -14, slots.maskUpper)
         .setOrigin(0.5, 0.5);
+      const upperFrame = this.outfit?.faceAccessories?.upper;
+      if (upperFrame) {
+        this.maskUpperSprite.setY(upperFrame.y).setDisplaySize(upperFrame.width, upperFrame.height);
+      }
       this.headGroup.add(this.maskUpperSprite);
     }
 
@@ -269,6 +273,10 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       this.maskLowerSprite = this.scene.add
         .sprite(0, 14, slots.maskLower)
         .setOrigin(0.5, 0.5);
+      const lowerFrame = this.outfit?.faceAccessories?.lower;
+      if (lowerFrame) {
+        this.maskLowerSprite.setY(lowerFrame.y).setDisplaySize(lowerFrame.width, lowerFrame.height);
+      }
       this.headGroup.add(this.maskLowerSprite);
     }
 
@@ -363,7 +371,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       this.maskSlipped = true;
       this.scene.tweens.add({
         targets: this.maskLowerSprite,
-        y: 26, // Slips down revealing mouth
+        y: (this.outfit?.faceAccessories?.lower.y ?? 14) + 12, // Slip down from the configured resting position
         angle: 4,
         duration: 260,
         ease: "Bounce.Out",

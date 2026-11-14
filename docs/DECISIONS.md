@@ -65,3 +65,20 @@ Format: `## DEC-### — YYYY-MM-DD — <title>` then **What / Why / Alternatives
 **Alternatives:** unbounded "build everything" run (rejected: later waves need owner/judge decisions); Claude-judge running overnight (not requested).
 **Door type:** two-way.
 
+
+
+## DEC-013 — 2026-11-14 — Focused frontend lobby simplification
+**What:** User authorized a compact lobby with villain preview and three existing route choices first, optional face/loadout and environment controls, a compact daily banner, and a persistent selection summary with one primary Start action. This is an incremental subset of V2-23, not the full Home/stepper or eight-map expansion.
+**Why:** Reduce decisions before a first run while preserving existing state/actions and the Dhaka comic direction. Keep the current navy surfaces (#070b16, #0f172a, #18233d), ink (#f8fafc), dim ink (#a5b4cf), and amber (#fbbf24); use the specified enamel gradient only on Start. Hind Siliguri carries Bangla UI and Luckiest Guy the title. Left-aligned preview/routes use two columns on desktop and stack on portrait phones.
+**Design review:** Retained the game's character puppet as the visual focal point instead of adding a generic hero illustration; reduced decorative badges and hid secondary decisions in native disclosures. Review rounds corrected badge overlap, cramped optional loadout columns, and shrinking navigation icons.
+**Scope:** No store, bus, collision, controls, economy, map definitions, or Phaser changes. Existing villain unlock costs remain active. Specs are unchanged. No new dependency or asset.
+**Checkout:** The remote branch includes newer W0/W1 gameplay than the extracted folder. Use `pera-nai-chill-frontend/` and retain `pera-nai-chill-master/` as backup; transfer orientation/scroller behavior without overwriting newer gameplay.
+
+### DEC-013 update — face selection first
+The user requested মুখের ছবি first rather than at the bottom. FaceUploader is now visible before villain and route selection; the lower disclosure contains loadout only. Upload remains optional because the generated face is available. This supersedes the original face-in-disclosure placement.
+
+### DEC-013 update — compact face controls
+Per user follow-up, the first face section uses a 64px preview and horizontal desktop actions; phones use a two-column action grid. Keep 48px touch targets and full crop-editor space while shortening the idle panel.
+
+## DEC-014 — 2026-11-14 — Keep the uploaded face visible in gameplay
+User requested clearer villain imagery after providing lobby/gameplay screenshots. Configure Phone Snatcher mask accessories around the 58px face instead of allowing texture pixel dimensions to obscure it: upper band 64×20 at -28, lower band 64×24 at +28. These are visual frame values chosen to reveal the central face while preserving the hood and mask-slip gag. Other outfits retain existing positions. This is a focused visual fix, not the complete rig redraw or gameplay change.

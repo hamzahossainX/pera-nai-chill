@@ -1,0 +1,37 @@
+[
+  {
+    "width": 1280,
+    "height": 720,
+    "overflow": false,
+    "smallControls": [],
+    "launch": true
+  },
+  {
+    "width": 844,
+    "height": 390,
+    "overflow": false,
+    "smallControls": [],
+    "launch": true
+  },
+  {
+    "width": 1024,
+    "height": 768,
+    "overflow": false,
+    "smallControls": [],
+    "launch": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "overflow": false,
+    "smallControls": [],
+    "launch": true
+  },
+  {
+    "width": 1920,
+    "height": 1080,
+    "overflow": false,
+    "smallControls": [],
+    "launch": true
+  }
+]

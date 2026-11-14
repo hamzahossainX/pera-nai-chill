@@ -1,0 +1,115 @@
+.pnc-lobby {
+  --surface-0: #070b16;
+  --surface-1: #0f172a;
+  --surface-2: #18233d;
+  --ink: #f8fafc;
+  --ink-dim: #a5b4cf;
+  --outline: #02040a;
+  --brand: #fbbf24;
+  --action: linear-gradient(110deg, #ff9500, #ff1f57);
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-bottom: 160px;
+  background: var(--surface-0);
+  color: var(--ink);
+  font-family: var(--font-bangla), sans-serif;
+  line-height: 1.5;
+  padding: 16px 24px 160px;
+}
+.pnc-lobby button, .pnc-lobby summary, .pnc-lobby input:not([type="file"]) { min-height: 48px; min-width: 48px; }
+.pnc-lobby button, .pnc-lobby summary { cursor: pointer; }
+.pnc-lobby :is(button, summary, input, select):focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
+.pnc-lobby :is([class~="text-xs"], [class*="text-[9px]"], [class*="text-[10px]"], [class*="text-[11px]"]) { font-size: 14px; line-height: 1.5; }
+.pnc-header, .pnc-main, .pnc-launch > div { width: 100%; max-width: 1120px; margin-inline: auto; }
+.pnc-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 8px 16px; border-bottom: 3px solid var(--surface-2); }
+.pnc-brand { text-align: left; background: none; border: 0; }
+.pnc-brand > span:first-child { display: block; font-size: 28px; color: var(--brand); }
+.pnc-brand > span:last-child { display: block; font-size: 14px; color: var(--ink-dim); }
+.pnc-nav { display: flex; gap: 8px; }
+.pnc-nav button { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; background: var(--surface-2); border: 3px solid var(--outline); border-radius: 10px; box-shadow: 0 4px 0 var(--outline); }
+.pnc-nav svg { flex-shrink: 0; width: 20px; height: 20px; }
+.pnc-intro { margin-block: 16px; }
+.pnc-intro h1 { font-size: 28px; font-weight: 700; }
+.pnc-intro p { color: var(--ink-dim); margin-top: 4px; }
+.pnc-setup { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.pnc-routeColumn { display: grid; gap: 16px; min-width: 0; }
+.pnc-lobby .lobby-panel { min-width: 0; padding: 16px; border: 3px solid var(--outline); border-radius: 16px; background: var(--surface-1); box-shadow: 0 4px 0 var(--outline); }
+.pnc-lobby .lobby-panel h2 { font-size: 20px; font-weight: 700; color: var(--brand); margin-bottom: 12px; }
+.pnc-lobby .lobby-panel h2 small { display: block; font-size: 14px; font-weight: 400; color: var(--ink-dim); }
+.pnc-lobby .villain-choices { display: flex; overflow-x: auto; gap: 8px; padding: 8px 4px 12px; margin-top: 8px; scroll-snap-type: x proximity; }
+.pnc-lobby .villain-choices button { flex: 0 0 160px; scroll-snap-align: start; padding: 12px; text-align: left; border: 3px solid var(--outline); border-radius: 10px; background: var(--surface-2); }
+.pnc-lobby .villain-choices button > span:first-child { font-size: 16px; font-weight: 700; display: block; }
+.pnc-lobby .villain-choices small { display: block; font-size: 14px; color: var(--ink-dim); }
+.pnc-lobby .unlock-label { display: flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 14px; color: var(--brand); }
+.pnc-lobby .route-choices { display: grid; gap: 12px; }
+.pnc-lobby .route-choices button { display: flex; align-items: flex-start; gap: 12px; width: 100%; padding: 12px; text-align: left; background: var(--surface-2); border: 3px solid var(--outline); border-radius: 10px; }
+.pnc-lobby .route-choices svg { flex-shrink: 0; margin-top: 4px; color: var(--brand); }
+.pnc-lobby .route-copy { flex: 1; min-width: 0; }
+.pnc-lobby .route-copy strong { display: block; font-size: 16px; }
+.pnc-lobby .route-copy small { display: block; color: var(--ink-dim); font-size: 14px; }
+.pnc-lobby .route-hazard { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; margin-top: 8px; color: var(--ink-dim); }
+.pnc-lobby :is(.route-choices, .villain-choices) button[aria-pressed="true"] { border-color: var(--brand); }
+.pnc-lobby .daily-banner { display: flex; align-items: center; gap: 12px; padding: 16px; border: 3px solid var(--outline); border-radius: 10px; background: var(--surface-1); }
+.pnc-lobby .daily-banner > svg { color: var(--brand); flex-shrink: 0; }
+.pnc-lobby .daily-banner > div { flex: 1; }
+.pnc-lobby .daily-banner p { color: var(--ink-dim); font-size: 14px; }
+.pnc-lobby .daily-banner p span { color: var(--brand); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pnc-lobby .daily-banner button { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 3px solid var(--outline); border-radius: 10px; background: var(--surface-2); }
+.pnc-lobby .daily-complete { display: flex; gap: 4px; align-items: center; }
+.pnc-optional { margin-top: 24px; border-block: 3px solid var(--surface-2); }
+.pnc-optional > summary, .pnc-lobby .villain-options > summary { padding: 12px 4px; font-weight: 700; font-size: 16px; }
+.pnc-optional summary span, .pnc-lobby .villain-options summary span { color: var(--ink-dim); font-weight: 400; font-size: 14px; margin-left: 8px; }
+.pnc-lobby .villain-options { margin-top: 8px; border-top: 3px solid var(--surface-2); }
+.pnc-lobby .villain-options > div { margin-block: 16px; }
+.pnc-extras { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 16px 24px; }
+.pnc-extras > div { min-width: 0; }
+.pnc-launch { position: fixed; bottom: 0; left: 0; right: 0; z-index: 30; border-top: 3px solid var(--outline); background: var(--surface-1); padding: 12px max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+.pnc-launch > div { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.pnc-launch p { font-size: 16px; font-weight: 700; }
+.pnc-launch p span { color: var(--ink-dim); margin-inline: 8px; }
+.pnc-start { display: flex; align-items: center; justify-content: center; gap: 12px; min-width: 240px !important; padding: 8px 24px; border: 3px solid var(--outline); border-radius: 16px; background: var(--action); color: var(--outline); box-shadow: 0 4px 0 var(--outline); font-size: 20px; font-weight: 700; }
+.pnc-start small { display: block; font-size: 14px; }
+.pnc-start:active { transform: translateY(4px); box-shadow: none; }
+@media (max-width: 700px) {
+  .pnc-lobby { padding-inline: 16px; }
+  .pnc-header { flex-wrap: wrap; gap: 12px; }
+  .pnc-brand > span:first-child { font-size: 28px; }
+  .pnc-nav { width: 100%; }
+  .pnc-nav button { flex: 1; padding-inline: 8px; gap: 4px; font-size: 14px; }
+  .pnc-setup, .pnc-extras { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .pnc-intro { margin-block: 16px; }
+  .pnc-intro h1 { font-size: 20px; }
+  .pnc-lobby .lobby-panel { padding: 16px; }
+  .pnc-launch > div { flex-direction: column; gap: 8px; }
+  .pnc-launch p { font-size: 14px; }
+  .pnc-start { width: 100%; }
+  .pnc-optional summary span { display: block; margin-left: 16px; }
+}
+@media (max-height: 450px) and (min-width: 701px) {
+  .pnc-lobby { padding-bottom: 112px; scroll-padding-bottom: 112px; }
+  .pnc-intro { margin-block: 12px; }
+  .pnc-intro p, .pnc-brand > span:last-child { display: none; }
+  .pnc-header { padding-bottom: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pnc-lobby *, .pnc-lobby *::before, .pnc-lobby *::after { animation: none !important; transition: none !important; }
+}
+
+/* Compact first step; the crop editor retains its full working area. */
+.pnc-face-section { margin-block: 16px; }
+.pnc-face-panel { display: flex; align-items: center; gap: 24px; padding: 16px; background: var(--surface-1); border: 3px solid var(--outline); border-radius: 16px; box-shadow: 0 4px 0 var(--outline); }
+.pnc-face-heading { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; flex-shrink: 0; }
+.pnc-face-heading h3 { color: var(--brand); }
+.pnc-face-row { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
+.pnc-face-avatar { width: 64px; height: 64px; overflow: hidden; flex-shrink: 0; border: 3px solid var(--brand); border-radius: 999px; background: var(--surface-2); }
+.pnc-face-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.pnc-face-actions button { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 12px; border: 3px solid var(--outline); border-radius: 10px; background: var(--surface-2); color: var(--ink); font-family: var(--font-bangla), sans-serif; font-size: 14px; letter-spacing: normal; box-shadow: 0 4px 0 var(--outline); }
+.pnc-face-actions svg { flex-shrink: 0; }
+@media (max-width: 700px) {
+  .pnc-face-panel { flex-direction: column; align-items: stretch; gap: 12px; padding: 12px; }
+  .pnc-face-heading { flex-direction: row; justify-content: space-between; align-items: center; }
+  .pnc-face-row { gap: 12px; }
+  .pnc-face-actions { flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pnc-face-actions button { padding-inline: 8px; gap: 4px; }
+}
