@@ -125,27 +125,52 @@ describe("Ticket V2-06: Run Structure, Stars & Persistence v1", () => {
 
   describe("Distance Tracking & Safehouse Escape", () => {
     it("tracks distance meters and stage progress percentage", () => {
+      const quarter = STAGE_CONFIG.TARGET_DISTANCE_METERS / 4;
       expect(useGameStore.getState().distanceMeters).toBe(0);
       expect(useGameStore.getState().stageProgress).toBe(0);
 
-      useGameStore.getState().addDistance(250);
-      expect(useGameStore.getState().distanceMeters).toBe(250);
+      useGameStore.getState().addDistance(quarter);
+      expect(useGameStore.getState().distanceMeters).toBe(quarter);
       expect(useGameStore.getState().stageProgress).toBe(25);
 
-      useGameStore.getState().addDistance(250);
-      expect(useGameStore.getState().distanceMeters).toBe(500);
+      useGameStore.getState().addDistance(quarter);
+      expect(useGameStore.getState().distanceMeters).toBe(quarter * 2);
       expect(useGameStore.getState().stageProgress).toBe(50);
     });
 
-    it("triggers escaped fail state when villain reaches safehouse (1000m)", () => {
-      useGameStore.getState().addDistance(990);
+    it("triggers escaped fail state when villain reaches the safehouse", () => {
+      const target = STAGE_CONFIG.TARGET_DISTANCE_METERS;
+      useGameStore.getState().addDistance(target - 10);
       expect(useGameStore.getState().screen).toBe("PLAYING");
 
       useGameStore.getState().addDistance(20);
-      expect(useGameStore.getState().distanceMeters).toBe(STAGE_CONFIG.TARGET_DISTANCE_METERS);
+      expect(useGameStore.getState().distanceMeters).toBe(target);
       expect(useGameStore.getState().stageProgress).toBe(100);
       expect(useGameStore.getState().screen).toBe("GAME_OVER");
       expect(useGameStore.getState().failReason).toBe("escaped");
+    });
+
+    it("gives a regular run the normal deadline and a boss run a longer one", () => {
+      useGameStore.setState({ villainId: "phoneSnatcher", isBossStage: false });
+      useGameStore.getState().startGame();
+      expect(useGameStore.getState().stageTargetMeters).toBe(STAGE_CONFIG.TARGET_DISTANCE_METERS);
+
+      useGameStore.setState({ villainId: "chorSardar", isBossStage: false });
+      useGameStore.getState().startGame();
+      expect(useGameStore.getState().stageTargetMeters).toBe(
+        Math.round(STAGE_CONFIG.TARGET_DISTANCE_METERS * STAGE_CONFIG.BOSS_SCALE)
+      );
+    });
+
+    it("keeps a match winnable in 4+ minutes: the deadline is later than the slowest normal win", () => {
+      // distance after t seconds with the speed ramp 320 -> 480 px/s over 120 s
+      const metersAt = (sec: number) => {
+        const ramp = Math.min(sec, 120);
+        const px = 320 * ramp + (160 / 240) * ramp * ramp + 480 * Math.max(0, sec - 120);
+        return px * STAGE_CONFIG.METERS_PER_PIXEL;
+      };
+      expect(metersAt(240)).toBeLessThan(STAGE_CONFIG.TARGET_DISTANCE_METERS);
+      expect(metersAt(420)).toBeLessThan(STAGE_CONFIG.TARGET_DISTANCE_METERS);
     });
   });
 

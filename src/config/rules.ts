@@ -40,9 +40,25 @@ export const DEFAULT_STAGE_RULES: RunRules = {
 
 export const STAGE_CONFIG = {
   /**
-   * Total stage distance in meters before villain reaches safe house (approx 90-120s of run).
+   * Total stage distance in meters before the villain reaches the safe house.
+   * This is the run's deadline: speed ramps 320 -> 480 px/s over the first 120 s, so
+   * 7000 m is reached after about 437 s (7.3 min). A normal match is meant to last
+   * 4-7 minutes, so the deadline sits just past the slowest normal win.
    */
-  TARGET_DISTANCE_METERS: 1000,
+  TARGET_DISTANCE_METERS: 7000,
+
+  /**
+   * Multiplies every villain's base HP, which sets how long a match lasts.
+   * Sustained damage is limited by stamina to roughly 28 HP/s for a flawless
+   * player (an in-engine bot beat the old 650 HP phoneSnatcher in 22.8 s), and a
+   * typical player lands several times less, so x5 puts a normal win at 4-7 min.
+   */
+  VILLAIN_HP_SCALE: 5,
+
+  /**
+   * Bosses have 1.6x HP, so their deadline is stretched by the same factor.
+   */
+  BOSS_SCALE: 1.6,
 
   /**
    * Logical speed scale to meters: speed (pixels/sec) * dt (sec) * METERS_PER_PIXEL

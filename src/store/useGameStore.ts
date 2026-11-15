@@ -54,6 +54,7 @@ export interface GameState {
   isBossStage: boolean;
   runRules: RunRules;
   distanceMeters: number;
+  stageTargetMeters: number; // distance at which the villain escapes (this run's deadline)
   stageProgress: number; // 0..100 %
   bestCombo: number;
   starsResult: StarResult | null;
@@ -152,6 +153,7 @@ export const useGameStore = create<GameState>()(
     isBossStage: false,
     runRules: DEFAULT_STAGE_RULES,
     distanceMeters: 0,
+    stageTargetMeters: STAGE_CONFIG.TARGET_DISTANCE_METERS,
     stageProgress: 0,
     bestCombo: 0,
     starsResult: null,
@@ -244,7 +246,7 @@ export const useGameStore = create<GameState>()(
     addDistance: (deltaMeters) => {
       if (get().screen !== "PLAYING" || get().villainHp <= 0) return;
       const current = get().distanceMeters;
-      const target = STAGE_CONFIG.TARGET_DISTANCE_METERS;
+      const target = get().stageTargetMeters;
       const nextDistance = Math.min(target, current + deltaMeters);
       const progress = Math.min(100, Math.round((nextDistance / target) * 100));
 
@@ -259,9 +261,8 @@ export const useGameStore = create<GameState>()(
       const villainConfig =
         VILLAINS.find((v) => v.id === get().villainId) || DEFAULT_VILLAIN;
       const isBoss = get().isBossStage || villainConfig.id === "chorSardar";
-      const initialHp = isBoss
-        ? Math.round((villainConfig.baseHp ?? 1000) * 1.6)
-        : villainConfig.baseHp ?? 1000;
+      const baseHp = (villainConfig.baseHp ?? 1000) * STAGE_CONFIG.VILLAIN_HP_SCALE;
+      const initialHp = isBoss ? Math.round(baseHp * STAGE_CONFIG.BOSS_SCALE) : baseHp;
 
       set({
         screen: "PLAYING",
@@ -275,6 +276,9 @@ export const useGameStore = create<GameState>()(
         failReason: null,
         isBossStage: false,
         distanceMeters: 0,
+        stageTargetMeters: isBoss
+          ? Math.round(STAGE_CONFIG.TARGET_DISTANCE_METERS * STAGE_CONFIG.BOSS_SCALE)
+          : STAGE_CONFIG.TARGET_DISTANCE_METERS,
         stageProgress: 0,
         bestCombo: 0,
         starsResult: null,
@@ -424,6 +428,7 @@ export const useGameStore = create<GameState>()(
         failReason: null,
         isBossStage: false,
         distanceMeters: 0,
+        stageTargetMeters: STAGE_CONFIG.TARGET_DISTANCE_METERS,
         stageProgress: 0,
         bestCombo: 0,
         starsResult: null,

@@ -57,6 +57,7 @@ import { GapSystem } from "@/game/systems/GapSystem";
 import { gameBus } from "@/game/bus";
 import { useGameStore } from "@/store/useGameStore";
 import { VILLAINS } from "@/config/villains";
+import { STAGE_CONFIG } from "@/config/rules";
 import type Phaser from "phaser";
 
 function createMockScene(): Phaser.Scene {
@@ -334,7 +335,7 @@ describe("Ticket V2-05: Hazards & Archetypes System", () => {
       useGameStore.getState().startGame();
 
       const phoneSnatcher = VILLAINS.find((v) => v.id === "phoneSnatcher");
-      expect(useGameStore.getState().villainHp).toBe(phoneSnatcher?.baseHp ?? 1000);
+      expect(useGameStore.getState().villainHp).toBe((phoneSnatcher?.baseHp ?? 1000) * STAGE_CONFIG.VILLAIN_HP_SCALE);
     });
 
     it("isBossStage = true scales villain baseHp by 1.6x", () => {
@@ -342,7 +343,7 @@ describe("Ticket V2-05: Hazards & Archetypes System", () => {
       useGameStore.getState().startGame();
 
       const phoneSnatcher = VILLAINS.find((v) => v.id === "phoneSnatcher");
-      const expectedHp = Math.round((phoneSnatcher?.baseHp ?? 1000) * 1.6);
+      const expectedHp = Math.round((phoneSnatcher?.baseHp ?? 1000) * STAGE_CONFIG.VILLAIN_HP_SCALE * 1.6);
       expect(useGameStore.getState().villainHp).toBe(expectedHp);
     });
 
@@ -351,7 +352,7 @@ describe("Ticket V2-05: Hazards & Archetypes System", () => {
       useGameStore.getState().startGame();
 
       const sardar = VILLAINS.find((v) => v.id === "chorSardar");
-      const expectedHp = Math.round((sardar?.baseHp ?? 1000) * 1.6);
+      const expectedHp = Math.round((sardar?.baseHp ?? 1000) * STAGE_CONFIG.VILLAIN_HP_SCALE * 1.6);
       expect(useGameStore.getState().villainHp).toBe(expectedHp);
     });
   });
