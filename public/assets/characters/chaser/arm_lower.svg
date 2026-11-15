@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 34" width="22" height="34">
-  <path d="M 5 2 C 5 2 4 28 8 32 C 12 34 18 32 17 2 Z" fill="#d97706" stroke="#000000" stroke-width="2.5" stroke-linejoin="round"/>
-  <!-- Wristband on hero -->
-  <rect x="7" y="24" width="11" height="5" rx="1.5" fill="#dc2626" stroke="#000000" stroke-width="1.2"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="30" viewBox="0 0 20 30">
+<g stroke="#101827" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M5 3 Q10 0 16 4 L16 26 Q10 30 4 25Z" fill="#edb77d"/>
+</g>
 </svg>

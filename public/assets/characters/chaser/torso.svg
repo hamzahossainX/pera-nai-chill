@@ -1,24 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <defs>
-    <linearGradient id="chaserPolo" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#10b981"/>
-      <stop offset="70%" stop-color="#047857"/>
-      <stop offset="100%" stop-color="#064e3b"/>
-    </linearGradient>
-  </defs>
-  <!-- Tapered athletic polo torso -->
-  <path d="M 12 10 Q 32 6 52 10 L 46 52 Q 32 54 18 52 Z" fill="url(#chaserPolo)" stroke="#000000" stroke-width="2.5" stroke-linejoin="round"/>
-  <!-- Highlight rim on shoulder -->
-  <path d="M 14 12 Q 32 8 50 12" stroke="#6ee7b7" stroke-width="1.5" fill="none"/>
-  <!-- Crisp folded collar -->
-  <polygon points="16,10 32,20 22,14" fill="#f8fafc" stroke="#000000" stroke-width="1.8"/>
-  <polygon points="48,10 32,20 42,14" fill="#f8fafc" stroke="#000000" stroke-width="1.8"/>
-  <!-- Button Placket -->
-  <rect x="29" y="16" width="6" height="18" rx="1.5" fill="#f1f5f9" stroke="#000000" stroke-width="1.2"/>
-  <circle cx="32" cy="21" r="1.5" fill="#047857"/>
-  <circle cx="32" cy="29" r="1.5" fill="#047857"/>
-  <!-- Belt & Brass Buckle -->
-  <rect x="18" y="50" width="28" height="6" fill="#451a03" stroke="#000000" stroke-width="1.5"/>
-  <rect x="28" y="49" width="8" height="8" rx="1" fill="#f59e0b" stroke="#000000" stroke-width="1.5"/>
-  <rect x="30" y="51" width="4" height="4" fill="#78350f"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="72" viewBox="0 0 64 72">
+<g stroke="#101827" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M17 7 Q32 2 47 7 L59 18 L52 31 L48 66 Q32 71 16 66 L12 31 L5 18Z" fill="#16a77c"/>
+<path d="M43 10 L48 66 L37 68 L39 13Z" fill="#087458" stroke="none"/>
+<path d="M22 6 L32 15 L25 22 L17 8 M42 6 L32 15 L39 22 L47 8" fill="#fff1c9"/>
+<path d="M32 16 V34" stroke="#fff1c9"/>
+<path d="M16 54 H48 V65 H16Z" fill="#16324d"/>
+<path d="M17 38 H47" stroke="#f7d35b" stroke-width="5"/>
+<path d="M42 27 V34 H35 V27Z" fill="#fff1c9"/>
+</g>
 </svg>
