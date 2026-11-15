@@ -1,24 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <defs>
-    <linearGradient id="hoodieGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="80%" stop-color="#0f172a"/>
-      <stop offset="100%" stop-color="#020617"/>
-    </linearGradient>
-  </defs>
-  <!-- Contoured hoodie torso with shoulder taper -->
-  <path d="M 12 10 Q 32 7 52 10 L 46 54 Q 32 56 18 54 Z" fill="url(#hoodieGrad)" stroke="#000000" stroke-width="2.5" stroke-linejoin="round"/>
-  <!-- Comic edge rim highlight -->
-  <path d="M 14 11 Q 32 8 50 11" stroke="#475569" stroke-width="1.5" fill="none"/>
-  <!-- Kangaroo front pocket -->
-  <path d="M 20 36 L 44 36 L 42 50 L 22 50 Z" fill="#0f172a" stroke="#000000" stroke-width="1.8"/>
-  <line x1="20" y1="36" x2="23" y2="46" stroke="#475569" stroke-width="1.2"/>
-  <line x1="44" y1="36" x2="41" y2="46" stroke="#475569" stroke-width="1.2"/>
-  <!-- Center Zipper -->
-  <line x1="32" y1="12" x2="32" y2="36" stroke="#94a3b8" stroke-width="2" stroke-dasharray="2,1"/>
-  <!-- Dangling Drawstrings with metal aglets -->
-  <path d="M 27 12 Q 25 22 24 28" stroke="#f8fafc" stroke-width="1.5" fill="none"/>
-  <rect x="23" y="27" width="2" height="3" fill="#cbd5e1"/>
-  <path d="M 37 12 Q 39 22 40 28" stroke="#f8fafc" stroke-width="1.5" fill="none"/>
-  <rect x="39" y="27" width="2" height="3" fill="#cbd5e1"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="72" viewBox="0 0 64 72">
+<g stroke="#101827" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M17 7 Q32 2 47 7 L59 18 L52 31 L48 66 Q32 71 16 66 L12 31 L5 18Z" fill="#344462"/>
+<path d="M43 10 L48 66 L37 68 L39 13Z" fill="#202e48" stroke="none"/>
+<path d="M19 7 Q32 22 45 7 L42 24 L32 20 L22 24Z" fill="#202e48"/>
+<path d="M32 21 V65" stroke="#ffb547"/>
+<path d="M20 42 L29 40 V54 H19Z M44 42 L35 40 V54 H45Z" fill="#202e48"/>
+<path d="M23 23 V33 M41 23 V33" stroke="#f4dfae"/>
+</g>
 </svg>
