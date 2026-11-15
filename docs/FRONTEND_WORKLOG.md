@@ -2,7 +2,7 @@
 
 Last updated: 2026-11-14 (Asia/Dhaka)
 
-**Active checkout:** `pera-nai-chill-frontend/`, branch `feat/frontend-ui-ux`, based on `29086b7`. The original `pera-nai-chill-master/` is a preserved extracted backup. Earlier findings describe that older copy; current GitHub gameplay already includes newer W0/W1 changes. Historical screenshot paths below are in the backup unless otherwise stated.
+**Active checkout:** `pera-nai-chill-frontend/`, branch `feat/character-visuals`, incorporating merged master `c66b0d4` and the publication notes from the prior frontend branch. The original `pera-nai-chill-master/` is a preserved extracted backup. Earlier findings describe that older copy; current GitHub gameplay already includes newer W0/W1 changes. Historical screenshot paths below are in the backup unless otherwise stated.
 
 ## Project and ownership
 
@@ -206,3 +206,18 @@ Review the simplified lobby on a physical phone (portrait setup and landscape to
 - Fresh GitHub verification: PR #7 was already merged by hamzahossainX on 2026-11-14 at 21:46:39 Asia/Dhaka, merge commit `c66b0d4c3ba94451b23aab0bd64c79a3b6d27354`. The merged PR head is implementation commit `0862492`; the later publication-log commits remain on the frontend branch, outside that merge. No new PR or merge performed in this follow-up.
 - Validation: successful push and remote PR metadata; local branch synchronized after push. No application changes; no tests rerun for this documentation-only follow-up.
 - Next action: base the next frontend change on updated master and carry forward these publication notes; perform remaining physical-phone/upload acceptance checks.
+
+### 2026-11-15 — Chaser and Phone Snatcher visual refresh
+- User requested improving both characters. Created local `feat/character-visuals` and merged fetched master, preserving publication notes. Root AGENTS.md now names the active branch. No character changes committed or pushed.
+- Redrew the existing SVG parts for chaser and Phone Snatcher: torso, upper/lower arms, hands, thighs, shins, shoes; added chaser face.svg and refreshed villain hood front/back. Chaser uses green/gold shirt, denim, expressive face and light shoes; villain uses navy/amber hoodie, orange shoes and visible uploaded face. No generated raster assets or dependencies.
+- Added logical dimensions/anchors and calmer run parameters in `src/config/characterVisuals.ts`, opt-in runner styling in `src/config/outfits.ts`, and a small normalization helper `src/game/entities/runnerVisuals.ts`. CharacterRig now connects the two refreshed characters' shoulders/elbows/hips/knees, scales the parts independently of texture resolution, coordinates shoulder/neck/head bob, and reduces excessive run swings. Other outfits retain legacy rig behavior. CharacterRig remains below the existing 800-line gate.
+- Fixed asset precedence for these two kits in `src/game/scenes/PreloadScene.ts`: load SVGs under temporary -art keys, promote only successful loads before RunScene, retain existing procedural textures on load failure. Previously BootScene fallback keys prevented SVG character artwork from replacing them.
+- Read existing design/game-plan character sections and bundled Phaser sprite/loading guidance. Two visual rounds: first verified readable limbs and clothing; final refined chaser facial identity and verified running frames at 1280×720, 1024×768, 844×390. Captured punch/kick/jump on desktop. Evidence: `docs/screens/character-refresh-2026-11-15/{round-1,final,fallback}/`; repeatable script: `scripts/audit/character-refresh.mjs`. Fallback captures deliberately block both SVG directories and still reach gameplay. These are fresh live captures, not fixed-step animation correctness or FPS measurements.
+- Validation: TypeScript, full lint, 98 unit tests, pattern check, spec verification, production build, and whitespace checks passed. No new unit test added for artwork; browser capture checks exercise actual rendering/loading. Generated API facts refreshed. No collision, damage, movement-command or economy rules changed.
+- Remaining: crowded mobile HUD is still visible; full pose-sheet/silhouette metrics, trip/death/stun poses, all seven villain outfits, physical-device performance, and native design review are not verified. V2-07/08/09 remain open for their full acceptance criteria.
+- Next action: review the two refreshed characters in a fresh run at http://127.0.0.1:3001, then address any visual feedback before committing/opening a separate character PR.
+
+### 2026-11-15 — Character PR preparation
+- User explicitly requested commit, push, and PR for the two-character refresh. Remote master is already incorporated; no existing feat/character-visuals PR found.
+- Re-ran required PR gates: TypeScript, full lint, 98 unit tests, pattern ratchet, spec verification (433 references), and diff whitespace check all passed. Production build and browser/art fallback captures passed during implementation; not repeated because no runtime code changed since those checks.
+- Scope and verification limits remain as recorded above. Next action: publish the character branch and open a PR against master, without merging.
