@@ -221,3 +221,8 @@ Review the simplified lobby on a physical phone (portrait setup and landscape to
 - User explicitly requested commit, push, and PR for the two-character refresh. Remote master is already incorporated; no existing feat/character-visuals PR found.
 - Re-ran required PR gates: TypeScript, full lint, 98 unit tests, pattern ratchet, spec verification (433 references), and diff whitespace check all passed. Production build and browser/art fallback captures passed during implementation; not repeated because no runtime code changed since those checks.
 - Scope and verification limits remain as recorded above. Next action: publish the character branch and open a PR against master, without merging.
+
+### 2026-11-15 — Character PR published
+- Committed character refresh as `649833e` and pushed `feat/character-visuals`.
+- Opened PR #8 against master: https://github.com/hamzahossainX/pera-nai-chill/pull/8 — Refresh chaser and Phone Snatcher artwork and running rigs. Includes before/after screenshots, validation, and remaining limits. Not merged.
+- This entry only records publication; no application changes or further tests required. Next action: review PR #8 and remaining visual acceptance items before merge.
