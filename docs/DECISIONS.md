@@ -85,3 +85,6 @@ User requested clearer villain imagery after providing lobby/gameplay screenshot
 
 ## DEC-015 — 2026-11-15 — Two-character readability refresh
 Keep the layered SVG approach from GAME_PLAN_V2 §4.2. Refresh the chaser and default Phone Snatcher only: green/gold citizen versus navy/amber hooded runner. Use consistent logical part sizes and joint anchors instead of native texture dimensions; preserve the uploaded-face slot. Run amplitude is reduced and shoulders follow body bob. The new config documents artistic dimensions; no gameplay stats change. Load those SVGs under temporary keys and promote only successful assets so fallback textures cannot hide finished art or disappear on network failure. This is a scoped visual improvement, not completion of the entire character/pose backlog.
+
+## DEC-016 — 2026-11-15 — Kicks require lane alignment at impact
+User confirmed that a kick must miss when the characters occupy different lanes. Restrict kick to equal lane indices and the existing CLOSE_MAX range at both wind-up and delayed impact. Preserve slap/punch lane rules and projectile behavior. Recheck melee range at impact and defer close-zone rewards until that validation passes. A cross-lane kick displays একই লেনে আসুন! and uses the existing miss penalty. This narrow gameplay correction was explicitly authorized despite the standing frontend-first scope.

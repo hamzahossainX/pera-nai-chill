@@ -76,6 +76,10 @@ export class GapSystem {
     return isWithinGap && laneDiff <= 1;
   }
 
+  public isKickInRange(): boolean {
+    return this.currentGap <= this.CLOSE_MAX && this.chaser.currentLane === this.villain.currentLane;
+  }
+
   public reduceGap(amount: number): void {
     this.currentGap = Math.max(120, this.currentGap - amount);
     this.applyPositions();

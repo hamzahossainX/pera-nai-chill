@@ -23,7 +23,7 @@ Open owner decisions are tagged **[CONFIRM]** and collected in §12. Where the o
 | Change lane | `W/S` or `↑/↓` | swipe up/down on the left half, or on-screen ▲▼ | 3 lanes; 140 ms tween; i-frames 120 ms |
 | Dash (close the gap) | `Shift` / double-tap `→` | dash button (right thumb) | burst +60 % speed for 450 ms; costs 25 stamina; cooldown 2.5 s |
 | Jump (low hazards) | `Space` | tap on the right half (above the dock) | 520 ms airtime; clears pothole/puddle/low barricade |
-| Attack | `1–4` (slap, punch, kick, chappal) | 4 round buttons, right cluster | melee needs **gap ≤ MELEE_RANGE** and same/adjacent lane; chappal works at any gap, same lane ±1 |
+| Attack | `1–4` (slap, punch, kick, chappal) | 4 round buttons, right cluster | melee needs **gap ≤ MELEE_RANGE**; slap/punch allow same/adjacent lane, but kick requires the **same lane at start and impact** (user correction, 2026-11-15); chappal works at any gap, same lane ±1 |
 | Ultimate | `E` | glowing button when rage = 100 | unchanged (Chappal Storm) |
 | Taunt | `T` | small button | now has a mechanical effect (§2.5) |
 

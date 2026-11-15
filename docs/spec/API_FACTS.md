@@ -173,7 +173,7 @@
 - `src/game/systems/DifficultySystem.ts` — **DifficultySystem**: `getCurrentSpeed()`, `getDifficultyMultiplier()`, `getElapsedSeconds()`, `reset()`, `update(_time: number, delta: number)`
 - `src/game/systems/EventSystem.ts` — **EventSystem**: `clearCurrentEvent()`, `destroy()`, `startEvent(event: WorldEvent)`, `update(_time: number, delta: number)`
 - `src/game/systems/FxSystem.ts` — **FxSystem**: `destroy()`, `spawnFloatingText( x: number, y: number, text: string, color: string = "#fbbf2)`, `spawnHitParticles(x: number, y: number, count: number = 8, textureKey: string )`, `triggerArchetypeDefeatReaction(archetypeId: string, x: number, y: number)`, `triggerArchetypeHitReaction(archetypeId: string, x: number, y: number)`, `triggerCameraShake(durationMs: number = 120, intensity: number = 0.01)`, `triggerHitFx( x: number, y: number, comicWord: string, damage: number, is)`, `triggerHitStop(durationMs: number = 80)`
-- `src/game/systems/GapSystem.ts` — **GapSystem**: `destroy()`, `getGap()`, `getZone()`, `isMeleeInRange()`, `reduceGap(amount: number)`, `setGap(gap: number)`, `slowChaser(mult: number, durationSec: number)`, `update(_time: number, delta: number)`, `widenGap(amount: number)`
+- `src/game/systems/GapSystem.ts` — **GapSystem**: `destroy()`, `getGap()`, `getZone()`, `isKickInRange()`, `isMeleeInRange()`, `reduceGap(amount: number)`, `setGap(gap: number)`, `slowChaser(mult: number, durationSec: number)`, `update(_time: number, delta: number)`, `widenGap(amount: number)`
 - `src/game/systems/ParallaxSystem.ts` — **ParallaxSystem**: `applyTimeOfDay(timeOfDay: TimeOfDay)`, `destroy()`, `setAmbientTint(tint: number)`, `setSkyTint(tint: number)`, `update(time: number, delta: number, currentBaseSpeed: number = BALA)`
 - `src/game/systems/SecondaryMotion.ts` — **SecondaryMotion**: `applyImpulse(xImpulse: number, yImpulse: number, rotImpulse: number = 0)`, `clear()`, `register( target: Phaser.GameObjects.Sprite | Phaser.GameObjects.Cont)`, `update(time: number, delta: number, parentVelocityX: number = 0)`
 - `src/game/systems/SpawnSystem.ts` — **SpawnSystem**: `clearAll()`, `getObstacleNear(lane: number, x: number, range: number)`, `setChaser(chaser: Chaser)`, `setStrikeActive(active: boolean)`, `spawnObstacle(lane?: number, type?: ObstacleType, startX?: number)`, `spawnPickup(lane?: number, type?: PickupType)`, `update(_time: number, delta: number, speed: number = BALANCE.BASE_R)`
@@ -277,12 +277,12 @@
 - `src/game/scenes/BootScene.ts` (2211)
 - `src/game/scenes/PreloadScene.ts` (149)
 - `src/game/scenes/RunScene.ts` (360)
-- `src/game/systems/CombatSystem.ts` (446)
+- `src/game/systems/CombatSystem.ts` (451)
 - `src/game/systems/DialogueSystem.ts` (234)
 - `src/game/systems/DifficultySystem.ts` (34)
 - `src/game/systems/EventSystem.ts` (266)
 - `src/game/systems/FxSystem.ts` (271)
-- `src/game/systems/GapSystem.ts` (191)
+- `src/game/systems/GapSystem.ts` (195)
 - `src/game/systems/ParallaxSystem.ts` (304)
 - `src/game/systems/SecondaryMotion.ts` (100)
 - `src/game/systems/SpawnSystem.ts` (306)
