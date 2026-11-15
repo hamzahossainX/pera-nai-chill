@@ -1,13 +1,14 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useGameStore, TimeOfDay, WeatherType } from "@/store/useGameStore";
 import { VILLAINS } from "@/config/villains";
 import { CRIMES } from "@/config/crimes";
-import { Lock, Sun, Sunset, Moon, Sunrise, CloudRain, CloudFog, Flame, Sparkles } from "lucide-react";
+import { Lock, Sun, Sunset, Moon, Sunrise, CloudRain, CloudFog, Flame } from "lucide-react";
 
 export function VillainPreview() {
+  const reduceMotion = useReducedMotion();
   const {
     targetFaceUrl,
     targetName,
@@ -47,18 +48,10 @@ export function VillainPreview() {
   ];
 
   return (
-    <div className="flex flex-col items-center gap-4 rounded-2xl border-4 border-black bg-slate-900/90 p-5 shadow-xl backdrop-blur-md">
-      <div className="flex items-center justify-between w-full">
-        <h3 className="font-comic text-xl text-yellow-300 tracking-wide">
-          2. LIVE VILLAIN PREVIEW / ভিলেনের প্রিভিউ
-        </h3>
-        <span className="rounded-full bg-rose-500/20 px-2.5 py-0.5 text-xs font-bold text-rose-400">
-          Target Locked
-        </span>
-      </div>
-
+    <div className="lobby-panel villain-panel">
+      <h2>আপনার ভিলেন <small>Choose a character</small></h2>
       {/* Animated Cartoon Running Puppet */}
-      <div className="relative flex h-60 w-full items-center justify-center overflow-hidden rounded-xl border-2 border-black bg-gradient-to-b from-sky-900 via-indigo-950 to-slate-900 shadow-inner">
+      <div className="relative flex h-56 w-full items-center justify-center overflow-hidden rounded-xl border-2 border-black bg-gradient-to-b from-sky-900 via-indigo-950 to-slate-900 shadow-inner">
         {/* Moving Road Lines in background */}
         <div className="absolute bottom-4 left-0 right-0 h-10 border-t-2 border-dashed border-yellow-400/30 bg-slate-800/60" />
 
@@ -74,13 +67,13 @@ export function VillainPreview() {
         </div>
 
         {/* Archetype Badge Overlay (Top Right) */}
-        <div className="absolute top-2 right-2 z-30 flex items-center gap-1 rounded-lg border border-black/80 bg-amber-500/90 px-2 py-0.5 shadow-md font-comic text-[11px] font-bold text-black uppercase">
+        <div className="absolute bottom-2 right-2 z-30 flex items-center gap-1 rounded-lg border border-black/80 bg-amber-500/90 px-2 py-0.5 shadow-md font-comic text-[11px] font-bold text-black uppercase">
           <span>{currentVillain.name.en}</span>
         </div>
 
         {/* Animated Cartoon Running Puppet - Layered Vector Anatomy */}
         <motion.div
-          animate={{
+          animate={reduceMotion ? {} : {
             y: [-3, 3, -3],
           }}
           transition={{
@@ -102,7 +95,7 @@ export function VillainPreview() {
 
             {/* Target Face */}
             <motion.div
-              animate={{ rotate: [-3, 3, -3] }}
+              animate={reduceMotion ? {} : { rotate: [-3, 3, -3] }}
               transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
               className="relative z-10 h-16 w-16 overflow-hidden rounded-full border-3 border-black bg-yellow-200 shadow-lg"
             >
@@ -169,7 +162,7 @@ export function VillainPreview() {
           <div className="relative -mt-1 flex items-center justify-center z-15">
             {/* Back Arm (Swinging opposite) */}
             <motion.div
-              animate={{ rotate: [25, -25, 25] }}
+              animate={reduceMotion ? {} : { rotate: [25, -25, 25] }}
               transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
               className="absolute -left-3 top-1 origin-top"
             >
@@ -192,7 +185,7 @@ export function VillainPreview() {
 
               {/* Hand Prop Animated */}
               <motion.div
-                animate={{ rotate: [-12, 12, -12], y: [-2, 2, -2] }}
+                animate={reduceMotion ? {} : { rotate: [-12, 12, -12], y: [-2, 2, -2] }}
                 transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
                 className="absolute -right-5 top-4 z-25 select-none"
               >
@@ -229,7 +222,7 @@ export function VillainPreview() {
 
             {/* Front Arm (Swinging forward) */}
             <motion.div
-              animate={{ rotate: [-25, 25, -25] }}
+              animate={reduceMotion ? {} : { rotate: [-25, 25, -25] }}
               transition={{ repeat: Infinity, duration: 0.5, ease: "easeInOut" }}
               className="absolute -right-3 top-1 origin-top z-20"
             >
@@ -246,7 +239,7 @@ export function VillainPreview() {
           <div className="flex gap-2 -mt-2 z-10">
             {/* Back Leg */}
             <motion.div
-              animate={{ rotate: [28, -28, 28] }}
+              animate={reduceMotion ? {} : { rotate: [28, -28, 28] }}
               transition={{
                 repeat: Infinity,
                 duration: 0.5,
@@ -270,7 +263,7 @@ export function VillainPreview() {
 
             {/* Front Leg */}
             <motion.div
-              animate={{ rotate: [-28, 28, -28] }}
+              animate={reduceMotion ? {} : { rotate: [-28, 28, -28] }}
               transition={{
                 repeat: Infinity,
                 duration: 0.5,
@@ -295,7 +288,7 @@ export function VillainPreview() {
 
           {/* Soft Ground Shadow with Squash & Stretch */}
           <motion.div
-            animate={{ scale: [1, 0.82, 1], opacity: [0.7, 0.4, 0.7] }}
+            animate={reduceMotion ? {} : { scale: [1, 0.82, 1], opacity: [0.7, 0.4, 0.7] }}
             transition={{
               repeat: Infinity,
               duration: 0.5,
@@ -313,13 +306,33 @@ export function VillainPreview() {
         </motion.div>
       </div>
 
+      <div className="villain-choices" role="group" aria-label="ভিলেন নির্বাচন">
+        {VILLAINS.map(v => {
+          const unlocked = unlockedVillainIds.includes(v.id);
+          return <button key={v.id} type="button" aria-pressed={villainId === v.id}
+            onClick={() => {
+              if (unlocked || unlockVillain(v.id)) {
+                setVillainId(v.id);
+                setTargetName(v.name.bn);
+              } else {
+                alert(`আরও টাকা দরকার! ৳${v.unlockCostTaka} লাগবে। (বর্তমান ব্যালেন্স: ৳${taka})`);
+              }
+            }}>
+            <span>{v.name.bn}</span><small>{v.name.en}</small>
+            {!unlocked && <span className="unlock-label"><Lock size={16} /> ৳{v.unlockCostTaka} আনলক</span>}
+          </button>;
+        })}
+      </div>
+      <details className="villain-options">
+        <summary>নাম, সময় ও আবহাওয়া <span>ঐচ্ছিক</span></summary>
       {/* Target Name Input */}
       <div className="w-full">
-        <label className="text-xs font-mono font-bold text-slate-300">
-          Target Name / নাম:
+        <label htmlFor="target-name" className="text-xs font-mono font-bold text-slate-300">
+          ভিলেনের নাম:
         </label>
         <input
           type="text"
+          id="target-name"
           maxLength={24}
           value={targetName}
           onChange={(e) => setTargetName(e.target.value)}
@@ -328,124 +341,18 @@ export function VillainPreview() {
         />
       </div>
 
-      {/* Archetype Horizontal Carousel (P2-05) */}
-      <div className="w-full">
-        <div className="flex items-center justify-between">
-          <label className="text-xs font-mono font-bold text-slate-300 flex items-center gap-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-            VILLAIN ARCHETYPES / ভিলেনের ধরন (৭ জন):
-          </label>
-          <span className="font-mono text-[10px] text-slate-400">
-            Available Taka: ৳{taka}
-          </span>
-        </div>
-
-        <div className="flex gap-2.5 overflow-x-auto pb-2 mt-1.5 snap-x">
-          {VILLAINS.map((v) => {
-            const isSelected = villainId === v.id;
-            const isUnlocked = unlockedVillainIds.includes(v.id);
-
-            return (
-              <div
-                key={v.id}
-                onClick={() => {
-                  if (isUnlocked) {
-                    setVillainId(v.id);
-                    setTargetName(v.name.bn);
-                  }
-                }}
-                className={`relative flex-none w-[165px] snap-start rounded-xl border-2 p-2.5 text-left transition-all cursor-pointer ${
-                  isSelected
-                    ? "border-amber-400 bg-amber-400/20 scale-102 shadow-lg"
-                    : "border-slate-700 bg-slate-800/80 hover:border-slate-500"
-                }`}
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <span className="font-comic text-xs font-bold text-white truncate">
-                    {v.name.en}
-                  </span>
-                  {!isUnlocked && (
-                    <span className="rounded bg-rose-500/20 p-1 text-rose-400" title="Locked">
-                      <Lock className="h-3 w-3" />
-                    </span>
-                  )}
-                </div>
-                <div className="font-bangla text-xs font-semibold text-amber-300 truncate">
-                  {v.name.bn}
-                </div>
-
-                {/* Funny Bio */}
-                <p className="mt-1 font-bangla text-[10px] text-slate-300 line-clamp-2 leading-tight">
-                  {v.bio.bn}
-                </p>
-
-                {/* Animated Stat Bars */}
-                <div className="mt-2 flex flex-col gap-1 font-mono text-[9px] text-slate-400">
-                  <div className="flex items-center justify-between">
-                    <span>HP {v.baseHp}</span>
-                    <div className="h-1.5 w-14 rounded-full bg-slate-700 overflow-hidden">
-                      <div
-                        className="h-full bg-rose-500 rounded-full"
-                        style={{ width: `${Math.min(100, (v.baseHp / 1000) * 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>SPD {v.speedMultiplier}x</span>
-                    <div className="h-1.5 w-14 rounded-full bg-slate-700 overflow-hidden">
-                      <div
-                        className="h-full bg-sky-400 rounded-full"
-                        style={{ width: `${Math.min(100, (v.speedMultiplier / 1.5) * 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>DODGE {Math.round(v.dodgeRate * 100)}%</span>
-                    <div className="h-1.5 w-14 rounded-full bg-slate-700 overflow-hidden">
-                      <div
-                        className="h-full bg-emerald-400 rounded-full"
-                        style={{ width: `${v.dodgeRate * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Unlock Button if locked */}
-                {!isUnlocked && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const success = unlockVillain(v.id);
-                      if (success) {
-                        setVillainId(v.id);
-                        setTargetName(v.name.bn);
-                      } else {
-                        alert(`আরও টাকা দরকার! ৳${v.unlockCostTaka} লাগবে। (বর্তমান ব্যালেন্স: ৳${taka})`);
-                      }
-                    }}
-                    className="mt-2 w-full rounded-lg border border-yellow-500/60 bg-amber-500/30 py-1 font-comic text-[10px] font-bold text-yellow-300 hover:bg-amber-500/50"
-                  >
-                    ৳{v.unlockCostTaka} আনলক
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Environment Selectors: Time of Day & Weather (P2-05) */}
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-slate-800">
+      <div className="w-full grid grid-cols-1 gap-3 pt-1 border-t border-slate-800">
         {/* Time of Day */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-mono font-bold text-slate-300">
-            Time of Day / সময়:
+            সময়:
           </label>
           <div className="grid grid-cols-4 gap-1.5">
             {TOD_OPTIONS.map((tod) => (
               <button
                 key={tod.id}
+                aria-pressed={timeOfDay === tod.id}
                 onClick={() => setTimeOfDay(tod.id)}
                 className={`flex flex-col items-center justify-center py-1.5 rounded-lg border text-center transition-all ${
                   timeOfDay === tod.id
@@ -454,7 +361,7 @@ export function VillainPreview() {
                 }`}
               >
                 {tod.icon}
-                <span className="font-comic text-[10px] mt-0.5">{tod.label.en}</span>
+                <span className="font-comic text-[10px] mt-0.5">{tod.label.bn}</span>
               </button>
             ))}
           </div>
@@ -463,12 +370,13 @@ export function VillainPreview() {
         {/* Weather */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-mono font-bold text-slate-300">
-            Weather / আবহাওয়া:
+            আবহাওয়া:
           </label>
           <div className="grid grid-cols-4 gap-1.5">
             {WEATHER_OPTIONS.map((w) => (
               <button
                 key={w.id}
+                aria-pressed={weather === w.id}
                 onClick={() => setWeather(w.id)}
                 className={`flex flex-col items-center justify-center py-1.5 rounded-lg border text-center transition-all ${
                   weather === w.id
@@ -477,7 +385,7 @@ export function VillainPreview() {
                 }`}
               >
                 {w.icon}
-                <span className="font-comic text-[10px] mt-0.5">{w.label.en}</span>
+                <span className="font-comic text-[10px] mt-0.5">{w.label.bn}</span>
               </button>
             ))}
           </div>
@@ -487,12 +395,13 @@ export function VillainPreview() {
       {/* Reason / Crime Preset Selector */}
       <div className="w-full">
         <label className="text-xs font-mono font-bold text-slate-300">
-          Crime / অপরাধের কারণ:
+          অপরাধের কারণ:
         </label>
         <div className="grid grid-cols-2 gap-2 mt-1">
           {CRIMES.map((c) => (
             <button
               key={c.id}
+              aria-pressed={crimeId === c.id}
               onClick={() => setCrimeId(c.id)}
               className={`flex items-center gap-2 rounded-xl border-2 p-2 text-left transition-all ${
                 crimeId === c.id
@@ -513,6 +422,7 @@ export function VillainPreview() {
           ))}
         </div>
       </div>
+      </details>
     </div>
   );
 }

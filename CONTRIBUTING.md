@@ -7,7 +7,7 @@ npm run dev        # http://localhost:3000  (add ?debug=1 for the debug bar)
 ```
 
 ## Rules of the road
-- **`master` is protected.** Nobody pushes to it directly. Work on a branch, open a Pull Request; only the repo owner approves and merges.
+- **`master` takes changes through Pull Requests only** (no direct pushes, no force-push). Work on a branch, open a PR, and — once the checks below pass — you can merge it yourself. No approval is required, but a quick look from a teammate is welcome.
 - Branch names: `feat/<short-name>` or, for planned tickets, `t-v2-NN-<slug>` (see `docs/ROADMAP.md`).
 - Before opening a PR, run all of these and make them pass:
   ```bash

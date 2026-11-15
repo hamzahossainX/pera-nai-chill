@@ -1,7 +1,10 @@
 import Phaser from "phaser";
+import { configureRunnerVisuals } from "./runnerVisuals";
+import { RUNNER_VISUALS as RV } from "@/config/characterVisuals";
 import { OutfitDefinition, OUTFITS } from "@/config/outfits";
 import { VillainArchetype } from "@/config/villains";
 import { SecondaryMotion } from "@/game/systems/SecondaryMotion";
+import { EntityMotion } from "@/game/motion/EntityMotion";
 
 export interface RigOptions {
   scene: Phaser.Scene;
@@ -82,6 +85,9 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   // Secondary Motion Physics
   private secondaryMotion = new SecondaryMotion();
 
+  // Position and Physics Motion Channels (single owner of x/y)
+  public motion: EntityMotion;
+
   // State
   public stateName: "RUN" | "HIT_STUN" | "DEAD" | "ATTACK" | "TRIPPED" = "RUN";
   public runSpeedFactor = 1.0;
@@ -95,6 +101,13 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.outfit = options.outfit;
     this.archetype = options.archetype;
     this.isChaser = options.isChaser ?? false;
+
+    this.motion = new EntityMotion({
+      homeX: options.x,
+      homeY: options.y,
+      minX: 60,
+      maxX: 1220,
+    });
 
     // Default to Phone Snatcher outfit if not specified and not chaser
     if (!this.outfit && !this.isChaser) {
@@ -250,6 +263,10 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       this.maskUpperSprite = this.scene.add
         .sprite(0, -14, slots.maskUpper)
         .setOrigin(0.5, 0.5);
+      const upperFrame = this.outfit?.faceAccessories?.upper;
+      if (upperFrame) {
+        this.maskUpperSprite.setY(upperFrame.y).setDisplaySize(upperFrame.width, upperFrame.height);
+      }
       this.headGroup.add(this.maskUpperSprite);
     }
 
@@ -258,6 +275,10 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       this.maskLowerSprite = this.scene.add
         .sprite(0, 14, slots.maskLower)
         .setOrigin(0.5, 0.5);
+      const lowerFrame = this.outfit?.faceAccessories?.lower;
+      if (lowerFrame) {
+        this.maskLowerSprite.setY(lowerFrame.y).setDisplaySize(lowerFrame.width, lowerFrame.height);
+      }
       this.headGroup.add(this.maskLowerSprite);
     }
 
@@ -306,6 +327,19 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     ]);
     this.add(this.headGroup);
 
+    if (this.outfit?.rigStyle === "runner") configureRunnerVisuals({
+      torso: this.torsoSprite, head: this.headGroup, neck: this.neckSprite,
+      headBack: this.headBackSprite, headFront: this.headFrontSprite,
+      shadow: this.shadowSprite, phone: this.handPropSprite,
+      arms: [
+        [this.backArmGroup, this.backArmUpper, this.backArmLowerGroup, this.backArmLower, this.backHand, -1],
+        [this.frontArmGroup, this.frontArmUpper, this.frontArmLowerGroup, this.frontArmLower, this.frontHand, 1],
+      ],
+      legs: [
+        [this.backLegGroup, this.backLegThigh, this.backLegShinGroup, this.backLegShin, this.backFoot, -1],
+        [this.frontLegGroup, this.frontLegThigh, this.frontLegShinGroup, this.frontLegShin, this.frontFoot, 1],
+      ],
+    });
     // Apply color styling if using default procedural shapes
     if (this.isSilhouette) {
       this.applySilhouette();
@@ -352,7 +386,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       this.maskSlipped = true;
       this.scene.tweens.add({
         targets: this.maskLowerSprite,
-        y: 26, // Slips down revealing mouth
+        y: (this.outfit?.faceAccessories?.lower.y ?? 14) + 12, // Slip down from the configured resting position
         angle: 4,
         duration: 260,
         ease: "Bounce.Out",
@@ -482,15 +516,9 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       },
     });
 
-    // Knockback
-    const targetX = this.x + knockbackX;
+    // Knockback via EntityMotion spring channel (auto-recovers within 400ms, clamped to [minX, maxX])
     this.secondaryMotion.applyImpulse(knockbackX * 0.4, -18, isCrit ? 0.35 : 0.15);
-    this.scene.tweens.add({
-      targets: this,
-      x: targetX,
-      ease: "Quad.Out",
-      duration: 180,
-    });
+    this.motion.applyImpulse(knockbackX);
 
     // Recover after 160 ms
     this.scene.time.delayedCall(160, () => {
@@ -518,11 +546,14 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       repeat: -1,
     });
 
+    this.motion.extraY = 35;
+    this.motion.setHomeX(Math.min(this.motion.maxX, this.x + 60));
+    this.motion.offsetX = 0;
+    this.motion.applyTo(this);
+
     this.scene.tweens.add({
       targets: this,
       rotation: 1.57,
-      y: this.y + 35,
-      x: this.x + 60,
       alpha: 0.9,
       duration: 600,
       ease: "Bounce.Out",
@@ -536,10 +567,10 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     if (this.stateName === "DEAD" || this.stateName === "TRIPPED" || !this.scene || !this.scene.tweens) return;
     this.stateName = "TRIPPED";
 
+    this.motion.extraY = 20;
     this.scene.tweens.add({
       targets: this,
       rotation: 1.3,
-      y: this.y + 20,
       duration: 150,
       ease: "Quad.Out",
     });
@@ -564,10 +595,10 @@ export class CharacterRig extends Phaser.GameObjects.Container {
 
     this.scene.time.delayedCall(durationMs, () => {
       if (this.stateName === "DEAD" || !this.scene || !this.scene.tweens) return;
+      this.motion.extraY = 0;
       this.scene.tweens.add({
         targets: this,
         rotation: 0,
-        y: this.y - 20,
         duration: 200,
         ease: "Back.Out",
         onComplete: () => {
@@ -641,7 +672,13 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   }
 
   public update(time: number, delta: number) {
-    if (this.stateName === "DEAD" || this.isHitStunned) return;
+    if (this.stateName === "DEAD") return;
+
+    // EntityMotion is the single owner of position channels
+    this.motion.update(delta);
+    this.motion.applyTo(this);
+
+    if (this.isHitStunned) return;
 
     if (this.attackTimer > 0) {
       this.attackTimer -= delta;
@@ -650,39 +687,46 @@ export class CharacterRig extends Phaser.GameObjects.Container {
 
     // Dynamic Run Style
     const cadence = this.archetype?.runStyle?.cadence ?? 1.6;
-    const armSwing = this.archetype?.runStyle?.armSwing ?? 0.8;
-    const hunch = this.archetype?.runStyle?.hunch ?? 0;
-    const bounce = this.archetype?.runStyle?.bounce ?? 6;
-
+    const refreshed = this.outfit?.rigStyle === "runner";
+    const armSwing = refreshed ? RV.run.armSwing : (this.archetype?.runStyle?.armSwing ?? 0.8);
+    const hunch = refreshed ? RV.run.lean : (this.archetype?.runStyle?.hunch ?? 0);
+    const bounce = refreshed ? RV.run.bounce : (this.archetype?.runStyle?.bounce ?? 6);
+    const torsoY = refreshed ? RV.torso.y : -55;
+    const neckY = refreshed ? RV.neck.y : -70;
+    const headY = refreshed ? RV.head.y : -82;
+    const stride = refreshed ? RV.run.stride : 0.9;
+    const kneeBend = refreshed ? RV.run.kneeBend : 1.1;
     const t = time * 0.001 * this.runSpeedFactor * 2 * Math.PI * cadence;
 
-    this.frontLegGroup.rotation = Math.sin(t) * 0.9;
-    this.frontLegShinGroup.rotation = Math.max(0, -Math.sin(t + 0.6)) * 1.1;
-
-    this.backLegGroup.rotation = Math.sin(t + Math.PI) * 0.9;
-    this.backLegShinGroup.rotation = Math.max(0, -Math.sin(t + Math.PI + 0.6)) * 1.1;
-
+    this.frontLegGroup.rotation = Math.sin(t) * stride;
+    this.frontLegShinGroup.rotation = Math.max(0, -Math.sin(t + 0.6)) * kneeBend;
+    this.backLegGroup.rotation = Math.sin(t + Math.PI) * stride;
+    this.backLegShinGroup.rotation = Math.max(0, -Math.sin(t + Math.PI + 0.6)) * kneeBend;
     this.frontArmGroup.rotation = Math.sin(t + Math.PI) * armSwing;
     this.backArmGroup.rotation = Math.sin(t) * armSwing;
 
     // Torso vertical bounce and posture hunch
-    this.torsoSprite.y = -55 + Math.abs(Math.sin(t)) * -bounce;
+    this.torsoSprite.y = torsoY + Math.abs(Math.sin(t)) * -bounce;
     this.torsoSprite.rotation = hunch;
 
     // Neck follows torso top
     if (this.neckSprite) {
-      this.neckSprite.y = -70 + (this.torsoSprite.y + 55) * 0.7;
+      this.neckSprite.y = neckY + (this.torsoSprite.y - torsoY) * 0.7;
       this.neckSprite.rotation = hunch * 0.7;
     }
 
     // Head wobble & secondary motion lag (Spring / Chibi)
     this.headGroup.rotation = hunch + Math.sin(t * 2) * 0.08;
-    this.headGroup.y = -82 + (this.torsoSprite.y + 55) + Math.sin(t * 2 + 0.5) * 2;
-
+    this.headGroup.y = headY + (this.torsoSprite.y - torsoY) + Math.sin(t * 2 + 0.5) * 2;
+    if (refreshed) {
+      this.frontArmLowerGroup.rotation = this.backArmLowerGroup.rotation = RV.run.elbowBend;
+      this.frontArmGroup.y = this.backArmGroup.y = RV.shoulder.y + this.torsoSprite.y - torsoY;
+    }
     // Ground Shadow Squash & Stretch with Footfalls
     if (this.shadowSprite) {
       const shadowScale = 1.0 - Math.abs(Math.sin(t)) * 0.22;
-      this.shadowSprite.setScale(shadowScale, shadowScale * 0.85);
+      if (refreshed) this.shadowSprite.setDisplaySize(RV.shadow.width * shadowScale, RV.shadow.height);
+      else this.shadowSprite.setScale(shadowScale, shadowScale * 0.85);
       this.shadowSprite.setAlpha(0.5 + Math.abs(Math.cos(t)) * 0.3);
     }
 
@@ -712,21 +756,17 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     }
     this.skeletonGraphics.setVisible(true);
     this.skeletonGraphics.clear();
-
     // Bone lines (Bright fluorescent green/yellow)
     this.skeletonGraphics.lineStyle(2, 0x00ff88, 0.9);
     this.skeletonGraphics.lineBetween(0, 0, 0, -30);
     this.skeletonGraphics.lineBetween(0, -30, this.torsoSprite.x, this.torsoSprite.y);
     this.skeletonGraphics.lineBetween(this.torsoSprite.x, this.torsoSprite.y, this.headGroup.x, this.headGroup.y);
-
     // Arms
     this.skeletonGraphics.lineBetween(this.frontArmGroup.x, this.frontArmGroup.y, this.frontArmGroup.x + this.frontArmLowerGroup.x, this.frontArmGroup.y + this.frontArmLowerGroup.y);
     this.skeletonGraphics.lineBetween(this.backArmGroup.x, this.backArmGroup.y, this.backArmGroup.x + this.backArmLowerGroup.x, this.backArmGroup.y + this.backArmLowerGroup.y);
-
     // Legs
     this.skeletonGraphics.lineBetween(this.frontLegGroup.x, this.frontLegGroup.y, this.frontLegGroup.x + this.frontLegShinGroup.x, this.frontLegGroup.y + this.frontLegShinGroup.y);
     this.skeletonGraphics.lineBetween(this.backLegGroup.x, this.backLegGroup.y, this.backLegGroup.x + this.backLegShinGroup.x, this.backLegGroup.y + this.backLegShinGroup.y);
-
     // Joints (Cyan circles with black border)
     this.skeletonGraphics.fillStyle(0x00ffff, 1);
     this.skeletonGraphics.lineStyle(1.5, 0x000000, 1);

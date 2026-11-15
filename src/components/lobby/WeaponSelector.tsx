@@ -12,7 +12,7 @@ export function WeaponSelector() {
     <div className="flex flex-col gap-4 rounded-2xl border-4 border-black bg-slate-900/90 p-5 shadow-xl backdrop-blur-md">
       <div className="flex items-center justify-between">
         <h3 className="font-comic text-xl text-yellow-300 tracking-wide">
-          3. ARSENAL LOADOUT / অস্ত্র ভান্ডার
+          লোডআউট
         </h3>
         <span className="flex items-center gap-1 text-xs font-mono text-slate-300">
           <Zap className="h-3.5 w-3.5 text-yellow-400" /> 4 Weapons + Ultimate

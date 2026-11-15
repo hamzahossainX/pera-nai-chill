@@ -37,6 +37,7 @@
   }
 
   .map-preview {
+    display: block;
     position: relative;
     height: 92px;
     margin: 10px 0 4px;

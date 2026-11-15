@@ -25,6 +25,8 @@ export class PreloadScene extends Phaser.Scene {
       { key: "rig-neck", url: "/assets/characters/shared/neck.svg" },
       { key: "rig-shadow-soft", url: "/assets/characters/shared/shadow.svg" },
 
+      { key: "hero-face", url: "/assets/characters/chaser/face.svg" },
+
       // Aam-Janata Hero Chaser
       { key: "chaser-torso", url: "/assets/characters/chaser/torso.svg" },
       { key: "chaser-arm-upper", url: "/assets/characters/chaser/arm_upper.svg" },
@@ -114,11 +116,21 @@ export class PreloadScene extends Phaser.Scene {
     ];
 
     for (const asset of svgAssets) {
-      this.load.svg(asset.key, asset.url, { scale: 2 });
+      // Load the two refreshed kits under unique keys so BootScene fallbacks
+      // cannot prevent their SVG files from reaching the texture cache.
+      const refreshed = asset.key === "hero-face" || asset.key.startsWith("chaser-") || asset.key.startsWith("snatcher-");
+      this.load.svg(refreshed ? `${asset.key}-art` : asset.key, asset.url, { scale: 2 });
     }
   }
 
   create() {
+    // Replace only successfully loaded artwork; failed loads keep their fallback.
+    for (const key of this.textures.getTextureKeys()) {
+      if (!key.endsWith("-art")) continue;
+      const destination = key.slice(0, -4);
+      if (this.textures.exists(destination)) this.textures.remove(destination);
+      this.textures.renameTexture(key, destination);
+    }
     // If user has a custom face uploaded in Zustand store, install it dynamically into Phaser texture cache
     const targetFaceUrl = useGameStore.getState().targetFaceUrl;
     if (targetFaceUrl) {
