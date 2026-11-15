@@ -35,7 +35,7 @@ test.describe("V2-00 Lobby Scroll & Map Reachability (M-01)", () => {
 
       // Ensure lobby is loaded
       await expect(page.getByText(/PERA NAI CHILL/i)).toBeVisible();
-      const mapHeading = page.getByText(/DHAKA SCENARIO/i);
+      const mapHeading = page.getByText(/ঢাকার রুট/);
       await expect(mapHeading).toBeAttached();
 
       // 1. Initial position: map selector is down below the viewport fold
@@ -57,7 +57,7 @@ test.describe("V2-00 Lobby Scroll & Map Reachability (M-01)", () => {
       // Assert Map heading is now within the visible viewport (< viewport height)
       let mapTop = await page.evaluate(() => {
         const h = [...document.querySelectorAll("h3,h2")].find((e) =>
-          e.textContent?.includes("DHAKA SCENARIO")
+          e.textContent?.includes("ঢাকার রুট")
         );
         return h ? h.getBoundingClientRect().top : 9999;
       });
@@ -81,7 +81,7 @@ test.describe("V2-00 Lobby Scroll & Map Reachability (M-01)", () => {
 
       mapTop = await page.evaluate(() => {
         const h = [...document.querySelectorAll("h3,h2")].find((e) =>
-          e.textContent?.includes("DHAKA SCENARIO")
+          e.textContent?.includes("ঢাকার রুট")
         );
         return h ? h.getBoundingClientRect().top : 9999;
       });
@@ -103,7 +103,7 @@ test.describe("V2-00 Lobby Scroll & Map Reachability (M-01)", () => {
 
       mapTop = await page.evaluate(() => {
         const h = [...document.querySelectorAll("h3,h2")].find((e) =>
-          e.textContent?.includes("DHAKA SCENARIO")
+          e.textContent?.includes("ঢাকার রুট")
         );
         return h ? h.getBoundingClientRect().top : 9999;
       });

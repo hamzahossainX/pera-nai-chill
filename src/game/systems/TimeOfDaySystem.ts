@@ -119,6 +119,7 @@ export class TimeOfDaySystem {
 
     if (durationMs <= 0) {
       // Instant set (boot / lobby pick)
+      this.parallaxSystem.applyTimeOfDay(phaseId);
       this.parallaxSystem.setAmbientTint(config.ambientTint);
       this.parallaxSystem.setSkyTint(config.skyColors[0]);
 
@@ -135,6 +136,7 @@ export class TimeOfDaySystem {
     }
 
     // Smooth 8s interpolation between phases (P2-07 AC: no hard cuts)
+    this.parallaxSystem.applyTimeOfDay(phaseId);
     this.parallaxSystem.setAmbientTint(config.ambientTint);
     this.parallaxSystem.setSkyTint(config.skyColors[0]);
 
