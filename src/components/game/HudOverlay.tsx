@@ -45,6 +45,7 @@ export function HudOverlay() {
     gap,
     gapZone,
     distanceMeters,
+    stageTargetMeters,
     stageProgress,
     crimeId,
     currentMapId,
@@ -316,7 +317,7 @@ export function HudOverlay() {
                 🏃 <span className="hidden sm:inline">দূরত্ব:</span> {Math.round(distanceMeters)}m
               </span>
               <span className="flex items-center gap-1 text-slate-300">
-                🏠 <span className="hidden sm:inline">আস্তানা:</span> 1000m
+                🏠 <span className="hidden sm:inline">আস্তানা:</span> {stageTargetMeters}m
               </span>
             </div>
             <div className="relative h-2 sm:h-2.5 w-full overflow-hidden rounded-full border border-black/80 bg-slate-950 shadow-inner">
