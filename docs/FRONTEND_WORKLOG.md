@@ -238,3 +238,9 @@ Review the simplified lobby on a physical phone (portrait setup and landscape to
 - User requested commit and push of the reviewed kick-alignment correction on `fix/kick-lane-alignment`; no PR or merge requested in this step.
 - Reviewed the eight changed files and passed `git diff --check`. Runtime code is unchanged since the successful 111-test, TypeScript, lint, pattern, spec and production-build checks above; those checks were not repeated for this publication-only step.
 - Recording this entry with the implementation commit, then pushing the branch to origin. Next action: manually verify kicking across lanes and prepare a focused PR when requested.
+
+### 2026-11-15 — Kick-alignment PR opened
+- User requested a PR. Fresh GitHub check confirms character PR #8 is merged and the kick branch diff against master is limited to this correction and its documentation/tests.
+- Re-ran TypeScript, full lint, 111 tests, pattern check and spec verification successfully. No code changed and no new browser/build run was necessary for publication.
+- Opened PR #14 against master: https://github.com/hamzahossainX/pera-nai-chill/pull/14 — Fix kicks hitting villains in different lanes. PR documents test coverage and pending manual gameplay/device verification. Not merged by this session.
+- Next action: review PR #14 and manually verify same-lane kicks and lane changes during wind-up before merging.
