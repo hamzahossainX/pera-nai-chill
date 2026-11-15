@@ -4,12 +4,12 @@ test.describe("Lobby navigation", () => {
   test("reaches the map selector by wheel scrolling", async ({ page }) => {
     await page.goto("/");
 
-    const tapStartBtn = page.getByRole("button", { name: /শুরু করুন|TAP TO START/i });
+    const tapStartBtn = page.getByRole("button", { name: /শুরু করতে ট্যাপ করুন|TAP TO START/i });
     await tapStartBtn.waitFor({ state: "visible", timeout: 10000 });
     await tapStartBtn.click({ force: true });
 
     const mapHeading = page.getByRole("heading", {
-      name: /DHAKA SCENARIO/i,
+      name: /ঢাকার রুট/,
     });
     await expect(mapHeading).toBeAttached();
 

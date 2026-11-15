@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
-  <!-- Back of hoodie volume behind head -->
-  <circle cx="40" cy="40" r="36" fill="#090d16" stroke="#000000" stroke-width="3"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+<g stroke="#101827" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M8 41 Q5 5 40 3 Q75 5 72 41 L66 68 Q40 80 14 68Z" fill="#344462"/>
+<path d="M12 36 Q14 10 40 8" stroke="#7489a3" fill="none"/>
+</g>
 </svg>

@@ -4,6 +4,8 @@ import { PickupItem, PickupType } from "@/game/entities/PickupItem";
 import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { FxSystem } from "@/game/systems/FxSystem";
+import { getLaneY } from "@/config/layout";
+import { rng } from "@/lib/rng";
 import { BALANCE } from "@/config/balance";
 import { useGameStore } from "@/store/useGameStore";
 import { audioService } from "@/services/audio";
@@ -66,11 +68,21 @@ export class SpawnSystem {
     }
   }
 
-  public spawnObstacle(lane?: number, type?: ObstacleType) {
-    const free = this.pool.find((o) => !o.isActiveInWorld);
-    if (!free) return;
+  public getObstacleNear(lane: number, x: number, range: number): Obstacle | undefined {
+    return this.pool.find(
+      (o) =>
+        o.isActiveInWorld &&
+        o.lane === lane &&
+        o.x >= x - 20 &&
+        o.x - x <= range
+    );
+  }
 
-    const chosenLane = lane ?? Math.floor(Math.random() * 3);
+  public spawnObstacle(lane?: number, type?: ObstacleType, startX?: number): Obstacle | undefined {
+    const free = this.pool.find((o) => !o.isActiveInWorld);
+    if (!free) return undefined;
+
+    const chosenLane = lane ?? rng.between(0, 2);
     const mapId = useGameStore.getState().currentMapId || "mirpur";
 
     // Scenario-based obstacle weighting
@@ -84,15 +96,16 @@ export class SpawnSystem {
       types = ["crowd", "rickshaw", "brick", "barricade", "pothole"];
     }
 
-    const chosenType = type ?? types[Math.floor(Math.random() * types.length)];
-    free.spawn(chosenLane, chosenType);
+    const chosenType = type ?? rng.pick(types);
+    free.spawn(chosenLane, chosenType, startX);
+    return free;
   }
 
   public spawnPickup(lane?: number, type?: PickupType) {
     const free = this.pickupPool.find((p) => !p.isActiveInWorld);
     if (!free) return;
 
-    const chosenLane = lane ?? Math.floor(Math.random() * 3);
+    const chosenLane = lane ?? rng.between(0, 2);
     const store = useGameStore.getState();
 
     // Context-sensitive pickup selection:
@@ -105,7 +118,7 @@ export class SpawnSystem {
       pickupTypes = ["daab", "biriyani", "cha", "taka", "mask"];
     }
 
-    const chosenType = type ?? pickupTypes[Math.floor(Math.random() * pickupTypes.length)];
+    const chosenType = type ?? rng.pick(pickupTypes);
     free.spawn(chosenLane, chosenType);
   }
 
@@ -131,19 +144,20 @@ export class SpawnSystem {
 
       obs.update(_time, delta, speed);
 
-      // Villain AI interaction (Vault / Shove / Trip)
+      // Villain AI interaction (Fixes G-06: villain vaults by default; only trips if stunned/lured)
       if (obs.lane === this.villain.currentLane) {
         const dist = obs.x - this.villain.rig.x;
-        // Obstacle approaching villain: 50% chance villain vaults
-        if (dist > 35 && dist < 95 && !this.villain.isVaulting) {
-          if (Math.random() < 0.5) {
+        const isStunnedOrTripped =
+          this.villain.rig &&
+          (this.villain.rig.stateName === "HIT_STUN" ||
+            this.villain.rig.stateName === "TRIPPED");
+
+        if (dist > 35 && dist < 110 && !this.villain.isVaulting) {
+          if (!isStunnedOrTripped) {
             this.villain.vault();
-          } else if (obs.obstacleType === "barricade" && Math.random() < 0.3) {
-            // Villain shoves the barricade backwards!
-            obs.x -= 80;
           }
-        } else if (Math.abs(dist) < 40 && !this.villain.isVaulting) {
-          // Villain trips over the barricade/tire/pothole!
+        } else if (Math.abs(dist) < 40 && isStunnedOrTripped) {
+          // Lured/Stunned: Villain trips over the obstacle!
           this.villain.trip(1800);
           this.fxSystem.triggerHitStop(60);
           this.fxSystem.spawnFloatingText(
@@ -160,27 +174,59 @@ export class SpawnSystem {
         }
       }
 
-      // Chaser interaction with obstacles (potholes/puddles stumble)
+      // Chaser interaction with hazards (Telegraph + Counter + Cost per G-06)
       if (
         this.chaser &&
         obs.lane === this.chaser.currentLane &&
         Math.abs(obs.x - this.chaser.rig.x) < 40
       ) {
-        if (obs.obstacleType === "pothole") {
+        // Check Counter: Jump clears low hazards (pothole, brick, fake-wallet)
+        if (obs.isLowHazard() && this.chaser.isJumping) {
+          this.fxSystem.spawnFloatingText(
+            this.chaser.rig.x,
+            this.chaser.rig.y - 80,
+            "লাফিয়ে পার! (CLEARED!)",
+            "#38bdf8", // pattern-ok: comic text styling
+            "20px"
+          );
+          obs.deactivate();
+        } else {
+          // Hazard hits chaser: Apply Cost (Patience drain + Speed slow)
           this.chaser.stumble();
           const store = useGameStore.getState();
-          store.setStamina(Math.max(0, store.stamina - 6));
-          if (this.scene.textures.exists("fx-splash")) {
+          const cost = obs.getPatienceCost();
+          const slowMult = obs.getSlowMultiplier();
+          const slowDuration = obs.getSlowDurationSec();
+
+          store.drainPatience(cost);
+          store.slowChaser(slowMult, slowDuration);
+          audioService.play("sfx-punch");
+
+          const comicLabel = obs.isLowHazard()
+            ? `খানাখন্দে হোঁচট! (-${cost} ধৈর্য)`
+            : `ধাক্কা! (-${cost} ধৈর্য)`;
+
+          this.fxSystem.spawnFloatingText(
+            this.chaser.rig.x,
+            this.chaser.rig.y - 80,
+            comicLabel,
+            "#f43f5e", // pattern-ok: comic text styling
+            "22px"
+          );
+
+          if (this.scene.textures && this.scene.textures.exists("fx-splash")) {
             const splash = this.scene.add
               .sprite(this.chaser.rig.x, this.chaser.rig.y, "fx-splash")
               .setDepth(this.chaser.rig.depth + 1);
-            this.scene.tweens.add({
-              targets: splash,
-              alpha: 0,
-              y: splash.y - 15,
-              duration: 300,
-              onComplete: () => splash.destroy(),
-            });
+            if (this.scene.tweens) {
+              this.scene.tweens.add({
+                targets: splash,
+                alpha: 0,
+                y: splash.y - 15,
+                duration: 300,
+                onComplete: () => splash.destroy(),
+              });
+            }
           }
           obs.deactivate();
         }
@@ -209,7 +255,7 @@ export class SpawnSystem {
           store.addTaka(10);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "আহা তাজা ডাব! চাঙ্গা!",
             "#22c55e",
             "24px"
@@ -218,7 +264,7 @@ export class SpawnSystem {
           store.setCounterBuff("N95 মাস্ক", 15);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "এন৯৫ মাস্ক! ধোঁয়া গায়েব!",
             "#38bdf8",
             "24px"
@@ -227,7 +273,7 @@ export class SpawnSystem {
           store.addRage(20);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "কাচ্চি বিরিয়ানি! ফুল পাওয়ার!",
             "#f59e0b",
             "24px"
@@ -236,7 +282,7 @@ export class SpawnSystem {
           store.setStamina(100);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "টংয়ের দুধ চা! ফুল স্ট্যামিনা!",
             "#ea580c",
             "24px"
@@ -245,7 +291,7 @@ export class SpawnSystem {
           store.addTaka(50);
           this.fxSystem.spawnFloatingText(
             collectorX + 40,
-            BALANCE.LANES_Y[p.lane] - 80,
+            getLaneY(p.lane) - 80,
             "+৫০ ৳ টাকার ব্যাগ!",
             "#10b981",
             "26px"

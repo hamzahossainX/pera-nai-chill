@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 74 74" width="74" height="74">
-  <!-- Hood framing arch around the face -->
-  <path d="M 10 38 C 10 12 64 12 64 38 C 64 54 58 64 54 66 C 48 48 52 26 37 26 C 22 26 26 48 20 66 C 16 64 10 54 10 38 Z" fill="#1e293b" stroke="#000000" stroke-width="2.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+<g stroke="#101827" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M6 40 Q4 3 40 3 Q76 3 74 40 L67 70 L56 74 L60 55 Q72 12 40 12 Q8 12 20 55 L24 74 L13 70Z" fill="#344462"/>
+<path d="M16 61 L19 70 M64 61 L61 70" stroke="#ffb547"/>
+</g>
 </svg>

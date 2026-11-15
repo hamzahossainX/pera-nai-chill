@@ -3,6 +3,8 @@ import { Villain } from "@/game/entities/Villain";
 import { Chaser } from "@/game/entities/Chaser";
 import { Projectile } from "@/game/entities/Projectile";
 import { FxSystem } from "@/game/systems/FxSystem";
+import { GapSystem } from "@/game/systems/GapSystem";
+import type { SpawnSystem } from "@/game/systems/SpawnSystem";
 import {
   WEAPONS,
   ULTIMATE_WEAPON,
@@ -11,6 +13,7 @@ import {
   DEFAULT_CHAPPAL,
 } from "@/config/weapons";
 import { calculateComboMultiplier } from "@/config/balance";
+import { rng } from "@/lib/rng";
 import { useGameStore } from "@/store/useGameStore";
 import { gameBus } from "@/game/bus";
 import { audioService } from "@/services/audio";
@@ -20,6 +23,8 @@ export class CombatSystem {
   private villain: Villain;
   private chaser: Chaser;
   private fxSystem: FxSystem;
+  public gapSystem: GapSystem;
+  public spawnSystem?: SpawnSystem;
   private projectiles: Projectile[] = [];
   private isDestroyed = false;
 
@@ -27,12 +32,16 @@ export class CombatSystem {
     scene: Phaser.Scene,
     villain: Villain,
     chaser: Chaser,
-    fxSystem: FxSystem
+    fxSystem: FxSystem,
+    gapSystem: GapSystem,
+    spawnSystem?: SpawnSystem
   ) {
     this.scene = scene;
     this.villain = villain;
     this.chaser = chaser;
     this.fxSystem = fxSystem;
+    this.gapSystem = gapSystem;
+    this.spawnSystem = spawnSystem;
 
     // Listen to weapon triggers from UI Dock
     gameBus.on("weapon:use", this.handleWeaponUse);
@@ -94,6 +103,8 @@ export class CombatSystem {
               },
             });
 
+            this.gapSystem.reduceGap(40);
+            store.restorePatience(2);
             this.applyHit({
               x: hitX,
               y: hitY,
@@ -121,6 +132,8 @@ export class CombatSystem {
           texture: "projectile-can",
           duration: 300,
           onHit: (hitX, hitY) => {
+            this.gapSystem.reduceGap(30);
+            store.restorePatience(2);
             this.applyHit({
               x: hitX,
               y: hitY,
@@ -169,6 +182,8 @@ export class CombatSystem {
         texture: selectedChappal.textureKey,
         duration: selectedChappal.flightDurationMs,
         onHit: (hitX, hitY) => {
+          this.gapSystem.reduceGap(35);
+          store.restorePatience(2);
           if (selectedChappal.id === "chappal-golden") {
             this.fxSystem.spawnHitParticles(hitX, hitY, 10, "particle-coin");
           }
@@ -198,7 +213,60 @@ export class CombatSystem {
           : "slap";
 
       this.chaser.attack(attackType);
+
+      // Hazard counter: Kick breaks obstacles directly in front
+      if (attackType === "kick" && this.spawnSystem) {
+        const breakable = this.spawnSystem.getObstacleNear(
+          this.chaser.currentLane,
+          this.chaser.rig.x,
+          140
+        );
+        if (breakable) {
+          breakable.deactivate();
+          this.fxSystem.spawnFloatingText(
+            this.chaser.rig.x + 40,
+            this.chaser.rig.y - 70,
+            "লাথি মেরে ভাঙল! (SMASHED!)",
+            "#22c55e", // pattern-ok: comic text styling
+            "24px"
+          );
+          audioService.play("sfx-punch");
+          store.restorePatience(4);
+        }
+      }
+
+      // Check melee range per GAME_PLAN_V2 §2.1, §2.2
+      const inRange = this.gapSystem.isMeleeInRange();
+      if (!inRange) {
+        audioService.play("click");
+        const missWords = ["মিস!", "অনেক দূর!", "কাছে যান!"];
+        const missWord = rng.pick(missWords);
+        this.fxSystem.triggerHitFx(
+          this.chaser.rig.x + 60,
+          this.chaser.rig.y - 50,
+          missWord,
+          0,
+          false
+        );
+        // Mashing penalty: drain patience and reset combo
+        store.drainPatience(4);
+        store.resetCombo();
+        return;
+      }
+
       audioService.play(weapon.soundKey);
+
+      // Close zone bonus: +25% damage, camera shake, patience restore
+      let effectiveDamage = finalDamage;
+      if (this.gapSystem.getZone() === "CLOSE") {
+        effectiveDamage = Math.round(finalDamage * 1.25);
+        if (this.scene && this.scene.cameras) {
+          this.scene.cameras.main.shake(120, 0.008);
+        }
+        store.restorePatience(4);
+      } else {
+        store.restorePatience(2);
+      }
 
       // Impact timing
       const delay = attackType === "kick" ? 140 : 90;
@@ -208,10 +276,10 @@ export class CombatSystem {
 
       const comicWord =
         attackType === "slap"
-          ? slapWords[Math.floor(Math.random() * slapWords.length)]
+          ? rng.pick(slapWords)
           : attackType === "punch"
-          ? punchWords[Math.floor(Math.random() * punchWords.length)]
-          : kickWords[Math.floor(Math.random() * kickWords.length)];
+          ? rng.pick(punchWords)
+          : rng.pick(kickWords);
 
       this.scene.time.delayedCall(delay, () => {
         const hitX = this.villain.rig.x - 20;
@@ -219,7 +287,7 @@ export class CombatSystem {
         this.applyHit({
           x: hitX,
           y: hitY,
-          damage: finalDamage,
+          damage: effectiveDamage,
           comicWord,
           weapon,
           isCrit: attackType === "kick",
@@ -234,6 +302,8 @@ export class CombatSystem {
     if (store.rage < 100) return;
 
     store.resetRage();
+    this.gapSystem.reduceGap(100);
+    store.restorePatience(10);
     audioService.play(ULTIMATE_WEAPON.soundKey);
     audioService.duckBgm(true);
     this.scene.time.delayedCall(1200, () => audioService.duckBgm(false));
@@ -248,10 +318,10 @@ export class CombatSystem {
     const barrageCount = 10;
     for (let i = 0; i < barrageCount; i++) {
       this.scene.time.delayedCall(i * 50, () => {
-        const startX = 100 + Math.random() * 200;
-        const startY = 100 + Math.random() * 200;
-        const targetX = this.villain.rig.x + (Math.random() - 0.5) * 40;
-        const targetY = this.villain.rig.y - 70 + (Math.random() - 0.5) * 30;
+        const startX = 100 + rng.range(0, 200);
+        const startY = 100 + rng.range(0, 200);
+        const targetX = this.villain.rig.x + rng.range(-20, 20);
+        const targetY = this.villain.rig.y - 70 + rng.range(-15, 15);
 
         const p = new Projectile({
           scene: this.scene,
@@ -287,6 +357,42 @@ export class CombatSystem {
     isCrit: boolean;
     knockback: number;
   }) {
+    // Check Manhole Chor shield block
+    if (this.villain.hasShield) {
+      this.villain.hasShield = false;
+      audioService.play("click");
+      this.fxSystem.triggerHitFx(
+        params.x,
+        params.y,
+        "ঢালে ব্লক! (BLOCKED!)",
+        0,
+        false
+      );
+      return;
+    }
+
+    // Check Archetype Dodge Rate (except on ultimate)
+    const isUltimate = params.weapon.id === ULTIMATE_WEAPON.id;
+    if (
+      !isUltimate &&
+      !this.villain.isDead &&
+      this.villain.rig &&
+      this.villain.rig.stateName === "RUN" &&
+      rng.chance(this.villain.archetype.dodgeRate ?? 0.2)
+    ) {
+      this.villain.dodge();
+      audioService.play("whoosh");
+      this.fxSystem.triggerHitFx(
+        params.x,
+        params.y,
+        "ডজ! ফস্কে গেল! (DODGED!)",
+        0,
+        false
+      );
+      useGameStore.getState().resetCombo();
+      return;
+    }
+
     // 1. Villain reactions
     this.villain.hit(params.damage, params.knockback, params.isCrit);
     this.fxSystem.triggerArchetypeHitReaction(
