@@ -21,6 +21,7 @@ export interface OutfitDefinition {
   id: string;
   name: { bn: string; en: string };
   slots: RigSlotTextures;
+  rigStyle?: "runner";
   faceAccessories?: {
     upper: { y: number; width: number; height: number };
     lower: { y: number; width: number; height: number };
@@ -35,6 +36,7 @@ export interface OutfitDefinition {
 export const OUTFITS: Record<string, OutfitDefinition> = {
   chaserJanata: {
     id: "chaserJanata",
+    rigStyle: "runner",
     name: { bn: "আম-জনতা হিরো পোশাক", en: "Aam-Janata Hero Casual" },
     slots: {
       neck: "rig-neck",
@@ -55,6 +57,7 @@ export const OUTFITS: Record<string, OutfitDefinition> = {
   },
   phoneSnatcher: {
     id: "phoneSnatcher",
+    rigStyle: "runner",
     name: { bn: "ছিনতাইকারী হুডি", en: "Snatcher Hoodie" },
     // Frame the 58px photo; texture resolution must not determine mask coverage.
     faceAccessories: {

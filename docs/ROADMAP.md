@@ -20,6 +20,7 @@
 - [ ] V2-07 — Instrument + fix rig pose math; pose-sheet gate at `/dev/characters?frames=1` [tags:art,game][audit:C-02] — AC: silhouette test passes (bbox ≤160×220, head within ±14 px of neck joint) for every pose; dev route gated out of production.
   - 2026-11-14: focused Phone Snatcher face-visibility fix frames mask accessories around the photo; desktop/landscape captures in FRONTEND_WORKLOG. Full rig/pose acceptance remains pending.
 - [ ] V2-08 — Chaser redraw to art direction (DESIGN §1, PLAN §4.1) [tags:art,design][audit:C-02,C-04]
+  - 2026-11-15: user-requested chaser/default-villain SVG refresh, logical body sizing, connected run joints, and corrected fallback/SVG precedence implemented on feat/character-visuals. Fresh 3-viewport captures and fallback smoke recorded in FRONTEND_WORKLOG; full pose-sheet acceptance remains open.
 - [ ] V2-09…V2-15 — Redraw + counter-move gag + mask/hood slots, one ticket per archetype: 09 Phone Snatcher · 10 Pickpocket · 11 Cable Chor · 12 Manhole Chor · 13 Eid-Market Chor · 14 Chicken Chor · 15 Chor-er Sardar (boss) [tags:art,design][audit:C-02,C-05] — AC each: pose sheet + in-game screenshots at 3 viewports; `/design-review` ≥ 8/10.
 
 **W3 — Map framework**

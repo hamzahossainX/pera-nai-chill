@@ -1,19 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <defs>
-    <linearGradient id="screenGlow" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#818cf8"/>
-    </linearGradient>
-  </defs>
-  <!-- Stolen Slim Smartphone -->
-  <rect x="12" y="2" width="17" height="27" rx="3.5" fill="#020617" stroke="#000000" stroke-width="2"/>
-  <rect x="14" y="5" width="13" height="19" rx="1.5" fill="url(#screenGlow)"/>
-  <!-- Cracked screen lightning bolt -->
-  <path d="M 16 7 L 22 13 L 18 16 L 25 21" stroke="#ffffff" stroke-width="1.2" fill="none" opacity="0.9"/>
-  <!-- Gripping Hand Fingers wrapped around phone -->
-  <path d="M 4 10 C 2 7 13 6 15 10 L 16 23 C 16 27 6 27 4 23 Z" fill="#b45309" stroke="#000000" stroke-width="2.2" stroke-linejoin="round"/>
-  <!-- Individual finger ridges wrapped on phone -->
-  <rect x="13" y="10" width="5" height="3.5" rx="1.5" fill="#92400e" stroke="#000000" stroke-width="1.2"/>
-  <rect x="13" y="15" width="5" height="3.5" rx="1.5" fill="#92400e" stroke="#000000" stroke-width="1.2"/>
-  <rect x="13" y="20" width="5" height="3.5" rx="1.5" fill="#92400e" stroke="#000000" stroke-width="1.2"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="24" viewBox="0 0 22 24">
+<g stroke="#101827" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M5 7 Q4 2 9 3 L16 5 Q20 8 19 15 L16 20 L7 21 L3 16 L3 10Z" fill="#edb77d"/>
+<path d="M9 10 L14 12" stroke-width="2"/>
+</g>
 </svg>

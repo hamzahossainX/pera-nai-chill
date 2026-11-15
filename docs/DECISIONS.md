@@ -82,3 +82,6 @@ Per user follow-up, the first face section uses a 64px preview and horizontal de
 
 ## DEC-014 — 2026-11-14 — Keep the uploaded face visible in gameplay
 User requested clearer villain imagery after providing lobby/gameplay screenshots. Configure Phone Snatcher mask accessories around the 58px face instead of allowing texture pixel dimensions to obscure it: upper band 64×20 at -28, lower band 64×24 at +28. These are visual frame values chosen to reveal the central face while preserving the hood and mask-slip gag. Other outfits retain existing positions. This is a focused visual fix, not the complete rig redraw or gameplay change.
+
+## DEC-015 — 2026-11-15 — Two-character readability refresh
+Keep the layered SVG approach from GAME_PLAN_V2 §4.2. Refresh the chaser and default Phone Snatcher only: green/gold citizen versus navy/amber hooded runner. Use consistent logical part sizes and joint anchors instead of native texture dimensions; preserve the uploaded-face slot. Run amplitude is reduced and shoulders follow body bob. The new config documents artistic dimensions; no gameplay stats change. Load those SVGs under temporary keys and promote only successful assets so fallback textures cannot hide finished art or disappear on network failure. This is a scoped visual improvement, not completion of the entire character/pose backlog.
