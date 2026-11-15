@@ -200,3 +200,9 @@ Review the simplified lobby on a physical phone (portrait setup and landscape to
 - Opened PR #7 against master: https://github.com/hamzahossainX/pera-nai-chill/pull/7 — Improve face-first lobby setup and villain face visibility. PR includes screenshots, checks, scope and unverified items. Not merged.
 - This follow-up records the successful remote actions only; no application changes or additional tests required. All required local checks and build passed before publication.
 - Next action: review PR #7 and perform the remaining physical-phone/upload acceptance checks before merge.
+
+### 2026-11-15 — Publication follow-up completed
+- Resumed after automatic approval review could not complete the previous documentation push because of a usage limit. Pushed documentation commit `111f2e5` successfully to `feat/frontend-ui-ux`.
+- Fresh GitHub verification: PR #7 was already merged by hamzahossainX on 2026-11-14 at 21:46:39 Asia/Dhaka, merge commit `c66b0d4c3ba94451b23aab0bd64c79a3b6d27354`. The merged PR head is implementation commit `0862492`; the later publication-log commits remain on the frontend branch, outside that merge. No new PR or merge performed in this follow-up.
+- Validation: successful push and remote PR metadata; local branch synchronized after push. No application changes; no tests rerun for this documentation-only follow-up.
+- Next action: base the next frontend change on updated master and carry forward these publication notes; perform remaining physical-phone/upload acceptance checks.
