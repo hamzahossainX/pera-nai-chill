@@ -60,12 +60,12 @@ export function GameOverScreen() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md select-none">
+    <div className="fixed inset-0 z-50 flex overflow-y-auto bg-black/85 p-4 backdrop-blur-md select-none">
       <motion.div
         initial={{ scale: 0.7, opacity: 0, y: 30 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 220, damping: 20 }}
-        className="flex w-full max-w-md flex-col items-center gap-5 rounded-3xl border-4 border-yellow-400 bg-slate-900 p-6 sm:p-8 text-center shadow-[0_0_50px_rgba(245,158,11,0.4)]"
+        className="m-auto flex w-full max-w-md flex-col items-center gap-5 rounded-3xl border-4 border-yellow-400 bg-slate-900 p-6 sm:p-8 text-center shadow-[0_0_50px_rgba(245,158,11,0.4)]"
       >
         {/* Result Header Badge */}
         <div
