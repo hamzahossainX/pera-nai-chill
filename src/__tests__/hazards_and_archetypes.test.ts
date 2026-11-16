@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 // Mock phaser before entity/system imports so node doesn't evaluate browser Phaser
 vi.mock("phaser", () => {
@@ -326,6 +326,75 @@ describe("Ticket V2-05: Hazards & Archetypes System", () => {
       // 80 initial + 4 hazard break + 2 close melee hit bonus = 86
       expect(useGameStore.getState().patience).toBe(86);
       combatSystem.destroy();
+    });
+  });
+
+  describe("Kick lane alignment and delayed impact", () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    function prepareKick(chaserLane = 1, villainLane = 1, gap = 150) {
+      useGameStore.setState({ villainId: "phoneSnatcher", combo: 0, patience: 80, taka: 500, rage: 0 });
+      const chaser = new Chaser(mockScene);
+      const villain = new Villain(mockScene);
+      chaser.currentLane = chaserLane;
+      villain.currentLane = villainLane;
+      villain.archetype = { ...villain.archetype, dodgeRate: 0 };
+      vi.spyOn(chaser, "attack").mockImplementation(() => {});
+      const hit = vi.spyOn(villain, "hit").mockImplementation(() => {});
+      const fx = new FxSystem(mockScene);
+      vi.spyOn(fx, "triggerHitFx").mockImplementation(() => {});
+      vi.spyOn(fx, "triggerArchetypeHitReaction").mockImplementation(() => {});
+      const gaps = new GapSystem(mockScene, villain, chaser);
+      gaps.currentGap = gap;
+      const callbacks: (() => void)[] = [];
+      vi.spyOn(mockScene.time, "delayedCall").mockImplementation((_delay, callback) => {
+        callbacks.push(callback as () => void);
+        return {} as Phaser.Time.TimerEvent;
+      });
+      const combat = new CombatSystem(mockScene, villain, chaser, fx, gaps);
+      const hp = useGameStore.getState().villainHp;
+      return { chaser, villain, hit, gaps, combat, hp, impact: () => callbacks.splice(0).forEach(fn => fn()) };
+    }
+
+    it.each([[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]])(
+      "kick from lane %i to lane %i hits only the same lane", (from, to) => {
+        const setup = prepareKick(from, to);
+        try {
+          gameBus.emit("weapon:use", { weaponId: "kick", timestamp: 0 });
+          setup.impact();
+          expect(setup.hit).toHaveBeenCalledTimes(from === to ? 1 : 0);
+          if (from !== to) {
+            expect(useGameStore.getState().villainHp).toBe(setup.hp);
+            expect(useGameStore.getState().taka).toBe(500);
+            expect(useGameStore.getState().rage).toBe(0);
+            expect(useGameStore.getState().patience).toBe(76);
+          } else expect(useGameStore.getState().villainHp).toBeLessThan(setup.hp);
+        } finally { setup.combat.destroy(); }
+      }
+    );
+
+    it.each(["chaser", "villain", "range"] as const)("rechecks %s at impact", change => {
+      const setup = prepareKick();
+      try {
+        gameBus.emit("weapon:use", { weaponId: "kick", timestamp: 0 });
+        expect(useGameStore.getState().patience).toBe(80);
+        if (change === "range") setup.gaps.currentGap = 300;
+        else setup[change].currentLane = 0;
+        setup.impact();
+        expect(setup.hit).not.toHaveBeenCalled();
+        expect(useGameStore.getState().villainHp).toBe(setup.hp);
+        expect(useGameStore.getState().patience).toBe(76);
+      } finally { setup.combat.destroy(); }
+    });
+
+    it("misses beyond kicking range even in the same lane", () => {
+      const setup = prepareKick(1, 1, 221);
+      try {
+        gameBus.emit("weapon:use", { weaponId: "kick", timestamp: 0 });
+        setup.impact();
+        expect(setup.hit).not.toHaveBeenCalled();
+        expect(useGameStore.getState().villainHp).toBe(setup.hp);
+      } finally { setup.combat.destroy(); }
     });
   });
 

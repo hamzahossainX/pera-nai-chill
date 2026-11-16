@@ -2,7 +2,7 @@
 
 Last updated: 2026-11-14 (Asia/Dhaka)
 
-**Active checkout:** `pera-nai-chill-frontend/`, branch `feat/character-visuals`, incorporating merged master `c66b0d4` and the publication notes from the prior frontend branch. The original `pera-nai-chill-master/` is a preserved extracted backup. Earlier findings describe that older copy; current GitHub gameplay already includes newer W0/W1 changes. Historical screenshot paths below are in the backup unless otherwise stated.
+**Active checkout:** `pera-nai-chill-frontend/`, branch `fix/kick-lane-alignment`, incorporating merged master `c66b0d4` and the publication notes from the prior frontend branch. The original `pera-nai-chill-master/` is a preserved extracted backup. Earlier findings describe that older copy; current GitHub gameplay already includes newer W0/W1 changes. Historical screenshot paths below are in the backup unless otherwise stated.
 
 ## Project and ownership
 
@@ -226,3 +226,21 @@ Review the simplified lobby on a physical phone (portrait setup and landscape to
 - Committed character refresh as `649833e` and pushed `feat/character-visuals`.
 - Opened PR #8 against master: https://github.com/hamzahossainX/pera-nai-chill/pull/8 — Refresh chaser and Phone Snatcher artwork and running rigs. Includes before/after screenshots, validation, and remaining limits. Not merged.
 - This entry only records publication; no application changes or further tests required. Next action: review PR #8 and remaining visual acceptance items before merge.
+
+### 2026-11-15 — Same-lane kick correction
+- User explicitly confirmed kicks should only hit when both runners share a lane and are close enough. Created local `fix/kick-lane-alignment` from the published character branch; updated root AGENTS.md active branch.
+- `src/game/systems/GapSystem.ts`: added kick-specific equal-lane/close-range eligibility. `CombatSystem.ts`: check eligibility before wind-up and again at impact; cancel callbacks after teardown/inactive scene/dead target. Defer close-zone rewards/shake until impact validation, use existing miss penalty, and show same-lane guidance for misaligned kicks. Slap/punch lane allowances and projectile behavior stay unchanged; kick obstacle-breaking is retained.
+- Updated GAME_PLAN_V2 §2.1, DEC-016 and roadmap to reflect the user's override of adjacent-lane kicks. Added 13 regression cases to `src/__tests__/hazards_and_archetypes.test.ts`: all nine lane pairs, either runner leaving the lane during wind-up, gap increasing before impact, and out-of-range same-lane miss. Tests assert no hit/HP loss or rewards for lane misses and preserve the miss penalty.
+- Validation: TypeScript, full lint, all 111 tests, and pattern ratchet passed. Production build and spec verification (433 references) also passed; diff whitespace check passed. No browser/manual gameplay run or physical-device check for this fix; tests exercise actual CombatSystem callbacks with mocked scene timing, real GapSystem/store, and dodge disabled. No new UI layout; no screenshots needed. Generated API facts refreshed. No commit/push/PR for this correction yet.
+- Next action: review the lane-aligned kick in gameplay, then publish this focused fix separately from character artwork.
+
+### 2026-11-15 — Kick fix commit and push
+- User requested commit and push of the reviewed kick-alignment correction on `fix/kick-lane-alignment`; no PR or merge requested in this step.
+- Reviewed the eight changed files and passed `git diff --check`. Runtime code is unchanged since the successful 111-test, TypeScript, lint, pattern, spec and production-build checks above; those checks were not repeated for this publication-only step.
+- Recording this entry with the implementation commit, then pushing the branch to origin. Next action: manually verify kicking across lanes and prepare a focused PR when requested.
+
+### 2026-11-15 — Kick-alignment PR opened
+- User requested a PR. Fresh GitHub check confirms character PR #8 is merged and the kick branch diff against master is limited to this correction and its documentation/tests.
+- Re-ran TypeScript, full lint, 111 tests, pattern check and spec verification successfully. No code changed and no new browser/build run was necessary for publication.
+- Opened PR #14 against master: https://github.com/hamzahossainX/pera-nai-chill/pull/14 — Fix kicks hitting villains in different lanes. PR documents test coverage and pending manual gameplay/device verification. Not merged by this session.
+- Next action: review PR #14 and manually verify same-lane kicks and lane changes during wind-up before merging.

@@ -235,38 +235,15 @@ export class CombatSystem {
         }
       }
 
-      // Check melee range per GAME_PLAN_V2 §2.1, §2.2
-      const inRange = this.gapSystem.isMeleeInRange();
-      if (!inRange) {
-        audioService.play("click");
-        const missWords = ["মিস!", "অনেক দূর!", "কাছে যান!"];
-        const missWord = rng.pick(missWords);
-        this.fxSystem.triggerHitFx(
-          this.chaser.rig.x + 60,
-          this.chaser.rig.y - 50,
-          missWord,
-          0,
-          false
-        );
-        // Mashing penalty: drain patience and reset combo
-        store.drainPatience(4);
-        store.resetCombo();
+      const canHit = () => attackType === "kick"
+        ? this.gapSystem.isKickInRange()
+        : this.gapSystem.isMeleeInRange();
+      if (!canHit()) {
+        this.showMeleeMiss(attackType === "kick");
         return;
       }
 
       audioService.play(weapon.soundKey);
-
-      // Close zone bonus: +25% damage, camera shake, patience restore
-      let effectiveDamage = finalDamage;
-      if (this.gapSystem.getZone() === "CLOSE") {
-        effectiveDamage = Math.round(finalDamage * 1.25);
-        if (this.scene && this.scene.cameras) {
-          this.scene.cameras.main.shake(120, 0.008);
-        }
-        store.restorePatience(4);
-      } else {
-        store.restorePatience(2);
-      }
 
       // Impact timing
       const delay = attackType === "kick" ? 140 : 90;
@@ -282,6 +259,24 @@ export class CombatSystem {
           : rng.pick(kickWords);
 
       this.scene.time.delayedCall(delay, () => {
+        if (this.isDestroyed || !this.scene.scene.isActive() || this.villain.isDead) return;
+        // Re-evaluate at impact: either runner can change lane during wind-up.
+        if (!canHit()) {
+          this.showMeleeMiss(attackType === "kick");
+          return;
+        }
+        // Close zone bonus: +25% damage, camera shake, patience restore
+        let effectiveDamage = finalDamage;
+        if (this.gapSystem.getZone() === "CLOSE") {
+          effectiveDamage = Math.round(finalDamage * 1.25);
+          if (this.scene && this.scene.cameras) {
+            this.scene.cameras.main.shake(120, 0.008);
+          }
+          store.restorePatience(4);
+        } else {
+          store.restorePatience(2);
+        }
+
         const hitX = this.villain.rig.x - 20;
         const hitY = this.villain.rig.y - 60;
         this.applyHit({
@@ -295,6 +290,16 @@ export class CombatSystem {
         });
       });
     }
+  }
+
+  private showMeleeMiss(isKick: boolean) {
+    audioService.play("click");
+    const differentLane = this.chaser.currentLane !== this.villain.currentLane;
+    const text = isKick && differentLane ? "একই লেনে আসুন!" : rng.pick(["মিস!", "অনেক দূর!", "কাছে যান!"]);
+    this.fxSystem.triggerHitFx(this.chaser.rig.x + 60, this.chaser.rig.y - 50, text, 0, false);
+    const store = useGameStore.getState();
+    store.drainPatience(4);
+    store.resetCombo();
   }
 
   private executeUltimate() {
