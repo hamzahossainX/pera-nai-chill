@@ -5,6 +5,7 @@ import { DIALOGUE_GROUPS, DialogueLine } from "@/config/dialogue";
 import { gameBus } from "@/game/bus";
 import { rng } from "@/lib/rng";
 import { useGameStore } from "@/store/useGameStore";
+import { audioService } from "@/services/audio";
 
 interface SpeechBubble {
   container: Phaser.GameObjects.Container;
@@ -44,6 +45,9 @@ export class DialogueSystem {
   }
 
   private handleCombatHit = () => {
+    if (rng.chance(0.25)) {
+      audioService.playRandomVoice("hit");
+    }
     // 35% chance to trigger dialogue on hit
     if (rng.chance(0.35)) {
       if (rng.chance(0.6)) {
@@ -223,6 +227,9 @@ export class DialogueSystem {
       this.idleChatterTimer = 8000 + rng.range(0, 5000);
       if (rng.chance(0.5)) {
         this.triggerLine("villain", "villain_taunt");
+        if (rng.chance(0.35)) {
+          audioService.playRandomVoice("random");
+        }
       } else {
         this.triggerLine("chaser", "chaser_taunt");
       }

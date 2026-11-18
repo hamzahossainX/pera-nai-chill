@@ -14,6 +14,20 @@ class AudioService {
   private ctx: AudioContext | null = null;
   private isUnlocked = false;
   private muted = false;
+  private activeVoiceElements = new Set<HTMLAudioElement>();
+  private lastVoiceUrl: string | null = null;
+  private lastVoiceTime = 0;
+  private readonly voiceUrls = [
+    "/audio/voice-1.mp3",
+    "/audio/voice-2.mp3",
+    "/audio/voice-3.mp3",
+    "/audio/voice-4.mp3",
+    "/audio/voice-5.mp3",
+    "/audio/voice-6.mp3",
+    "/audio/voice-7.mp3",
+    "/audio/voice-8.mp3",
+    "/audio/voice-9.mp3",
+  ];
   private activeVoices = 0;
   private maxSimultaneousVoices = 6;
 
@@ -58,6 +72,7 @@ class AudioService {
       source.start(0);
 
       this.startAmbientLoop();
+      this.preloadVoices();
     } catch (e) {
       console.warn("WebAudio unlock failed or not permitted:", e);
     }
@@ -65,6 +80,12 @@ class AudioService {
 
   public setMuted(muted: boolean): void {
     this.muted = muted;
+    for (const voice of this.activeVoiceElements) {
+      voice.muted = muted;
+      if (muted) {
+        voice.pause();
+      }
+    }
     if (this.bgmGain) {
       this.bgmGain.gain.value = muted ? 0 : this.isBgmDucked ? 0.025 : 0.07;
     }
@@ -75,6 +96,58 @@ class AudioService {
 
   public isMute(): boolean {
     return this.muted;
+  }
+
+  public preloadVoices(): void {
+    if (typeof Audio === "undefined") return;
+    for (const url of this.voiceUrls) {
+      const voice = new Audio(url);
+      voice.preload = "auto";
+    }
+  }
+
+  public playRandomVoice(category: "skill" | "hit" | "random" = "random"): void {
+    if (this.muted || typeof Audio === "undefined") return;
+
+    const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+    if (now - this.lastVoiceTime < 1800) return;
+
+    let candidates = this.voiceUrls;
+    if (category === "skill") {
+      candidates = this.voiceUrls.slice(0, 4);
+    } else if (category === "hit") {
+      candidates = this.voiceUrls.slice(4);
+    }
+
+    const available = candidates.filter((url) => url !== this.lastVoiceUrl);
+    if (available.length === 0) return;
+
+    const url = available[Math.floor(Math.random() * available.length)];
+    const voice = new Audio(url);
+    voice.muted = this.muted;
+    voice.volume = 0.95;
+    this.activeVoiceElements.add(voice);
+    this.lastVoiceUrl = url;
+    this.lastVoiceTime = now;
+
+    voice.addEventListener("ended", () => {
+      this.activeVoiceElements.delete(voice);
+    });
+    voice.addEventListener("error", () => {
+      this.activeVoiceElements.delete(voice);
+    });
+
+    void voice.play().catch(() => {
+      this.activeVoiceElements.delete(voice);
+    });
+  }
+
+  public stopVoices(): void {
+    for (const voice of this.activeVoiceElements) {
+      voice.pause();
+      voice.currentTime = 0;
+    }
+    this.activeVoiceElements.clear();
   }
 
   public duckBgm(ducked: boolean): void {
