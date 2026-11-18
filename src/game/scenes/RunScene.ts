@@ -119,6 +119,7 @@ export class RunScene extends Phaser.Scene {
     const cleanup = () => {
       audioService.stopBgm();
       audioService.stopAmbience();
+      audioService.stopVoices();
       gameBus.off("game:pause", this.handlePause);
       gameBus.off("game:restart", this.handleRestart);
       gameBus.off("debug:spawnObstacle", this.handleDebugSpawnObstacle);

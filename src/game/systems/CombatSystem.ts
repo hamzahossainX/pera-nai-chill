@@ -73,6 +73,9 @@ export class CombatSystem {
 
   private executeWeapon(weapon: WeaponConfig) {
     const store = useGameStore.getState();
+    if (rng.chance(0.28)) {
+      audioService.playRandomVoice("skill");
+    }
     const currentCombo = store.combo;
     const multiplier = calculateComboMultiplier(currentCombo);
     const finalDamage = Math.round(weapon.damage * multiplier);
@@ -309,6 +312,7 @@ export class CombatSystem {
     store.resetRage();
     this.gapSystem.reduceGap(100);
     store.restorePatience(10);
+    audioService.playRandomVoice("skill");
     audioService.play(ULTIMATE_WEAPON.soundKey);
     audioService.duckBgm(true);
     this.scene.time.delayedCall(1200, () => audioService.duckBgm(false));
@@ -400,6 +404,9 @@ export class CombatSystem {
 
     // 1. Villain reactions
     this.villain.hit(params.damage, params.knockback, params.isCrit);
+    if (rng.chance(0.45)) {
+      audioService.playRandomVoice("hit");
+    }
     this.fxSystem.triggerArchetypeHitReaction(
       this.villain.archetype.id,
       params.x,
