@@ -22,6 +22,7 @@ import { EventBanner } from "@/components/game/EventBanner";
 import { BribeButton } from "@/components/game/BribeButton";
 import { CRIMES } from "@/config/crimes";
 import { MAP_SCENARIOS } from "@/config/maps";
+import { PointfexBadge } from "@/components/shell/PointfexBadge";
 import {
   Droplets,
   ShieldCheck,
@@ -610,6 +611,11 @@ export function HudOverlay() {
             </motion.div>
           </AnimatePresence>
         </div>
+        {/* Pointfex branding — right of ticker */}
+        <div className="pointer-events-auto shrink-0 border-l border-slate-700 ml-1">
+          <PointfexBadge theme="hud" />
+        </div>
+
       </div>
 
       {/* Pause Modal Overlay */}
