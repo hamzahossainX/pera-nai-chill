@@ -24,6 +24,7 @@ import { GameOverScreen } from "@/components/gameover/GameOverScreen";
 import { DebugBar } from "@/components/game/DebugBar";
 import { DemoRunner } from "@/components/game/DemoRunner";
 import { Settings, Play, ShoppingBag, Trophy, FileText } from "lucide-react";
+import { PointfexBadge } from "@/components/shell/PointfexBadge";
 import { audioService } from "@/services/audio";
 import { faceService } from "@/services/faceService";
 
@@ -139,17 +140,7 @@ export function AppShell() {
               <p aria-live="polite">{VILLAINS.find(v => v.id === villainId)?.name.bn} <span> / </span> {MAP_SCENARIOS.find(m => m.id === currentMapId)?.name.bn}</p>
               <button onClick={handleStartGame} className="pnc-start"><Play aria-hidden="true" /><span>রাস্তায় নামুন <small>Start run</small></span></button>
             </div>
-            <p className="pb-2 text-center font-sans text-[10px] text-slate-500/70">
-              Developed By{" "}
-              <a
-                href="https://pointfex.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors"
-              >
-                Pointfex
-              </a>
-            </p>
+            <PointfexBadge className="pb-2" />
           </footer>
         </div>
       )}

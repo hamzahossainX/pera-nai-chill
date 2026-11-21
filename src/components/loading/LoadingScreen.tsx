@@ -6,6 +6,7 @@ import { useGameStore } from "@/store/useGameStore";
 import { LOADING_TIPS } from "@/config/tips";
 import { audioService } from "@/services/audio";
 import { Sparkles, Zap } from "lucide-react";
+import { PointfexBadge } from "@/components/shell/PointfexBadge";
 
 export function LoadingScreen() {
   const { loading, setLoading, setScreen, settings } = useGameStore();
@@ -280,17 +281,7 @@ export function LoadingScreen() {
         ) : null}
 
         {/* Pointfex Branding */}
-        <p className="mt-1 text-center font-sans text-[10px] text-slate-900/60">
-          Developed By{" "}
-          <a
-            href="https://pointfex.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-slate-900/80 underline underline-offset-2 hover:text-slate-900 transition-colors"
-          >
-            Pointfex
-          </a>
-        </p>
+        <PointfexBadge theme="light" className="mt-1" />
       </div>
     </div>
   );
