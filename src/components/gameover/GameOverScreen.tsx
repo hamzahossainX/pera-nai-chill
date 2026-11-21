@@ -245,6 +245,19 @@ export function GameOverScreen() {
         isOpen={isPosterOpen}
         onClose={() => setIsPosterOpen(false)}
       />
+
+      {/* Pointfex Branding */}
+      <p className="absolute bottom-2 left-0 right-0 text-center font-sans text-[10px] text-slate-500/70 select-none">
+        Developed By{" "}
+        <a
+          href="https://pointfex.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-amber-400/80 underline underline-offset-2 hover:text-amber-400 transition-colors"
+        >
+          Pointfex
+        </a>
+      </p>
     </div>
   );
 }

@@ -139,6 +139,17 @@ export function AppShell() {
               <p aria-live="polite">{VILLAINS.find(v => v.id === villainId)?.name.bn} <span> / </span> {MAP_SCENARIOS.find(m => m.id === currentMapId)?.name.bn}</p>
               <button onClick={handleStartGame} className="pnc-start"><Play aria-hidden="true" /><span>রাস্তায় নামুন <small>Start run</small></span></button>
             </div>
+            <p className="pb-2 text-center font-sans text-[10px] text-slate-500/70">
+              Developed By{" "}
+              <a
+                href="https://pointfex.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors"
+              >
+                Pointfex
+              </a>
+            </p>
           </footer>
         </div>
       )}
